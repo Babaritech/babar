@@ -3,60 +3,92 @@ This is the homepage where all the sh*t happens.
 Goal is to select a client and file in the drink he had.
 -->
 
-<div class="row" ng-controller="SellCtrl as sell">
-  <div class="col-md-4 col-xs-4 sell-client">
-    <div class="input-group">
-      <input
-	 type="text"
-	 class="form-control"
-	 placeholder="Recherche d'un client"
-	 ng-model="sell.keyword">
-    </div><!-- /input-group -->
-    <div class="list-group">
-      <a
-	 href="#"
-	 class="{{sell.currentClient.getClass(client)}}"
-	 ng-repeat="client in sell.clients | search: sell.keyword"
-	 ng-click="sell.currentClient.change(client)">
-	{{client.name}}
-      </a>
-    </div>
-  </div> <!-- /sell-client -->
+<div class="container-fluid" ng-controller="SellCtrl as sell">
   
-  <div class="col-md-4 col-xs-4 sell-info">
-    <div class="money-alert"
+  <div class="row hidden-xs hidden-sm" id="header">
+    <div class="col-xs-12"
 	 style="background-color:{{sell.getMoneyColor()}}">
+      <h2><b>BABAR-EXPRESS</b></h2>
     </div>
-    <div>
-      <img class="sell-info-image" src="../assets/king_babar.jpg"></img>
-      <div class="sell-info-text">
-	<ul ng-hide="sell.currentClient.info===null">
-	  <li>{{sell.currentClient.info.firstname}}
-	    ({{sell.currentClient.info.nickname}})
-	    {{sell.currentClient.info.lastname}}</li>
-	  <br>
-	  <li><b>{{sell.currentClient.info.money}}&#8364</b></li>
-	</ul>
-	<div ng-show="sell.currentClient.info===null">
-	  <b>Cod&eacute avec amour par Dryvenn et Iansus.</b>
-	</div>
+  </div> <!-- /header row-->
+
+  <div class="row" id="main">
+    
+    <div class="col-md-4 col-xs-12 sell-client sell">
+      <div class="input-group custom-input">
+	<input
+	   type="text"
+	   class="form-control"
+	   placeholder="Rechercher un client"
+	   ng-model="sell.clientKeyword">
+      </div><!-- /input-group -->
+      <div class="list-group custom-list">
+	<a
+	   href="#"
+	   class="{{sell.currentClient.getClass(client)}}"
+	   ng-repeat="client in sell.clients | search: sell.clientKeyword"
+	   ng-click="sell.currentClient.change(client)">
+	  {{client.name}}
+	</a>
+      </div> <!-- /list -->
+    </div> <!-- /sell-client -->
+
+
+    <div class="col-md-4 col-xs-12 sell-drink sell">
+      <div class="input-group custom-input">
+        <input
+           type="text"
+           class="form-control"
+           placeholder="Rechercher un article "
+           ng-model="sell.drinkKeyword">
+      </div><!-- /input-group -->
+      <div class="list-group custom-list">
+        <a
+           href="#"
+           class="{{sell.currentDrink.getClass(drink)}}"
+           ng-repeat="drink in sell.drinks | search: sell.drinkKeyword"
+           ng-click="sell.currentDrink.change(drink)">
+          {{drink.name}}
+        </a>
+      </div> <!-- /list -->
+    </div> <!-- /sell-drink -->
+
+
+
+    <div class="col-md-4 col-xs-12 sell-details sell">
+      
+      <img class="sell-details-image"
+	   src="../assets/king_babar.jpg"></img>
+      
+      <div class="sell-details-text">
+        <ul ng-hide="sell.currentClient.currentItem===null">
+          <li>{{sell.currentClient.details.firstname}}
+            ({{sell.currentClient.details.nickname}})
+            {{sell.currentClient.details.lastname}}</li>
+          <br>
+          <li><b>{{sell.currentClient.details.money}}&#8364</b></li>
+        </ul>
+        <div ng-show="sell.currentClient.currentItem===null">
+          <b>Cod&eacute avec amour par Dryvenn et Iansus.</b>
+        </div>
       </div> <!-- /text -->
-    </div>
-    <div class="sell-info-history" ng-hide="sell.currentClient.info===null">
-      <h4>Historique :</h4>
-      <ul class="list-group">
-        <li
-	   class="list-group-item"
-	   ng-repeat="drink in sell.currentClient.info.history | chrono">
-	  <h5>{{drink.name}}</h5>
-	  <h6>{{sell.toDateString(drink.time)}}</h6>
-	</li>
-      </ul>
-    </div> <!-- /sell-info-history -->
-  </div> <!-- /sell-info -->
+      
+
+      <div class="sell-details-history" ng-hide="sell.currentClient.details===null">
+	<h4>Historique :</h4>
+	<ul class="list-group custom-list">
+          <li
+	     class="list-group-item"
+	     ng-repeat="drink in sell.currentClient.details.history | chrono">
+	    <h5>{{drink.name}}</h5>
+	    <h6>{{sell.toDateString(drink.time)}}</h6>
+	  </li>
+	</ul>
+      </div> <!-- /sell-details-history -->
+      
+    </div> <!-- /sell-details -->
     
-  <div class="col-md-4 col-xs-4 sell-drink">
-  </div> <!-- /sell-drink -->
-    
-</div> <!-- /row -->
+  </div> <!-- row -->
+</div> <!--container -->
+
 

@@ -1,36 +1,65 @@
-.sell-client input {
+//HEADER ROW
+#header {
+    position: absolute;
+    height: 10%;
+    width: 100%;
+}
+#header div {
+    height: 100%;
+    width: 100%;
+}
+#header h2 {
+    margin-left: 50px;
+    vertical-align: center;
+}
+
+//MAIN ROW
+#main {
+    position: absolute;
+    height: 80%;
+    width: 100%;
+    margin-top: 6%;
+}
+
+//CLIENTS (col 1)
+.sell-client {
+}
+
+//CLIENTS & DRINKS & DETAILS(col 1 & 2 & 3)
+.sell {
+    height: 100%;
     position: relative;
+}
+.custom-input {
     width: 100%;
 }
-.sell-client .list-group {
-    position: absolute;
-    height: 750px;
+.custom-list {
+    position: relative;
+    height: 100%;
     width: 100%;
-    overflow: auto;
-}
-
-.money-alert {
-    height: 200px;
-    width: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
-.sell-info-image {
+//DETAILS (col 3)
+.sell-details-image {
     height: 200px;
     display: inline;
 }
-.sell-info-text {
-    margin-top: 90px;
+.sell-details-text {
+    margin-top: 15%;
     position: absolute;
     display: inline;
 }
-.sell-info-text ul {
+.sell-details-text ul {
     list-style-type: none;
 }
 
-.sell-info-history h4 {
-    text-align: center;
+.sell-details-history {
+    position: absolute;
+    height: 50%;
+    width: 90%;
 }
-.sell-info-history .list-group {
-    height: 300px;
-    overflow: auto;
+.sell-details-history h4 {
+    text-align: center;
 }

@@ -3,7 +3,7 @@ angular.module('babar.test', [])
 	Test = function(){
 
 	    this.getClients = function(){
-		return data.map(function(val, ind, arr){
+		return clientsData.map(function(val, ind, arr){
 		    return {
 			id: val.id,
 			name: val.firstname + ' (' + val.nickname + ') ' + val.lastname
@@ -12,7 +12,7 @@ angular.module('babar.test', [])
 	    };
 
 	    this.getInfo = function(id){
-		return data.reduce(function(acc, val, ind, arr){
+		return clientsData.reduce(function(acc, val, ind, arr){
 		    if(id == val.id){
 			return val;
 		    }
@@ -21,8 +21,265 @@ angular.module('babar.test', [])
 		    }
 		}, null);
 	    };
-	    
-	    var data = [
+
+	    this.getDrinks = function(){
+		return drinksData;
+            };
+
+	    var drinksData = [
+                {
+                    "name": "magna incididunt",
+                    "price": 1.95,
+                    "id": 0
+                },
+                {
+                    "name": "voluptate commodo",
+                    "price": 2.94,
+                    "id": 1
+                },
+                {
+                    "name": "anim ullamco",
+                    "price": 1.13,
+                    "id": 2
+                },
+                {
+                    "name": "dolore dolore",
+                    "price": 1.25,
+                    "id": 3
+                },
+                {
+                    "name": "sit voluptate",
+                    "price": 1.52,
+                    "id": 4
+                },
+                {
+                    "name": "proident proident",
+                    "price": 2.37,
+                    "id": 5
+                },
+                {
+                    "name": "reprehenderit ex",
+                    "price": 1.98,
+                    "id": 6
+                },
+                {
+                    "name": "laboris mollit",
+                    "price": 1.6,
+                    "id": 7
+                },
+                {
+                    "name": "excepteur ex",
+                    "price": 2.79,
+                    "id": 8
+                },
+                {
+                    "name": "cupidatat consectetur",
+                    "price": 1.63,
+                    "id": 9
+                },
+                {
+                    "name": "aute minim",
+                    "price": 2.52,
+                    "id": 10
+                },
+                {
+                    "name": "esse dolore",
+                    "price": 2.79,
+                    "id": 11
+                },
+                {
+                    "name": "veniam irure",
+                    "price": 1.15,
+                    "id": 12
+                },
+                {
+                    "name": "aliqua adipisicing",
+                    "price": 1.41,
+                    "id": 13
+                },
+                {
+                    "name": "culpa quis",
+                    "price": 1.4,
+                    "id": 14
+                },
+                {
+                    "name": "amet officia",
+                    "price": 2.83,
+                    "id": 15
+                },
+                {
+                    "name": "proident dolore",
+                    "price": 1.05,
+                    "id": 16
+                },
+                {
+                    "name": "occaecat adipisicing",
+                    "price": 1.56,
+                    "id": 17
+                },
+                {
+                    "name": "ex ex",
+                    "price": 2.77,
+                    "id": 18
+                },
+                {
+                    "name": "nisi ut",
+                    "price": 2.02,
+                    "id": 19
+                },
+                {
+                    "name": "duis mollit",
+                    "price": 2.09,
+                    "id": 20
+                },
+                {
+                    "name": "consequat ad",
+                    "price": 2.26,
+                    "id": 21
+                },
+                {
+                    "name": "irure est",
+                    "price": 2.2,
+                    "id": 22
+                },
+                {
+                    "name": "qui cillum",
+                    "price": 1.9,
+                    "id": 23
+                },
+                {
+                    "name": "tempor ut",
+                    "price": 2.59,
+                    "id": 24
+                },
+                {
+                    "name": "nisi aute",
+                    "price": 2.2,
+                    "id": 25
+                },
+                {
+                    "name": "ipsum quis",
+                    "price": 1.99,
+                    "id": 26
+                },
+                {
+                    "name": "minim est",
+                    "price": 2.57,
+                    "id": 27
+                },
+                {
+                    "name": "do consectetur",
+                    "price": 1.89,
+                    "id": 28
+                },
+                {
+                    "name": "minim nulla",
+                    "price": 1.16,
+                    "id": 29
+                },
+                {
+                    "name": "consequat cupidatat",
+                    "price": 2.54,
+                    "id": 30
+                },
+                {
+                    "name": "laboris laboris",
+                    "price": 2.17,
+                    "id": 31
+                },
+                {
+                    "name": "laboris non",
+                    "price": 2.12,
+                    "id": 32
+                },
+                {
+                    "name": "labore laborum",
+                    "price": 1.42,
+                    "id": 33
+                },
+                {
+                    "name": "sunt et",
+                    "price": 2.89,
+                    "id": 34
+                },
+                {
+                    "name": "deserunt aliqua",
+                    "price": 1.38,
+                    "id": 35
+                },
+                {
+                    "name": "cupidatat elit",
+                    "price": 2.09,
+                    "id": 36
+                },
+                {
+                    "name": "excepteur dolor",
+                    "price": 1.73,
+                    "id": 37
+                },
+                {
+                    "name": "ut ullamco",
+                    "price": 1.25,
+                    "id": 38
+                },
+                {
+                    "name": "ullamco non",
+                    "price": 2.15,
+                    "id": 39
+                },
+                {
+                    "name": "deserunt exercitation",
+                    "price": 2.39,
+                    "id": 40
+                },
+                {
+                    "name": "ea aliquip",
+                    "price": 2.43,
+                    "id": 41
+                },
+                {
+                    "name": "ex laboris",
+                    "price": 2.09,
+                    "id": 42
+                },
+                {
+                    "name": "officia deserunt",
+                    "price": 2.94,
+                    "id": 43
+                },
+                {
+                    "name": "sit amet",
+                    "price": 1.33,
+                    "id": 44
+                },
+                {
+                    "name": "occaecat labore",
+                    "price": 1.25,
+                    "id": 45
+		},
+		{
+		    "name": "anim eu",
+		    "price": 1.1,
+		    "id": 46
+		},
+		{
+		    "name": "aute et",
+		    "price": 1.44,
+		    "id": 47
+		},
+		{
+		    "name": "id laborum",
+		    "price": 1.2,
+		    "id": 48
+		},
+		{
+		    "name": "elit pariatur",
+		    "price": 1.31,
+		    "id": 49
+		}
+	    ];
+
+	 var clientsData = [
 		{
 		    "id": 0,
 		    "firstname": "Pittman",
