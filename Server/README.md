@@ -9,11 +9,11 @@ The transmission format is JSON.
 
 ## Services
 
-### GET
+### Get
 - **/Clients** : returns list of client's names and id
 - **/Clients/<someId>** : returns the info on someone
 
-### POST
+### Post
 - **/Clients/new** : body is a new client, returns the client with his id
 - **/Clients/update** : body is an already-existent client (has an id)
 - **/Clients/delete** : body is an already-existent client (has an id)
