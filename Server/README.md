@@ -2,9 +2,9 @@
 
 ## Specs
 
-Written in Node.js maybe, 'cause the path of enlightment.
-Gotta be more specific when describing drinks. See Client's drink-adding form.
-The transmission format is JSON.
+- Written in Node.js maybe, 'cause the path of enlightment.
+- Gotta be more specific when describing drinks. See Client's drink-adding form.
+- The transmission format is JSON.
 
 
 ## Services
