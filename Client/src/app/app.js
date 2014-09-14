@@ -2,7 +2,9 @@ angular.module( 'babar', [
     'templates-app',
     'templates-common',
     'ui.router',
-    'babar.sell'
+    'babar.sell',
+    'babar.admin',
+    'babar.test'
 ])
 
     .config( ['$stateProvider', '$urlRouterProvider',  function myAppConfig ( $stateProvider, $urlRouterProvider ) {

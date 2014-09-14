@@ -1,5 +1,5 @@
 angular.module('babar.test', [])
-    .factory([function(){
+    .factory('TestFct', [function(){
 	Test = function(){
 
 	    this.getClients = function(){

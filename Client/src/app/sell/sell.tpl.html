@@ -3,11 +3,22 @@
     Goal is to select a client and file in the drink he had.
   -->
 
-<div class="row" ngController="SellCtrl as sell">
+<div class="row" ng-controller="SellCtrl as sell">
 
-  <div class="col-xs-4 sell-client"></div>
-  <div class="col-xs-4 sell-info"></div>
-  <div class="col-xs-4 sell-drink"></div>
+  <div class="col-md-4 col-xs-4 sell-client">
+    <div class="input-group">
+      <input type="text" class="form-control">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button">Go!</button>
+      </span>
+    </div><!-- /input-group -->
+    <ul class="list-group">
+      <li class="list-group-item" ng-repeat="client in sell.clients">{{client.name}}</li>
+    </ul>
+  </div>
+  
+  <div class="col-md-4 col-xs-4 sell-info"></div>
+  <div class="col-md-4 col-xs-4 sell-drink"></div>
   
 </div> <!-- /row -->
   
