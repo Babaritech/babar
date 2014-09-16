@@ -3,7 +3,7 @@ This is the homepage where all the sh*t happens.
 Goal is to select a customer and file in the drink he had.
 -->
 
-<div class="container-fluid" ng-controller="SellCtrl as sell">
+<div class="container-fluid">
   
   <div class="row hidden-xs hidden-sm" id="header">
     <div class="col-xs-12"
@@ -13,7 +13,6 @@ Goal is to select a customer and file in the drink he had.
   </div> <!-- /header row-->
 
   <div class="row" id="main">
-    
     <div class="col-md-4 col-xs-12 sell-customer sell">
       <div class="input-group custom-input">
 	<input
@@ -26,9 +25,12 @@ Goal is to select a customer and file in the drink he had.
       <div class="list-group custom-list">
 	<a
 	   href="#"
-	   class="{{sell.customer.getClass(customer)}}"
-	   ng-repeat="customer in sell.customers | search: sell.customer.keyword"
-	   ng-click="sell.customer.set(customer)">
+	   class="list-group-item {{customer.active?'active':''}}"
+           ng-repeat="customer in
+		      sell.customers
+		      | search: sell.customer.keyword
+		      | select : sell.customer.index"
+ 	   ng-click="sell.customer.setIndex($index)">
 	  {{customer.name}}
 	</a>
       </div> <!-- /list -->
@@ -47,9 +49,12 @@ Goal is to select a customer and file in the drink he had.
       <div class="list-group custom-list">
         <a
            href="#"
-           class="{{sell.drink.getClass(drink)}}"
-           ng-repeat="drink in sell.drinks | search: sell.drink.keyword"
-           ng-click="sell.drink.set(drink)">
+	   class="list-group-item {{drink.active?'active':''}}"
+           ng-repeat="drink in
+                      sell.drinks
+                      | search: sell.drink.keyword
+                      | select : sell.drink.index"
+           ng-click="sell.drink.setIndex($index)">
           {{drink.name}}
         </a>
       </div> <!-- /list -->
@@ -63,7 +68,7 @@ Goal is to select a customer and file in the drink he had.
 	   src="../assets/king_babar.jpg"></img>
       
       <div class="sell-details-info-text">
-        <ul ng-hide="sell.customer.current===null">
+        <ul ng-hide="sell.customer.details===null">
           <li>{{sell.customer.details.firstname}}
             ({{sell.customer.details.nickname}})
             {{sell.customer.details.lastname}}</li>
@@ -89,16 +94,17 @@ Goal is to select a customer and file in the drink he had.
       </div> <!-- /sell-details-history -->
 
       <div class="sell-waiting-confirm"
-	   ng-show="sell.drink.isToConfirm">
+	   ng-show="sell.drink.details !== null"
+	   id="confirmationInput">
 	<div class="sell-waiting-confirm-text">
-	  <b>{{sell.customer.current.name}}</b><br>
+	  <b>{{sell.customer.details.nickname}}</b><br>
 	  is having a<br>
-	  <b>{{sell.drink.current.name}}</b> ?
+	  <b>{{sell.drink.details.name}}</b> ?
 	</div>
 	<div class="sell-waiting-confirm-buttons">
 	  <span
 	     style="background-color:#15BF25"
-	     ng-click="sell.customer.buy(sell.drink)"
+	     ng-click="sell.drink.buy(sell.details)"
 	     class="btn"><b>YES</b></span>
 	  <span
 	     style="background-color:#E5251E"

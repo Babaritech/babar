@@ -3,8 +3,7 @@ angular.module( 'babar', [
     'templates-common',
     'ui.router',
     'babar.sell',
-    'babar.admin',
-    'babar.test'
+    'babar.admin'
 ])
 
     .config( ['$stateProvider', '$urlRouterProvider',  function myAppConfig ( $stateProvider, $urlRouterProvider ) {
@@ -17,12 +16,14 @@ angular.module( 'babar', [
             .state('sell', {
                 url: "/sell",
                 templateUrl: "sell/sell.tpl.html",
-		controller: "SellCtrl"
+		controller: "SellCtrl",
+		controllerAs: "sell"
             })
             .state('admin', {
                 url: "/admin",
                 templateUrl: "admin/admin.tpl.html",
-		controller: "AdminCtrl"
+		controller: "AdminCtrl",
+		controllerAs: "admin"
 	    });
     }])
 
