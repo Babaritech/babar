@@ -2,8 +2,8 @@ angular.module('babar.test', [])
     .factory('TestFct', [function(){
 	Test = function(){
 
-	    this.getClients = function(){
-		return clientsData.map(function(val, ind, arr){
+	    this.getCustomers = function(){
+		return customersData.map(function(val, ind, arr){
 		    return {
 			id: val.id,
 			name: val.firstname + ' (' + val.nickname + ') ' + val.lastname
@@ -12,7 +12,7 @@ angular.module('babar.test', [])
 	    };
 
 	    this.getInfo = function(id){
-		return clientsData.reduce(function(acc, val, ind, arr){
+		return customersData.reduce(function(acc, val, ind, arr){
 		    if(id == val.id){
 			return val;
 		    }
@@ -279,7 +279,7 @@ angular.module('babar.test', [])
 		}
 	    ];
 
-	 var clientsData = [
+	 var customersData = [
 		{
 		    "id": 0,
 		    "firstname": "Pittman",

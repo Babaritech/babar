@@ -25,52 +25,75 @@ angular.module('babar.sell', [
     })
 	    
     .controller('SellCtrl', ['TestFct', function(TestFct){
-	
+	document.getElementById('drinkInput').focus();
+	this.debug = function(){
+	    console.log('debug');
+	};
 
-	Current = function(hasDetails){
-	    this.currentItem = null;
-	    this.details = null;
-	    this.change = function(newItem){
-		this.currentItem = newItem;
-		if(hasDetails){
-		    this.details = TestFct.getInfo(newItem.id);
-		}
-	    };
-	    this.getClass = function(anItem){
-                if(anItem === this.currentItem){
+	// current customer
+	this.customer = {
+	    keyword: "",
+	    current: null,
+	    details: null,
+	    getClass: function(aCustomer){
+                if(aCustomer === this.current){
                     return 'list-group-item active';
                 }else{
                     return 'list-group-item';
                 }
-            };
+            },
+	    set: function(newCustomer){
+		this.current = newCustomer;
+		this.details = TestFct.getInfo(newCustomer.id);
+	    },
+	    buy: function(currentDrink){
+		currentDrink.isToConfirm = false;
+		//DIALOG
+		console.log('bought');
+	    }
 	};
-        
-	// current client
-	this.currentClient = new Current(true);
-	this.clientKeyword = "";
+	
 	//current drink
-	this.currentDrink = new Current(false);
-	this.drinkKeyword = "";
+	this.drink = {
+            keyword: "",
+            current: null,
+            getClass: function(aDrink){
+                if(aDrink === this.current){
+                    return 'list-group-item active';
+                }else{
+                    return 'list-group-item';
+                }
+            },
+            set: function(newDrink){
+                this.current = newDrink;
+		this.isToConfirm = true;
+            },
+	    isToConfirm: false,
+	    cancel: function(){
+		this.current = null;
+		this.isToConfirm = false;
+	    }
+        };
 
 
-	//load clients' list
-	this.clients = TestFct.getClients();
+	//load customers' list
+	this.customers = TestFct.getCustomers();
 
 	//load drinks' list
 	this.drinks = TestFct.getDrinks();
 
 	// takes the money value and returns an appropriate color
 	this.getMoneyColor = function(){
-	    if (this.currentClient.details === null){
+	    if (this.customer.details === null){
 		return '#EE999C'; //pink
 	    }
-	    else if(this.currentClient.details.money > 15){
+	    else if(this.customer.details.money > 15){
 		return '#15BF25'; //green
 	    }
-	    else if(this.currentClient.details.money > 10){
+	    else if(this.customer.details.money > 10){
 		return '#FFA005'; //yellow
 	    }
-	    else if(this.currentClient.details.money > 5){
+	    else if(this.customer.details.money > 5){
 		return '#FF5900'; //orange
             }
 	    else {
@@ -84,11 +107,7 @@ angular.module('babar.sell', [
 	    return dateObj.toDateString();
 	};
 
+	
+
 
 	}]);
-
-
-
-
-
-

@@ -1,6 +1,6 @@
 <!--
 This is the homepage where all the sh*t happens.
-Goal is to select a client and file in the drink he had.
+Goal is to select a customer and file in the drink he had.
 -->
 
 <div class="container-fluid" ng-controller="SellCtrl as sell">
@@ -14,40 +14,42 @@ Goal is to select a client and file in the drink he had.
 
   <div class="row" id="main">
     
-    <div class="col-md-4 col-xs-12 sell-client sell">
+    <div class="col-md-4 col-xs-12 sell-customer sell">
       <div class="input-group custom-input">
 	<input
+	   id="customerInput"
 	   type="text"
 	   class="form-control"
-	   placeholder="Rechercher un client"
-	   ng-model="sell.clientKeyword">
+	   placeholder="Search for a customer"
+	   ng-model="sell.customer.keyword">
       </div><!-- /input-group -->
       <div class="list-group custom-list">
 	<a
 	   href="#"
-	   class="{{sell.currentClient.getClass(client)}}"
-	   ng-repeat="client in sell.clients | search: sell.clientKeyword"
-	   ng-click="sell.currentClient.change(client)">
-	  {{client.name}}
+	   class="{{sell.customer.getClass(customer)}}"
+	   ng-repeat="customer in sell.customers | search: sell.customer.keyword"
+	   ng-click="sell.customer.set(customer)">
+	  {{customer.name}}
 	</a>
       </div> <!-- /list -->
-    </div> <!-- /sell-client -->
+    </div> <!-- /sell-customer -->
 
 
     <div class="col-md-4 col-xs-12 sell-drink sell">
       <div class="input-group custom-input">
         <input
+	   id="drinkInput"
            type="text"
            class="form-control"
-           placeholder="Rechercher un article "
-           ng-model="sell.drinkKeyword">
+           placeholder="Search for an item"
+           ng-model="sell.drink.keyword">
       </div><!-- /input-group -->
       <div class="list-group custom-list">
         <a
            href="#"
-           class="{{sell.currentDrink.getClass(drink)}}"
-           ng-repeat="drink in sell.drinks | search: sell.drinkKeyword"
-           ng-click="sell.currentDrink.change(drink)">
+           class="{{sell.drink.getClass(drink)}}"
+           ng-repeat="drink in sell.drinks | search: sell.drink.keyword"
+           ng-click="sell.drink.set(drink)">
           {{drink.name}}
         </a>
       </div> <!-- /list -->
@@ -56,35 +58,54 @@ Goal is to select a client and file in the drink he had.
 
 
     <div class="col-md-4 col-xs-12 sell-details sell">
-      
-      <img class="sell-details-image"
+      <div class="sell-details-info">
+      <img class="sell-details-info-image"
 	   src="../assets/king_babar.jpg"></img>
       
-      <div class="sell-details-text">
-        <ul ng-hide="sell.currentClient.currentItem===null">
-          <li>{{sell.currentClient.details.firstname}}
-            ({{sell.currentClient.details.nickname}})
-            {{sell.currentClient.details.lastname}}</li>
+      <div class="sell-details-info-text">
+        <ul ng-hide="sell.customer.current===null">
+          <li>{{sell.customer.details.firstname}}
+            ({{sell.customer.details.nickname}})
+            {{sell.customer.details.lastname}}</li>
           <br>
-          <li><b>{{sell.currentClient.details.money}}&#8364</b></li>
+          <li><b>{{sell.customer.details.money}}&#8364</b></li>
         </ul>
-        <div ng-show="sell.currentClient.currentItem===null">
-          <b>Cod&eacute avec amour par Dryvenn et Iansus.</b>
+        <div ng-show="false"><!-- sell.customer.current===null"> -->
+          <b>Made with love by Dryvenn and Iansus.</b>
         </div>
       </div> <!-- /text -->
-      
+      </div> <!-- /sell-details-info -->
 
-      <div class="sell-details-history" ng-hide="sell.currentClient.details===null">
-	<h4>Historique :</h4>
+      <div class="sell-details-history" ng-hide="sell.customer.details===null">
+	<h4>History :</h4>
 	<ul class="list-group custom-list">
           <li
 	     class="list-group-item"
-	     ng-repeat="drink in sell.currentClient.details.history | chrono">
+	     ng-repeat="drink in sell.customer.details.history | chrono">
 	    <h5>{{drink.name}}</h5>
 	    <h6>{{sell.toDateString(drink.time)}}</h6>
 	  </li>
 	</ul>
       </div> <!-- /sell-details-history -->
+
+      <div class="sell-waiting-confirm"
+	   ng-show="sell.drink.isToConfirm">
+	<div class="sell-waiting-confirm-text">
+	  <b>{{sell.customer.current.name}}</b><br>
+	  is having a<br>
+	  <b>{{sell.drink.current.name}}</b> ?
+	</div>
+	<div class="sell-waiting-confirm-buttons">
+	  <span
+	     style="background-color:#15BF25"
+	     ng-click="sell.customer.buy(sell.drink)"
+	     class="btn"><b>YES</b></span>
+	  <span
+	     style="background-color:#E5251E"
+	     ng-click="sell.drink.cancel()"
+	     class="btn"><b>NO</b></span>
+	</div>
+      </div> <!-- /sell-waiting-confim -->
       
     </div> <!-- /sell-details -->
     
