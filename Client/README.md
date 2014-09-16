@@ -1,4 +1,4 @@
-# Welcome to the Client side (we too have cookies)
+# Welcome to the Client side (we have cookies)
 
 ## Website colors
 - pink : EE999C
