@@ -70,7 +70,6 @@ module.exports = {
 	    'vendor/angular-hotkeys/build/hotkeys.min.js'
         ],
 	css: [
-	    'vendor/angular-hotkeys/build/hotkeys.css'
 	],
 	assets: [
 	]

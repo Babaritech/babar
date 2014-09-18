@@ -14,7 +14,8 @@ Goal is to select a customer and file in the drink he had.
 
   <div class="row" id="main">
     <div class="col-md-4 col-xs-12 sell-customer sell">
-      <div class="input-group custom-input">
+      <div
+	 class="input-group custom-input">
 	<input
 	   id="customerInput"
 	   type="text"
@@ -38,7 +39,8 @@ Goal is to select a customer and file in the drink he had.
 
 
     <div class="col-md-4 col-xs-12 sell-drink sell">
-      <div class="input-group custom-input">
+      <div
+	 class="input-group custom-input">
         <input
 	   id="drinkInput"
            type="text"
@@ -94,7 +96,7 @@ Goal is to select a customer and file in the drink he had.
       </div> <!-- /sell-details-history -->
 
       <div class="sell-waiting-confirm"
-	   ng-show="sell.drink.details !== null"
+ 	   ng-show="sell.isWaitingForConfirm()"
 	   id="confirmationInput">
 	<div class="sell-waiting-confirm-text">
 	  <b>{{sell.customer.details.nickname}}</b><br>
