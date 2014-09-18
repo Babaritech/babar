@@ -1,6 +1,6 @@
 angular.module('babar.sell', [
     'cfp.hotkeys',
-    'babar.test'
+    'babar.server'
 ])
     .filter('search', function(){
 	return function(input, keyword){
@@ -120,17 +120,26 @@ angular.module('babar.sell', [
 	return new Focus();
     }])
 
-    .controller('SellCtrl', ['$scope', 'TestFct', 'Focus', 'searchFilter', 'selectFilter', 'hotkeys', function($scope, TestFct, Focus, searchFilter, selectFilter, Hotkeys){
+    .controller('SellCtrl', ['$scope', 'Server', 'Focus', 'searchFilter', 'selectFilter', 'hotkeys', function($scope, Server, Focus, searchFilter, selectFilter, Hotkeys){
 
 	this.debug = function(arg){
 	    console.log(arg);
 	};
 	
 	//load customers' list
-	this.customers = TestFct.getCustomers();
+	this.customers = [];
+	Server.getCustomers()
+	    .then(function(customers){
+		$scope.sell.customers = customers;
+	    });
+	
         //load drinks' list
-        this.drinks = TestFct.getDrinks();
- 
+	this.drinks = [];
+        Server.getDrinks()
+            .then(function(drinks){
+                $scope.sell.drinks = drinks;
+            });
+	
 	// current customer
 	this.customer = {
 	    keyword: "",
@@ -138,13 +147,16 @@ angular.module('babar.sell', [
 	    size: 0,
 	    details: null,
 	    refresh: function(){
-		this.details = TestFct.getInfo(
+		Server.getCustomerInfo(
 		    selectFilter(
 			searchFilter(
 			    $scope.sell.customers,
 			    this.keyword),
 			this.index)
-		    [this.index].id);
+		    [this.index].id)
+		    .then(function(details){
+			$scope.sell.customer.details = details;
+		    });
 		this.size = selectFilter(
                     searchFilter(
                         $scope.sell.customers,
@@ -206,6 +218,7 @@ angular.module('babar.sell', [
 		Focus.setLocation('drink');
                 this.index = index;
 		this.refresh();
+		$scope.sell.mouseAttempt();
 	    },
 	    buy: function(customer){
 		//DIALOG
@@ -216,11 +229,16 @@ angular.module('babar.sell', [
 	    }
         };
 
-	//This aim to tell if the confirmation windoww is to be displayed
+	//One must be able to enter confirmation mode even without keyboard
+	this.mouseAttempt = function(){
+	    if(this.customer.details !== null && this.drink.details !== null){
+		Focus.setLocation('confirmation');
+	    }
+	};
+
+	//This aim to tell if the confirmation window is to be displayed
 	this.isWaitingForConfirm = function(){
-	    var bool = Focus.getLocation() === 'confirmation';
-	    console.log(bool);
-	    return bool;
+	    return Focus.getLocation() === 'confirmation';
 	};
         
         // takes the money value and returns an appropriate color
@@ -255,7 +273,6 @@ angular.module('babar.sell', [
 
         //This sets up some hotkeys
 	var hotkConfirm = function(){
-	    console.log(Focus.getLocation());
             if(this.isWaitingForConfirm){
                 //BUY
             }
