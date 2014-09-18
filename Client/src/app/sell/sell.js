@@ -1,6 +1,8 @@
 angular.module('babar.sell', [
-    'cfp.hotkeys',
-    'babar.server'
+    'babar.server',
+    'babar.confirm',
+    'ngDialog',
+    'cfp.hotkeys'
 ])
     .filter('search', function(){
 	return function(input, keyword){
@@ -120,7 +122,7 @@ angular.module('babar.sell', [
 	return new Focus();
     }])
 
-    .controller('SellCtrl', ['$scope', 'Server', 'Focus', 'searchFilter', 'selectFilter', 'hotkeys', function($scope, Server, Focus, searchFilter, selectFilter, Hotkeys){
+    .controller('SellCtrl', ['$scope', 'Server', 'Focus', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($scope, Server, Focus, searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
 	    console.log(arg);
@@ -236,7 +238,22 @@ angular.module('babar.sell', [
 	    }
 	};
 
-	//This aim to tell if the confirmation window is to be displayed
+	this.confirm = function(){
+            var dialog = ngDialog.open({
+                template: 'confirm/confirm.tpl.html',
+                controller: 'ConfirmCtrl as confirm',
+                data: [$scope.sell.customer.details, $scope.sell.drink.details],
+                className: 'ngdialog-theme-plain',
+                showClose: false,
+                closeByEscape: true,
+                closeByDocument: false
+            });
+            dialog.closePromise.then(function(value){
+                Focus.setLocation('drink');
+            });
+        };
+        
+        //This aim to tell if the confirmation window is to be displayed
 	this.isWaitingForConfirm = function(){
 	    return Focus.getLocation() === 'confirmation';
 	};

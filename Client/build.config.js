@@ -67,10 +67,15 @@ module.exports = {
 	    'vendor/placeholders/angular-placeholders-0.0.1-SNAPSHOT.min.js',
 	    'vendor/angular-ui-router/release/angular-ui-router.js',
 	    'vendor/angular-ui-utils/modules/route/route.js',
-	    'vendor/angular-hotkeys/build/hotkeys.min.js'
+	    'vendor/angular-hotkeys/build/hotkeys.min.js',
+	    'vendor/ngDialog/js/ngDialog.min.js'
         ],
 	css: [
-	],
+	    'vendor/angular-hotkeys/hotkeys.css',
+	    'vendor/ngDialog/css/ngDialog.css',
+            'vendor/ngDialog/css/ngDialog-theme-default.css',
+	    'vendor/ngDialog/css/ngDialog-theme-plain.css'
+        ],
 	assets: [
 	]
     },
