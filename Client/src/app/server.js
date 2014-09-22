@@ -48,7 +48,7 @@ angular.module('babar.server', [])
 	    this.getDrinkInfo = function(id){
             };
 
-	    this.buy = function(clientId, drinkId, date){
+	    this.buy = function(customer, drink, date){
             };
 
 	    this.addMoney = function(amount){

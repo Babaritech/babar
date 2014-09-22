@@ -26,7 +26,7 @@ angular.module('babar.sell', [
 	};
     })
 
-    .filter('chrono', function(){
+    .filter('chronological', function(){
 	return function(input){
 	    //sort items chronogically
 	    if(input){
@@ -69,13 +69,19 @@ angular.module('babar.sell', [
 
 	    this.setLocation = function(newLocation){
 		location.current = location[newLocation];
+		if(newLocation === 'customer'){
+                    document.getElementById('customerInput').focus();
+                }else if(newLocation === 'drink'){
+		    document.getElementById('drinkInput').focus();
+		} 
+                return newLocation === 'confirmation'; //isWaitingForConfirm
 	    };
 	    
 	    this.forward = function(){
 		var isWaitingForConfirm;
 		switch(location.current){
 		case 1:
-                    document.getElementById('drinkInput').focus();
+		    document.getElementById('drinkInput').focus();
                     location.current = location.drink;
 		    isWaitingForConfirm = false;
 		    break;
@@ -90,7 +96,7 @@ angular.module('babar.sell', [
                     isWaitingForConfirm = false;
                     break;
 	        default :
-                    document.getElementById('customerInput').focus();
+		    document.getElementById('customerInput').focus();
                     location.current = location.customer;
                     isWaitingForConfirm = false;
                     break;
@@ -122,10 +128,11 @@ angular.module('babar.sell', [
 	return new Focus();
     }])
 
-    .controller('SellCtrl', ['$scope', 'Server', 'Focus', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($scope, Server, Focus, searchFilter, selectFilter, Hotkeys, ngDialog){
+    .controller('SellCtrl', ['$scope', 'Server', 'Focus', 'chronologicalFilter', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($scope, Server, Focus, chronologicalFilter, searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
-	    console.log(arg);
+	    console.log(Hotkeys.get('enter'));
+	    // this.loadHotkeys();
 	};
 	
 	//load customers' list
@@ -148,6 +155,38 @@ angular.module('babar.sell', [
 	    index: 0,
 	    size: 0,
 	    details: null,
+	    totalSpent: function(){
+		//TODO : put total money spent in details
+		return '42';
+	    },
+	    favDrink: function(){
+		//TODO : check if ain't faster to handle this server-side
+		if(this.details !== null){
+                    var favourite;
+		    var times = {};
+                    chronologicalFilter(this.details.history).forEach(function(val, ind, arr){
+			if(!times[val.name]){
+			    times[val.name] = 1;
+			}else{
+			    times[val.name] += 1;
+			}
+		    });
+		    var howMany = 0;
+		    for(var drink in times){
+			if(times[drink] > howMany){
+			    favourite = drink;
+			    howMany = times[drink];
+			}
+		    }
+		    if(howMany !== 0){
+			return favourite;
+		    }else{
+			return 'none';
+		    }
+		}else{
+		    return null;
+		}
+	    },
 	    refresh: function(){
 		Server.getCustomerInfo(
 		    selectFilter(
@@ -177,11 +216,16 @@ angular.module('babar.sell', [
 		    this.refresh();
 		}
 	    },
-	    setIndex: function(index){
-		Focus.setLocation('customer');
+	    setIndex: function(index, isAMouseAttempt){
 		this.index = index;
-		this.refresh();
-            }	
+		if(isAMouseAttempt){
+		    Focus.setLocation('customer');
+		    this.refresh();
+		}
+            },
+	    blockIndex: function(){
+		$scope.sell.customer.setIndex(0, false);
+	    }
 	};
 
 	//current drink
@@ -216,12 +260,17 @@ angular.module('babar.sell', [
 		    this.refresh();
 		}
             },
-            setIndex: function(index){
-		Focus.setLocation('drink');
+            setIndex: function(index, isAMouseAttempt){
                 this.index = index;
-		this.refresh();
-		$scope.sell.mouseAttempt();
+		if(isAMouseAttempt){
+		    Focus.setLocation('drink');
+		    $scope.sell.mouseAttempt();
+		    this.refresh();
+		}
 	    },
+            blockIndex: function(){
+                $scope.sell.drink.setIndex(0, false);
+            },
 	    buy: function(customer){
 		//DIALOG
 		this.details = null;
@@ -231,12 +280,9 @@ angular.module('babar.sell', [
 	    }
         };
 
-	//One must be able to enter confirmation mode even without keyboard
-	this.mouseAttempt = function(){
-	    if(this.customer.details !== null && this.drink.details !== null){
-		Focus.setLocation('confirmation');
-	    }
-	};
+        //setting up watches so the highlighted item will always be zero during a search
+        $scope.$watch(this.customer.keyword, this.customer.blockIndex);
+        $scope.$watch(this.drink.keyword, this.drink.blockIndex);
 
 	this.confirm = function(){
             var dialog = ngDialog.open({
@@ -245,19 +291,18 @@ angular.module('babar.sell', [
                 data: [$scope.sell.customer.details, $scope.sell.drink.details],
                 className: 'ngdialog-theme-plain',
                 showClose: false,
-                closeByEscape: true,
+                closeByEscape: false,
                 closeByDocument: false
             });
             dialog.closePromise.then(function(value){
-                Focus.setLocation('drink');
+		$scope.sell.customer.refresh();
+		$scope.sell.drink.refresh();
+		//Gotta reload Hotkeys' binding
+		$scope.sell.loadHotkeys();
+		Focus.setLocation('drink');
             });
         };
-        
-        //This aim to tell if the confirmation window is to be displayed
-	this.isWaitingForConfirm = function(){
-	    return Focus.getLocation() === 'confirmation';
-	};
-        
+	
         // takes the money value and returns an appropriate color
 	this.getMoneyColor = function(){
 	    if (this.customer.details === null){
@@ -288,19 +333,23 @@ angular.module('babar.sell', [
 	    Focus.setLocation(whichInput);
 	};
 
+        //For we must be able to enter confirmation mode when using the mouse
+        this.mouseAttempt = function(){
+            if(this.customer.details !== null && this.drink.details !== null){
+                this.confirm();
+            }
+        };
+	
         //This sets up some hotkeys
 	var hotkConfirm = function(){
-            if(this.isWaitingForConfirm){
-                //BUY
-            }
-            Focus.forward();
-            $scope.sell.customer.refresh();
-            $scope.sell.drink.refresh();
+            if(Focus.forward()){ //isWaitingForConfirm
+                $scope.sell.confirm();
+	    }else{
+		$scope.sell.customer.refresh();
+		$scope.sell.drink.refresh();
+	    }
         };
         var hotkCancel= function(){
-            if($scope.sell.isWaitingForConfirm){
-                //CANCEL
-            }
 	    Focus.backward();
             $scope.sell.customer.refresh();
             $scope.sell.drink.refresh();
@@ -320,30 +369,33 @@ angular.module('babar.sell', [
                 $scope.sell.drink.down();
             }  
 	};
-        Hotkeys.bindTo($scope)
-            .add({
+
+	this.loadHotkeys = function(){
+            Hotkeys.add({
                 combo: 'enter',
-                description: 'Confirm, or move to the next field',
+                description: 'Move to the next field',
                 callback: hotkConfirm,
-                allowIn: ['INPUT', 'SELECT', 'TEXTAREA']
-            })
-            .add({
+                allowIn: ['INPUT']
+	    });
+	    Hotkeys.add({
                 combo: 'escape',
-                description: 'Cancel, or move to the previous field',
+                description: 'Move to the previous field',
                 callback: hotkCancel,
-                allowIn: ['INPUT', 'SELECT', 'TEXTAREA']
-            })
-	    .add({
+                allowIn: ['INPUT']
+	    });
+	    Hotkeys.add({
                 combo: 'up',
                 description: 'Move upward the selected field',
                 callback: hotkUp,
-                allowIn: ['INPUT', 'SELECT', 'TEXTAREA']
-            })
-            .add({
+                allowIn: ['INPUT']
+	    });
+	    Hotkeys.add({
                 combo: 'down',
                 description: 'Move downward the selected field',
                 callback: hotkDown,
-                allowIn: ['INPUT', 'SELECT', 'TEXTAREA']
-            });
+                allowIn: ['INPUT']
+	    });
+	};
+	this.loadHotkeys();
 	
     }]);

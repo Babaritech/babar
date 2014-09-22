@@ -56,7 +56,7 @@ Goal is to select a customer and file in the drink he had.
                       sell.drinks
                       | search: sell.drink.keyword
                       | select : sell.drink.index"
-           ng-click="sell.drink.setIndex($index)">
+           ng-click="sell.drink.setIndex($index, true)">
           {{drink.name}}
         </a>
       </div> <!-- /list -->
@@ -68,7 +68,7 @@ Goal is to select a customer and file in the drink he had.
       <div class="sell-details-info">
       <img class="sell-details-info-image"
 	   src="../assets/king_babar.jpg"
-	   ng-click="sell.confirm()"></img>
+	   ng-click="sell.debug()"></img>
       
       <div class="sell-details-info-text">
         <ul ng-hide="sell.customer.details===null">
@@ -89,12 +89,19 @@ Goal is to select a customer and file in the drink he had.
 	<ul class="list-group custom-list">
           <li
 	     class="list-group-item"
-	     ng-repeat="drink in sell.customer.details.history | chrono">
+	     ng-repeat="drink in sell.customer.details.history | chronological">
 	    <h5>{{drink.name}}</h5>
 	    <h6>{{sell.toDateString(drink.time)}}</h6>
 	  </li>
 	</ul>
       </div> <!-- /sell-details-history -->
+
+      <div
+	 class="sell-details-stats"
+	 ng-hide="sell.customer.details === null">
+	<b>Favourite drink : </b> {{sell.customer.favDrink()}}<br>
+	<b>Total spent : </b>{{sell.customer.totalSpent()}}€<br>
+      </div>
 
   
       

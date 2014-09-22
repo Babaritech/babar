@@ -1,16 +1,18 @@
 <div class="waiting-confirm">
+  <div class="waiting-confirm-title">
+    <h2>Confirmation</h2>
+  </div>
   <div class="waiting-confirm-text">
-    <h3>Confirmation</h3>
-    <b>{{confirm.customer.nickname}}</b> wants a <b>{{confirm.drink.name}}</b> ?
+    <b>{{confirm.customer.nickname}}</b> is taking a <b>{{confirm.drink.name}}</b> ?
   </div>
   <div class="waiting-confirm-buttons">
     <span
        style="background-color:#15BF25"
-       ng-click="confirm.buy()"
+       ng-click="buy()"
        class="btn btn-default"><b>YES</b></span>
     <span
        style="background-color:#E5251E"
-       ng-click="confirm.cancel()"
+       ng-click="cancel()"
        class="btn btn-default"><b>NO</b></span>
   </div>
 </div> <!-- /waiting-confim -->
