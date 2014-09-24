@@ -4,6 +4,32 @@ angular.module('babar.server', [])
 	//TODO: implement real server communication
 	
 	Server = function(){
+
+	    var time = function(){
+		var date = new Date();
+		return date.getTime();
+	    };
+
+	    var resolveStatus = function(code){
+                switch(code){
+                case 200:
+                    return "ok";
+                case 403 :
+                    return "You're not allowed to do this (wrong login ?).";
+                case 401 :
+                    return "This is not the correct password.";
+                case 404 :
+                    return "This content couldn't be found on server.";
+		case 400 :
+		    return "This is a bad request rejected by the client.";
+                case 418 :
+                    return "The server's saying she's a teapot.";
+                default:
+                    return "Ouch! The server encountered an unexpected error.";
+                }
+            
+	    };
+	    
 	    this.getCustomers = function(){
 		var deferred = $q.defer();
 		window.setTimeout(
@@ -45,21 +71,35 @@ angular.module('babar.server', [])
 		return deferred.promise;
             };
 
+	    
+
 	    this.getDrinkInfo = function(id){
             };
 
-	    this.buy = function(customer, drink, date){
-            };
-
-	    this.addMoney = function(amount){
-            };
-
-	    this.subMoney = function(amount){
-            };
-
-	    this.getUsers = function(){
-            };
+	    this.perform = function(action, data){
+		var status;
+		switch(action){
+		case 'buy':
+		    //data[0] bought a data[1] at time()
+		    status = 200;
+		    break;
+		case 'deposit':
+		    //data[0] addded data[1]€ at time()
+		    status = 200;
+		    break;
+		default:
+		    //nothing happens
+		    status = 400;
+		    break;
+		}
+		return resolveStatus(status);
+	    };
 	    
+	    this.authenticate = function(level, login, password, duration){
+		//authenticate the user here
+		return resolveStatus(200);
+	    };
+		
 	};
 
 	return new Server();

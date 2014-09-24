@@ -118,16 +118,23 @@ angular.module('babar.sell', [
                     location.current = location.drink;
                     break;
                 default :
-                    document.getElementById('customerInput').focus();
+		    document.getElementById('customerInput').focus();
                     location.current = location.customer;
                     break;
                 }
                 return isWaitingForConfirm;
             };
-	    
-	};
 
-	return new Focus();
+	    this.lose = function(){
+		var location = this.getLocation();
+		if(location === 'customer' || location === 'drink'){
+		    document.getElementById(location+'Input').blur();
+		}
+	    };
+            
+        };
+
+        return new Focus();
     }])
 
     .controller('SellCtrl', ['$scope', 'Server', 'Focus', 'chronologicalFilter', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($scope, Server, Focus, chronologicalFilter, searchFilter, selectFilter, Hotkeys, ngDialog){
@@ -135,6 +142,13 @@ angular.module('babar.sell', [
 	this.debug = function(arg){
 	    console.log(Hotkeys.get('enter'));
 	    // this.loadHotkeys();
+	};
+
+	//disable tab key 'cause it triggers sh*t
+	document.onkeydown = function (e) {
+            if(e.which == 9){
+                return false;
+            }
 	};
 	
 	//load customers' list
@@ -296,7 +310,7 @@ angular.module('babar.sell', [
                 closeByEscape: false,
                 closeByDocument: false
             });
-            dialog.closePromise.then(function(value){
+            dialog.closePromise.then(function(promised){
 		$scope.sell.customer.refresh();
 		$scope.sell.drink.refresh();
 		//Gotta reload Hotkeys' binding
@@ -345,6 +359,7 @@ angular.module('babar.sell', [
 
 	//When one needs to add some money
 	this.makeDeposit = function(){
+	    Focus.lose();
             var dialog = ngDialog.open({
                 template: 'deposit/deposit.tpl.html',
                 controller: 'DepositCtrl as deposit',
@@ -354,9 +369,9 @@ angular.module('babar.sell', [
                 closeByEscape: false,
                 closeByDocument: false
             });
-            dialog.closePromise.then(function(value){
-		if(value !== 0){
-		    $scope.sell.authenticate('deposit', {amount: value});
+            dialog.closePromise.then(function(promised){
+		if(promised.value !== 0){
+		    $scope.sell.authenticate('deposit', {amount: promised.value});
 		}else{
                     $scope.sell.customer.refresh();
                     //Gotta reload Hotkeys' binding
@@ -368,17 +383,21 @@ angular.module('babar.sell', [
 
 	//When one needs to authenticate himself
 	this.authenticate = function(action, data){
+	    Focus.lose();
 	    var dialog = ngDialog.open({
                 template: 'authenticate/authenticate.tpl.html',
-                controller: 'AuthenticateCtrl as authenticate',
+                controller: 'AuthenticateCtrl as auth',
                 data: [$scope.sell.customer.details, action, data],
                 className: 'ngdialog-theme-plain',
                 showClose: false,
                 closeByEscape: false,
                 closeByDocument: false
             });
-            dialog.closePromise.then(function(value){
-		
+            dialog.closePromise.then(function(promised){
+                $scope.sell.customer.refresh();
+                //Gotta reload Hotkeys' binding
+                $scope.sell.loadHotkeys();
+                Focus.setLocation('drink');
             });
 	};
 	

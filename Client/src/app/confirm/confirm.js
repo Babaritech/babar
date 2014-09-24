@@ -8,8 +8,7 @@ angular.module('babar.confirm', [
 	
 	
 	$scope.buy = function(){
-	    var date = new Date();
-	    Server.buy(this.customer, this.drink, date.getTime());
+	    Server.perform('buy', {customer: this.customer, drink: this.drink});
             $scope.closeThisDialog('bought');
         };
 	$scope.cancel = function(){

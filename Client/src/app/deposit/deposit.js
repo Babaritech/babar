@@ -12,7 +12,6 @@ angular.module('babar.deposit', [
 	this.error = "";
 	
 	$scope.make = function(){
-	    console.log($scope.deposit.money);
 	    if($scope.deposit.money === 0){
 		$scope.deposit.error = "Can't deposit no money.";
 	    }else if($scope.deposit.money > 100){
@@ -23,6 +22,10 @@ angular.module('babar.deposit', [
         };
 	$scope.cancel = function(){
             $scope.closeThisDialog(0); //cancelled
+        };
+
+	$scope.selectField = function(){
+	    document.getElementById('depositInput').focus();
         };
 
         //Let's set up some hotkeys !
@@ -38,5 +41,10 @@ angular.module('babar.deposit', [
             callback: $scope.cancel,
 	    allowIn: ['INPUT']
         });
-        
+        Hotkeys.add({
+	    combo: 'tab',
+	    description: 'Select the right field',
+	    callback: $scope.selectField,
+	    allowIn: ['INPUT']
+	});
     }]);

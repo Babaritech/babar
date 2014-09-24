@@ -1,0 +1,54 @@
+<div class="auth">
+  <div class="auth-title">
+    <h2>Authentication</h2>
+  </div>
+  
+  <div class="auth-text">
+    <span
+       ng-show="auth.hasRights"
+       style="color:green">
+      You can perform this operation.<br>
+      Please confirm.
+    </span>
+    <span
+       ng-hide="auth.hasRights"
+       style="color:red">
+      You can't perform this operation.<br>
+      Please log in.
+    </span>
+  </div>
+  
+  <div
+     class="input-group auth-form"
+     ng-hide="auth.hasRights">
+    
+    <input
+       id="loginInput"
+       type="text"
+       class="form-control"
+       placeholder="login"
+       ng-model="auth.login">
+    <input
+       id="passwordInput"
+       type="password"
+       class="form-control"
+       placeholder="password"
+       ng-model="auth.password">
+  </div>
+  <span
+     style="color:red; font-size:75%">
+    {{auth.error}}
+  </span>
+  
+  <div class="auth-buttons">
+    <span
+       style="background-color:#428bca"
+       ng-click="confirm()"
+       class="btn btn-default auth-confirm"><b>Confirm</b></span>
+    <span
+       ng-click="cancel()"
+       class="btn btn-default auth-cancel"><b>Cancel</b></span>
+  </div>
+
+</div> <!-- /auth -->
+
