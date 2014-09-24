@@ -1,0 +1,37 @@
+<div class="deposit">
+  <div class="deposit-title">
+    <h2>Confirmation</h2>
+  </div>
+  
+  <div class="deposit-text">
+    <b>{{deposit.money}}€</b> to <b>{{deposit.customer.nickname}}</b> ?
+  </div>
+  
+  <div class="input-group deposit-form">
+    
+    <input
+       id="depositInput"
+       type="number"
+       class="form-control"
+       placeholder="0.00"
+       ng-model="deposit.money">
+    <span class="input-group-addon">€</span>
+  </div>
+  <span
+     style="color:red; font-size:75%">
+    {{deposit.error}}
+  </span>
+  
+  <div class="deposit-buttons">
+    <span
+       style="background-color:#428bca"
+       ng-click="make()"
+       class="btn btn-default deposit-confirm"><b>Confirm</b></span>
+    <span
+       ng-click="cancel()"
+       class="btn btn-default deposit-cancel"><b>Cancel</b></span>
+  </div>
+  
+  
+</div> <!-- /deposit -->
+

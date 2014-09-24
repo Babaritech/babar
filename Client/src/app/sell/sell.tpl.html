@@ -103,9 +103,17 @@ Goal is to select a customer and file in the drink he had.
 	<b>Total spent : </b>{{sell.customer.totalSpent()}}€<br>
       </div>
 
-  
-      
-    </div> <!-- /sell-details -->
+      <div
+	 class="sell-details-makeDeposit"
+	 ng-hide="sell.customer.details === null">
+	<button
+	   class="btn btn-default"
+	   ng-click="sell.makeDeposit()">
+	  Make a deposit
+	</button>
+      </div>
+
+   </div> <!-- /sell-details -->
     
   </div> <!-- row -->
 </div> <!--container -->

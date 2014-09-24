@@ -3,16 +3,16 @@
     <h2>Confirmation</h2>
   </div>
   <div class="waiting-confirm-text">
-    <b>{{confirm.customer.nickname}}</b> is taking a <b>{{confirm.drink.name}}</b> ?
+    <b>{{confirm.drink.name}}</b>
+    for <b>{{confirm.customer.nickname}}</b> ?
   </div>
   <div class="waiting-confirm-buttons">
     <span
-       style="background-color:#15BF25"
+       style="background-color:#428bca"
        ng-click="buy()"
-       class="btn btn-default"><b>YES</b></span>
+       class="btn btn-default"><b>Confirm</b></span>
     <span
-       style="background-color:#E5251E"
        ng-click="cancel()"
-       class="btn btn-default"><b>NO</b></span>
+       class="btn btn-default"><b>Cancel</b></span>
   </div>
 </div> <!-- /waiting-confim -->

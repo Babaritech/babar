@@ -1,6 +1,8 @@
 angular.module('babar.sell', [
     'babar.server',
     'babar.confirm',
+    'babar.deposit',
+    'babar.authenticate',
     'ngDialog',
     'cfp.hotkeys'
 ])
@@ -73,7 +75,7 @@ angular.module('babar.sell', [
                     document.getElementById('customerInput').focus();
                 }else if(newLocation === 'drink'){
 		    document.getElementById('drinkInput').focus();
-		} 
+                } 
                 return newLocation === 'confirmation'; //isWaitingForConfirm
 	    };
 	    
@@ -339,6 +341,46 @@ angular.module('babar.sell', [
                 this.confirm();
             }
         };
+
+
+	//When one needs to add some money
+	this.makeDeposit = function(){
+            var dialog = ngDialog.open({
+                template: 'deposit/deposit.tpl.html',
+                controller: 'DepositCtrl as deposit',
+                data: [$scope.sell.customer.details],
+                className: 'ngdialog-theme-plain',
+                showClose: false,
+                closeByEscape: false,
+                closeByDocument: false
+            });
+            dialog.closePromise.then(function(value){
+		if(value !== 0){
+		    $scope.sell.authenticate('deposit', {amount: value});
+		}else{
+                    $scope.sell.customer.refresh();
+                    //Gotta reload Hotkeys' binding
+                    $scope.sell.loadHotkeys();
+                    Focus.setLocation('drink');
+		}  
+            });
+	};
+
+	//When one needs to authenticate himself
+	this.authenticate = function(action, data){
+	    var dialog = ngDialog.open({
+                template: 'authenticate/authenticate.tpl.html',
+                controller: 'AuthenticateCtrl as authenticate',
+                data: [$scope.sell.customer.details, action, data],
+                className: 'ngdialog-theme-plain',
+                showClose: false,
+                closeByEscape: false,
+                closeByDocument: false
+            });
+            dialog.closePromise.then(function(value){
+		
+            });
+	};
 	
         //This sets up some hotkeys
 	var hotkConfirm = function(){
@@ -375,9 +417,9 @@ angular.module('babar.sell', [
                 combo: 'enter',
                 description: 'Move to the next field',
                 callback: hotkConfirm,
-                allowIn: ['INPUT']
-	    });
-	    Hotkeys.add({
+		allowIn: ['INPUT']
+            });
+            Hotkeys.add({
                 combo: 'escape',
                 description: 'Move to the previous field',
                 callback: hotkCancel,

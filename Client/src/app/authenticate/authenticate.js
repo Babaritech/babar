@@ -1,10 +1,12 @@
-angular.module('babar.confirm', [
+angular.module('babar.authenticate', [
     'babar.server',
     'cfp.hotkeys'
 ])
-    .controller('ConfirmCtrl', ['$scope', 'Server', 'hotkeys', function($scope, Server, Hotkeys){
+    .controller('AuthenticateCtrl', ['$scope', 'Server', 'hotkeys', function($scope, Server, Hotkeys){
+	
 	this.customer = $scope.ngDialogData[0];
-	this.drink = $scope.ngDialogData[1];
+	this.action = $scope.ngDialogData[1];
+	this.data = $scope.ngDialogData[2];
 	
 	
 	$scope.buy = function(){
@@ -19,14 +21,14 @@ angular.module('babar.confirm', [
 
 	//Let's set up some hotkeys !
         Hotkeys.add({
-                combo: 'enter',
-                description: 'Confirm the sale',
-                callback: $scope.buy
+            combo: 'enter',
+            description: 'Authenticate the sale',
+            callback: $scope.buy
         });
 	Hotkeys.add({
-                combo: 'escape',
-                description: 'Cancel the sale',
-                callback: $scope.cancel
+            combo: 'escape',
+            description: 'Cancel the sale',
+            callback: $scope.cancel
 	});
         
     }]);
