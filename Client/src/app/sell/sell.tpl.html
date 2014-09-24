@@ -31,7 +31,7 @@ Goal is to select a customer and file in the drink he had.
 		      sell.customers
 		      | search: sell.customer.keyword
 		      | select : sell.customer.index"
- 	   ng-click="sell.customer.setIndex($index)">
+ 	   ng-click="sell.customer.setIndex($index, true)">
 	  {{customer.name}}
 	</a>
       </div> <!-- /list -->

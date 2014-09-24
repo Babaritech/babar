@@ -264,8 +264,8 @@ angular.module('babar.sell', [
                 this.index = index;
 		if(isAMouseAttempt){
 		    Focus.setLocation('drink');
+                    this.refresh();
 		    $scope.sell.mouseAttempt();
-		    this.refresh();
 		}
 	    },
             blockIndex: function(){
