@@ -17,3 +17,13 @@
 - **/Clients/new** : body is a new client, returns the client with his id
 - **/Clients/update** : body is an already-existent client (has an id)
 - **/Clients/delete** : body is an already-existent client (has an id)
+
+### HTTP status codes handled client-side
+- 200 (ok)
+- 403 (invalid login or operation)
+- 401 (wrong password)
+- 404 (wtf is that)
+- 418 (to send from time to time)
+
+### Random facts
+- Server's female
