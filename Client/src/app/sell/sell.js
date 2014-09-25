@@ -404,23 +404,22 @@ angular.module('babar.sell', [
 	//When an user is authenticated through time, we gotta diplay it
 	this.authenticatedUser = null;
 	this.remainingTime = 0;
-	$rootScope.$on('authenticatedEvent', function(event, args){
+	$rootScope.$on('authenticatedEvent', function(event, args){ 
 	    $scope.sell.authenticatedUser = args.login;
-	    var updateTime = function(){
-		console.log(Math.floor(((args.endTime - (new Date()).getTime())/(1000*60))));
-		    $scope.sell.remainingTime = Math.floor(((args.endTime - (new Date()).getTime())/(1000*60)));
+	    $scope.sell.remainingTime = Math.floor(((args.endTime - (new Date()).getTime())/(1000*60)));
+	    var updateCountdown = function(){
+		window.setTimeout(function(){
+		    $scope.sell.remainingTime--;
+		    if($scope.sell.remainingTime<0){
+			$scope.sell.authenticatedUser = null;
+			$scope.sell.remainingTime = 0;
+		    }else{
+			updateCountdown();
+		    }
+		    $scope.$apply();
+                }, 60000);
 	    };
-	    updateTime();
-	    //update every minute the time display
-	    var id = window.setInterval(updateTime, 60*1000);
-	    //stop condition
-	    $scope.$watch($scope.sell.remainingTime, function(){
-		if($scope.sell.remainingTime<=0){
-		    window.clearInterval(id);
-		    $scope.sell.authenticatedUser = null;
-		    $scope.sell.remainingTime = 0;
-		}
-	    });
+	    updateCountdown();
 	});
 	
         //This sets up some hotkeys

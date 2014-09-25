@@ -15,7 +15,7 @@ angular.module('babar.authenticate', [
 
 	this.error = "";
 
-	this.availableDurations = [0, 5, 15, 30, 60, 120, 240];
+	this.availableDurations = [0, 1, 2, 5, 15, 30, 60, 120, 240];
 	this.chosenDuration = 0;
 	this.durationToDisplay = "Just this time";
 	this.chooseDuration = function(duration){
