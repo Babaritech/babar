@@ -9,6 +9,14 @@ Goal is to select a customer and file in the drink he had.
     <div class="col-xs-12"
 	 style="background-color:{{sell.getMoneyColor()}}">
       <h2><b>BABAR-EXPRESS</b></h2>
+      <div
+	 class="sell-header-duration"
+	 ng-show="sell.authenticatedUser !== null">
+        <span>
+	  <b>{{sell.authenticatedUser}}</b> is still logged for<br>
+	  <b style="font-size:175%">{{sell.remainingTime}} min</b>
+	</span>
+      </div>
     </div>
   </div> <!-- /header row-->
 

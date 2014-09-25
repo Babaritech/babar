@@ -2,7 +2,7 @@ angular.module('babar.rights', [
 'babar.server'
 ])
 
-    .factory('Rights', ['Server', function(Server){
+    .factory('Rights', ['$rootScope', 'Server', function($rootScope, Server){
 
 	/*
 	  This factory aims to keep tabs on the currently logged user,
@@ -47,6 +47,8 @@ angular.module('babar.rights', [
 		if(response==='ok' && endTime){
                     current.user = login;
                     current.endTime = endTime;
+		    //tell main page to display that
+		    $rootScope.$emit('authenticatedEvent', {login: login, endTime: endTime});
                 }
 		return response;
 	    };

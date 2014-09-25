@@ -137,7 +137,7 @@ angular.module('babar.sell', [
         return new Focus();
     }])
 
-    .controller('SellCtrl', ['$scope', 'Server', 'Focus', 'chronologicalFilter', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($scope, Server, Focus, chronologicalFilter, searchFilter, selectFilter, Hotkeys, ngDialog){
+    .controller('SellCtrl', ['$rootScope', '$scope', 'Server', 'Focus', 'chronologicalFilter', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, Server, Focus, chronologicalFilter, searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
 	    console.log(Hotkeys.get('enter'));
@@ -400,6 +400,28 @@ angular.module('babar.sell', [
                 Focus.setLocation('drink');
             });
 	};
+
+	//When an user is authenticated through time, we gotta diplay it
+	this.authenticatedUser = null;
+	this.remainingTime = 0;
+	$rootScope.$on('authenticatedEvent', function(event, args){
+	    $scope.sell.authenticatedUser = args.login;
+	    var updateTime = function(){
+		console.log(Math.floor(((args.endTime - (new Date()).getTime())/(1000*60))));
+		    $scope.sell.remainingTime = Math.floor(((args.endTime - (new Date()).getTime())/(1000*60)));
+	    };
+	    updateTime();
+	    //update every minute the time display
+	    var id = window.setInterval(updateTime, 60*1000);
+	    //stop condition
+	    $scope.$watch($scope.sell.remainingTime, function(){
+		if($scope.sell.remainingTime<=0){
+		    window.clearInterval(id);
+		    $scope.sell.authenticatedUser = null;
+		    $scope.sell.remainingTime = 0;
+		}
+	    });
+	});
 	
         //This sets up some hotkeys
 	var hotkConfirm = function(){

@@ -15,12 +15,19 @@ angular.module('babar.authenticate', [
 
 	this.error = "";
 
+	this.availableDurations = [0, 5, 15, 30, 60, 120, 240];
+	this.chosenDuration = 0;
+	this.durationToDisplay = "Just this time";
+	this.chooseDuration = function(duration){
+	    this.chosenDuration = duration;
+	    this.durationToDisplay = duration.toString() + ' min';
+	};
 	
 	$scope.confirm = function(){
 	    if(!$scope.auth.hasAccess){ //not authorized, gotta authenticate or cancel
 		if($scope.auth.login === "" && $scope.auth.password === ""){
 		    $scope.auth.error = "You must provide a valid login/password combination or cancel.";		}else{
-			var response = Rights.ask($scope.auth.login, $scope.auth.password, 0);
+			var response = Rights.ask($scope.auth.login, $scope.auth.password, $scope.auth.chosenDuration);
                         if(response !== 'ok'){
                             $scope.auth.error = response;
                         }else{

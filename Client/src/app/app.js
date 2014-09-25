@@ -2,6 +2,7 @@ angular.module( 'babar', [
     'templates-app',
     'templates-common',
     'ui.router',
+    'ui.bootstrap',
     'babar.sell',
     'babar.admin'
 ])

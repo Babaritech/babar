@@ -5,13 +5,13 @@
   
   <div class="auth-text">
     <span
-       ng-show="auth.hasRights"
+       ng-show="auth.hasAccess"
        style="color:green">
       You can perform this operation.<br>
       Please confirm.
     </span>
     <span
-       ng-hide="auth.hasRights"
+       ng-hide="auth.hasAccess"
        style="color:red">
       You can't perform this operation.<br>
       Please log in.
@@ -20,7 +20,7 @@
   
   <div
      class="input-group auth-form"
-     ng-hide="auth.hasRights">
+     ng-hide="auth.hasAccess">
     
     <input
        id="loginInput"
@@ -39,16 +39,46 @@
      style="color:red; font-size:75%">
     {{auth.error}}
   </span>
-  
-  <div class="auth-buttons">
-    <span
-       style="background-color:#428bca"
-       ng-click="confirm()"
-       class="btn btn-default auth-confirm"><b>Confirm</b></span>
-    <span
-       ng-click="cancel()"
-       class="btn btn-default auth-cancel"><b>Cancel</b></span>
+
+  <div
+     class="auth-dropdown"
+     ng-hide="auth.hasAccess">
+       <span>
+	 For how long do you wanna stay authentified ?
+       </span>
+
+       <div class="dropdown">
+	 <button
+	    class="btn btn-default dropdown-toggle auth-dropdown-item"
+	    type="button"
+	    id="dropdownMenu1"
+	    data-toggle="dropdown">
+	   {{auth.durationToDisplay}}
+	   <span class="caret"></span>
+	 </button>
+	 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+	   <li role="presentation">
+	     <a
+		class="auth-dropdown-item"
+		role="menuitem"
+		tabindex="-1"
+		href="#"
+		ng-repeat="time in auth.availableDurations"
+		ng-click="auth.chooseDuration(time)">
+	       {{time}} min</a></li>
+	 </ul>
+       </div>
   </div>
+
+<div class="auth-buttons">
+  <span
+     style="background-color:#428bca"
+     ng-click="confirm()"
+     class="btn btn-default auth-confirm"><b>Confirm</b></span>
+  <span
+     ng-click="cancel()"
+     class="btn btn-default auth-cancel"><b>Cancel</b></span>
+</div>
 
 </div> <!-- /auth -->
 
