@@ -74,7 +74,61 @@ angular.module('babar.server', [])
 	    
 
 	    this.getDrinkInfo = function(id){
+		var deferred = $q.defer();
+                window.setTimeout(
+                    function(){
+                        deferred.resolve({
+			    name: 'Guinness',
+			    type: 'stout',
+			    price: '2.4',
+			    degree: '4.2'
+			});
+                    }, 200);
+                return deferred.promise;
             };
+
+	    this.getUsers = function(){
+		var deferred = $q.defer();
+                window.setTimeout(
+                    function(){
+                        deferred.resolve([{name: 'superman', id:'1'}, {name:'batman', id: '4'}, {name: 'robin', id: '12'}]);
+                    }, 200);
+                return deferred.promise;
+	    };
+
+	    this.getUserInfo = function(){
+                var deferred = $q.defer();
+                window.setTimeout(
+                    function(){
+                        deferred.resolve([
+			    {
+				time: (new Date()).getTime(),
+				amount: 42,
+				customer: 'Eric Dampierre'
+			    },
+			    {
+                                time: (new Date()).getTime(),
+                                amount: 52,
+                                customer: 'Jacques Dupont'
+                            },
+			    {
+                                time: (new Date()).getTime(),
+                                amount: 2,
+                                customer: 'Tintin Milou'
+                            }
+			]);
+                    }, 200);
+                return deferred.promise;
+            };
+
+	    this.getStats = function(){
+		var deferred = $q.defer();
+                window.setTimeout(
+                    function(){
+                        deferred.resolve([{name: 'pipi le plus loin', id: '0'}, {name: 'caca le plus gros', id: '1'}]);
+                    }, 200);
+                return deferred.promise;
+	    };
 
 	    this.perform = function(action, data){
 		var status;
@@ -99,9 +153,38 @@ angular.module('babar.server', [])
 		//authenticate the user here
 		return resolveStatus(200);
 	    };
+
+	    this.getAdminItems = function(domain){
+		switch(domain){
+		case 'customer':
+		    return {status: 200, data: this.getCustomers()};
+		case 'drink':
+		    return {status: 200, data: this.getDrinks()};
+		case 'user':
+		    return {status: 200, data: this.getUsers()};
+		case 'stat':
+		    return {status: 200, data: this.getStats()};
+		default:
+		    return {status: 400};
+		}
+	    };
+
+            this.getAdminDetails = function(domain, item){
+                switch(domain){
+                case 'customer':
+                    return {status: 200, data: this.getCustomerInfo(item.id)};
+                case 'drink':
+                    return {status: 200, data: this.getDrinkInfo(item.id)};
+                case 'user':
+                    return {status: 200, data: this.getUserInfo(item.id)};
+                case 'stat':
+                    return {status: 200, data: this.getStatInfo(item.id)};
+                default:
+                    return {status: 400};
+                }
+            };
 		
 	};
-
 	return new Server();
 
     }]);

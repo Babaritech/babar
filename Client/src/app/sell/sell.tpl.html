@@ -9,6 +9,13 @@ Goal is to select a customer and file in the drink he had.
     <div class="col-xs-12"
 	 style="background-color:{{sell.getMoneyColor()}}">
       <h2><b>BABAR-EXPRESS</b></h2>
+      <a
+	 href="#">
+	<span
+	   class="fa fa-wrench fa-2x sell-toAdmin"
+	   ng-click="sell.admin()">
+	</span>
+      </a>
       <div
 	 class="sell-header-duration"
 	 ng-show="sell.authenticatedUser !== null">

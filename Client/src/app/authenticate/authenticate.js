@@ -15,30 +15,44 @@ angular.module('babar.authenticate', [
 
 	this.error = "";
 
-	this.availableDurations = [0, 1, 2, 5, 15, 30, 60, 120, 240];
+	this.allowedThroughTime = true;
+	this.availableDurations = [0, 5, 15, 30, 60, 120, 240];
 	this.chosenDuration = 0;
 	this.durationToDisplay = "Just this time";
 	this.chooseDuration = function(duration){
 	    this.chosenDuration = duration;
 	    this.durationToDisplay = duration.toString() + ' min';
 	};
+
+
+	//if the requests concerns admin rights, lot of things change
+	if(this.data.admin){
+	    this.hasAccess = false;
+	    this.allowedThroughTime = false;
+	}
 	
+	//in case of confirmation
 	$scope.confirm = function(){
 	    if(!$scope.auth.hasAccess){ //not authorized, gotta authenticate or cancel
 		if($scope.auth.login === "" && $scope.auth.password === ""){
 		    $scope.auth.error = "You must provide a valid login/password combination or cancel.";		}else{
-			var response = Rights.ask($scope.auth.login, $scope.auth.password, $scope.auth.chosenDuration);
+			var response = Rights.ask($scope.auth.login, $scope.auth.password, $scope.auth.chosenDuration, $scope.auth.data.admin);
                         if(response !== 'ok'){
                             $scope.auth.error = response;
                         }else{
-			    perform();
+			    if(!$scope.auth.data.admin){
+				perform();
+			    }else{ //if this concerns admin rights (ie config)
+				$scope.closeThisDialog('admin');
+			    }
                         }
-		}
+		    }
 	    }else{
 		perform();
 	    }
         };
-	
+
+	//in case of cancellation
 	$scope.cancel = function(){
             $scope.closeThisDialog('cancelled');
         };

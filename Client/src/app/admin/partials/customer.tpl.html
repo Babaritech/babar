@@ -1,0 +1,105 @@
+<div
+   class="col-sm-12 customer">
+   <div class="customer-readOnly">
+    <span
+       class="fa fa-lock fa-3x"
+       ng-show="admcst.isReadOnly"
+       ng-click="admcst.toWriteMode()">
+    </span>
+    <span
+       class="fa fa-unlock fa-3x"
+       ng-show="!admcst.isReadOnly">
+    </span>
+  </div>
+  
+  <div class="customer-info">
+    <form
+       class="form-horizontal"
+       role="form">
+      <fieldset disabled>      
+      <div
+	 class="form-group" >
+	<label class="col-sm-2 control-label">Firstname</label>
+	<div class="col-sm-10">
+	  <input
+	     type="text"
+	     class="form-control"
+	     placeholder="Email">
+	</div>
+      </div>
+
+      
+      <div
+	 class="form-group">
+	<label class="col-sm-2 control-label">Nickname</label>
+	<div class="col-sm-10">
+          <input
+             type="text"
+             class="form-control"
+             placeholder="Email">
+	</div>
+      </div>
+      
+      <div
+	 class="form-group">
+	<label class="col-sm-2 control-label">Lastname</label>
+	<div class="col-sm-10">
+          <input
+             type="text"
+             class="form-control"
+             placeholder="Email">
+	</div>
+      </div>
+
+      
+      <div
+	 class="form-group">
+	<label class="col-sm-2 control-label">Status</label>
+	<div class="col-sm-10">
+          <select class="form-control">
+            <option>Customer</option>
+	    <option>VIP</option>
+	    <option>Barman</option>
+	    <option>Barchief</option>
+          </select>
+	</div>
+      </div>
+
+      <div
+	 class="form-group">
+	<label class="col-sm-2 control-label">Password</label>
+	<div class="col-sm-10">
+          <input
+             type="password"
+             class="form-control"
+             placeholder="Email">
+	</div>
+      </div>
+
+      <div
+         class="form-group">
+        <label class="col-sm-2 control-label">Money</label>
+        <div class="col-sm-10">
+          <input
+             type="number"
+             class="form-control"
+             placeholder="Email">
+        </div>
+      </div>
+      
+      <div
+	 class="form-group">
+	<label class="col-sm-2 control-label">Email</label>
+	<div class="col-sm-10">
+          <input
+             type="email"
+             class="form-control"
+             placeholder="Email">
+	</div>
+      </div>
+      
+      </fieldset>
+    </form>
+  </div> <!--/info -->
+
+</div>

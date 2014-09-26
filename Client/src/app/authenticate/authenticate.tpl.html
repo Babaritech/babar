@@ -42,7 +42,7 @@
 
   <div
      class="auth-dropdown"
-     ng-hide="auth.hasAccess">
+     ng-hide="auth.hasAccess || !auth.allowedThroughTime">
        <span>
 	 For how long do you wanna stay authentified ?
        </span>

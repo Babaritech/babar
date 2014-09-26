@@ -12,7 +12,6 @@
 
 @import '../../vendor/bootstrap/less/bootstrap.less';
 
-
 /**
  * This is our main variables file. We must include it last so we can overwrite any variable
  * definitions in our imported stylesheets.
@@ -32,7 +31,6 @@
   src: local('Roboto Regular'), local('Roboto-Regular'), url(fonts/Roboto-Regular.woff) format('woff');
 }
 
-
 /**
  * Now that all app-wide styles have been applied, we can load the styles for
  * all the submodules and components we are using. 
@@ -42,6 +40,10 @@
 
 @import '../app/sell/sell.less';
 @import '../app/admin/admin.less';
+@import '../app/admin/partials/customer.less';
+@import '../app/admin/partials/drink.less';
+@import '../app/admin/partials/user.less';
+@import '../app/admin/partials/stat.less';
 @import '../app/confirm/confirm.less';
 @import '../app/deposit/deposit.less';
 @import '../app/authenticate/authenticate.less';

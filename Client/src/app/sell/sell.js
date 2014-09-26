@@ -4,7 +4,8 @@ angular.module('babar.sell', [
     'babar.deposit',
     'babar.authenticate',
     'ngDialog',
-    'cfp.hotkeys'
+    'cfp.hotkeys',
+    'ui.router'
 ])
     .filter('search', function(){
 	return function(input, keyword){
@@ -137,7 +138,7 @@ angular.module('babar.sell', [
         return new Focus();
     }])
 
-    .controller('SellCtrl', ['$rootScope', '$scope', 'Server', 'Focus', 'chronologicalFilter', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, Server, Focus, chronologicalFilter, searchFilter, selectFilter, Hotkeys, ngDialog){
+    .controller('SellCtrl', ['$rootScope', '$scope', '$state', 'Server', 'Focus', 'chronologicalFilter', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, Server, Focus, chronologicalFilter, searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
 	    console.log(Hotkeys.get('enter'));
@@ -371,8 +372,14 @@ angular.module('babar.sell', [
             });
             dialog.closePromise.then(function(promised){
 		if(promised.value !== 0){
-		    $scope.sell.authenticate('deposit', {amount: promised.value});
-		}else{
+		    var promise = $scope.sell.authenticate('deposit', {amount: promised.value});
+		    promise.then(function(promised){
+                        $scope.sell.customer.refresh();
+                        //Gotta reload Hotkeys' binding
+                        $scope.sell.loadHotkeys();
+                        Focus.setLocation('drink');
+                    });
+                }else{
                     $scope.sell.customer.refresh();
                     //Gotta reload Hotkeys' binding
                     $scope.sell.loadHotkeys();
@@ -393,12 +400,7 @@ angular.module('babar.sell', [
                 closeByEscape: false,
                 closeByDocument: false
             });
-            dialog.closePromise.then(function(promised){
-                $scope.sell.customer.refresh();
-                //Gotta reload Hotkeys' binding
-                $scope.sell.loadHotkeys();
-                Focus.setLocation('drink');
-            });
+            return dialog.closePromise;
 	};
 
 	//When an user is authenticated through time, we gotta diplay it
@@ -421,9 +423,19 @@ angular.module('babar.sell', [
 	    };
 	    updateCountdown();
 	});
-	
+
+	//Go to the admin page !
+	this.admin = function(){
+	    var promise = this.authenticate('config', {admin: true});
+	    promise.then(function(promised){
+		if(promised.value === 'admin'){
+                    $state.go('admin');
+		}
+	    });
+        };
+        
         //This sets up some hotkeys
-	var hotkConfirm = function(){
+        var hotkConfirm = function(){
             if(Focus.forward()){ //isWaitingForConfirm
                 $scope.sell.confirm();
 	    }else{
