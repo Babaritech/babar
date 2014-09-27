@@ -7,7 +7,7 @@
     
     loadClass('model');
     
-    class Drink extends Model
+    class Sell extends Model
     {
     }
 

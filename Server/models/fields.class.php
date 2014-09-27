@@ -43,6 +43,15 @@
 				$object->addField('hidden', PDO::PARAM_INT);
 
 				break;
+			
+			case 'entry':
+
+				$object->addField('entry_id', PDO::PARAM_INT, true);
+				$object->addField('customer_id');
+				$object->addField('amount');
+				$object->addField('date');
+
+				break;
 
 			case 'manager':
 				$object->addField('login', PDO::PARAM_STR, true);
@@ -53,6 +62,16 @@
 			case 'balance':
 				$object->addField('customer_id', PDO::PARAM_INT, true);
 				$object->addField('balance');
+
+				break;
+
+			case 'sell':
+				$object->addField('sell_id', PDO::PARAM_INT, true);
+				$object->addField('customer_id');
+				$object->addField('drink_id');
+				$object->addField('quantity');
+				$object->addField('price');
+				$object->addField('date');
 
 				break;
 
@@ -71,6 +90,7 @@
 				'drink' 	=> 	'drinks',
 				'manager' 	=> 	'managers',
 				'balance' 	=> 	'balances',
+				'entry'		=>	'entries',
 						   );
 
 			if (isset($tables[$tableName]))
