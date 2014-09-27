@@ -10,7 +10,7 @@
 		private static $database = NULL;
 		private static $MYSQL_HOST = 'localhost';
 		private static $MYSQL_USER = 'root';
-		private static $MYSQL_PWD = '*****';
+		private static $MYSQL_PWD = '<YOUR PASSWORD GOES HERE>';
 		private static $MYSQL_DB = 'babar';
 		public static $no_invoke = TRUE;
 
