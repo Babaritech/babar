@@ -32,25 +32,25 @@ angular.module( 'babar', [
 		controllerAs: "admin"
 	    })
 	    .state('admin.customer', {
-		url: "/customer",
+		url: "/customer/:id",
 		templateUrl: "admin/partials/test.tpl.html",
 		controller: "AdmCustomerCtrl",
 		controllerAs: "admcst"
 	    })
             .state('admin.drink', {
-                url: "/drink/:itemId/",
+                url: "/drink/:id/",
                 templateUrl: "admin/partials/drink.tpl.html",
                 controller: "AdmDrinkCtrl",
                 controllerAs: "admdrk"
             })
             .state('admin.user', {
-                url: "/user/:itemId",
+                url: "/user/:id",
                 templateUrl: "admin/partials/user.tpl.html",
                 controller: "AdmUserCtrl",
                 controllerAs: "admusr"
             })
             .state('admin.stat', {
-                url: "/stat/:itemId",
+                url: "/stat/:id",
                 templateUrl: "admin/partials/stat.tpl.html",
                 controller: "AdmStatCtrl",
                 controllerAs: "admstt"

@@ -19,6 +19,7 @@
        class="col-md-2 admin-domains">
       <div class="list-group">
         <a
+	   ui-sref="admin"
            class="list-group-item {{admin.isActiveDomain(domain)}}"
            ng-repeat="domain in admin.domains"
 	   ng-click="admin.changeDomain(domain)">
@@ -34,6 +35,7 @@
          ng-show="this.currentDomain!==null"
 	 class="list-group">
         <a
+	   ui-sref="admin.{{admin.currentDomain}}( {id: {{item.id}} })"
            class="list-group-item {{admin.isActiveItem(item)}}"
 	   ng-repeat="item in admin.items"
 	   ng-click="admin.changeItem(item)">

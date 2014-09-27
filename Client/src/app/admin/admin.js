@@ -43,9 +43,9 @@ angular.module('babar.admin', [
 	    }
 	};
 	this.changeDomain = function(domain){
-	    //change the url and desactive current item
-	    $state.go('admin');
+	    //desactivate current item
 	    this.currentItem = null;
+	    
 	    this.currentDomain = domain.name;
 	    var response = Server.getAdminItems(domain.name);
 	    if(response.status !== 200){
@@ -70,7 +70,6 @@ angular.module('babar.admin', [
         };
         this.changeItem = function(item){
 	    this.currentItem = item.name;
-	    $state.go('admin.'+this.currentDomain, {'id': item.id});
         };
 	
 	this.detailsBoilerplates = {
