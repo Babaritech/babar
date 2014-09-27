@@ -9,7 +9,8 @@
      class="row" id="header">
     <div
        class="col-md-12">
-      <h2><b>BABAR-EXPRESS</b></h2>
+      <h2 
+         ng-click="admin.debug()"><b>BABAR-EXPRESS</b></h2>
     </div>
   </div>
   
@@ -18,7 +19,6 @@
        class="col-md-2 admin-domains">
       <div class="list-group">
         <a
-	   href="#/admin"
            class="list-group-item {{admin.isActiveDomain(domain)}}"
            ng-repeat="domain in admin.domains"
 	   ng-click="admin.changeDomain(domain)">
@@ -34,7 +34,6 @@
          ng-show="this.currentDomain!==null"
 	 class="list-group">
         <a
-	   href="#/admin"
            class="list-group-item {{admin.isActiveItem(item)}}"
 	   ng-repeat="item in admin.items"
 	   ng-click="admin.changeItem(item)">

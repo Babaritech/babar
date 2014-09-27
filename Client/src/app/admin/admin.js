@@ -6,6 +6,11 @@ angular.module('babar.admin', [
     .controller('AdminCtrl', ['$scope', '$state', 'Server', function($scope, $state, Server){
 
 	//TODO: do a server call to ensure that one has the right to be here
+
+	this.debug = function(){
+	    console.log('debug');
+	    $state.go('admin.customer');
+        };
 	
 	this.domains = [
 	    {
@@ -38,6 +43,9 @@ angular.module('babar.admin', [
 	    }
 	};
 	this.changeDomain = function(domain){
+	    //change the url and desactive current item
+	    $state.go('admin');
+	    this.currentItem = null;
 	    this.currentDomain = domain.name;
 	    var response = Server.getAdminItems(domain.name);
 	    if(response.status !== 200){
@@ -61,9 +69,8 @@ angular.module('babar.admin', [
             }
         };
         this.changeItem = function(item){
-	    var newState = 'admin.' + $scope.admin.currentDomain;
-	    $state.go('sell');//, {'id': item.id});
-	    console.log('OK');
+	    this.currentItem = item.name;
+	    $state.go('admin.'+this.currentDomain, {'id': item.id});
         };
 	
 	this.detailsBoilerplates = {

@@ -4,7 +4,12 @@ angular.module( 'babar', [
     'ui.router',
     'ui.bootstrap',
     'babar.sell',
-    'babar.admin'
+    'babar.admin',
+    'babar.admin.customer',
+    'babar.admin.user',
+    'babar.admin.drink',
+    'babar.admin.stat'
+    
 ])
 
     .config( ['$stateProvider', '$urlRouterProvider',  function myAppConfig ( $stateProvider, $urlRouterProvider ) {
