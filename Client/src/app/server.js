@@ -169,16 +169,16 @@ angular.module('babar.server', [])
 		}
 	    };
 
-            this.getAdminDetails = function(domain, item){
+            this.getAdminDetails = function(domain, id){
                 switch(domain){
                 case 'customer':
-                    return {status: 200, data: this.getCustomerInfo(item.id)};
+                    return {status: 200, data: this.getCustomerInfo(id)};
                 case 'drink':
-                    return {status: 200, data: this.getDrinkInfo(item.id)};
+                    return {status: 200, data: this.getDrinkInfo(id)};
                 case 'user':
-                    return {status: 200, data: this.getUserInfo(item.id)};
+                    return {status: 200, data: this.getUserInfo(id)};
                 case 'stat':
-                    return {status: 200, data: this.getStatInfo(item.id)};
+                    return {status: 200, data: this.getStatInfo(id)};
                 default:
                     return {status: 400};
                 }

@@ -33,7 +33,7 @@ angular.module( 'babar', [
 	    })
 	    .state('admin.customer', {
 		url: "/customer/:id",
-		templateUrl: "admin/partials/test.tpl.html",
+		templateUrl: "admin/partials/customer.tpl.html",
 		controller: "AdmCustomerCtrl",
 		controllerAs: "admcst"
 	    })

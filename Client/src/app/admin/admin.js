@@ -7,6 +7,12 @@ angular.module('babar.admin', [
 
 	//TODO: do a server call to ensure that one has the right to be here
 
+	//Re-enable tab key, 'cause 'twill be useful in forms
+	document.onkeydown = function (e) {
+            if(e.which == 9){
+                return true;
+            }
+        };
 	this.debug = function(){
 	    console.log('debug');
 	    $state.go('admin.customer');

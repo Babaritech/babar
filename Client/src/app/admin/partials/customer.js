@@ -3,21 +3,29 @@ angular.module('babar.admin.customer', [
 ])
     .controller('AdmCustomerCtrl', ['$scope', '$stateParams', 'Server', function($scope, $stateParams, Server){
 
-	// console.log($stateParams);
-	// this.current = null;
-        // // var response = Server.getAdminDetails('customer', $stateParams.item.id);
-        // // if(response.status !== 200){
-        // //     //TODO ('cause a bit extreme)
-        // //     // $state.go('sell');
-        // // }else{
-        // //     response.data.then(function(result){
-        // //         $scope.admcst.current = result;
-        // //     });
-        // // }
 	
-        // this.isReadOnly = true;
-	// this.toWritingMode = function(){
-	//     this.isReadOnly = false;
-	// };
+	this.current = null;
+	this.statuses = ['Customer', 'VIP', 'Barman', 'Barchief'];
+	this.status = this.statuses[0];
+	
+        var response = Server.getAdminDetails('customer', $stateParams.id);
+        if(response.status !== 200){
+            //TODO ('cause a bit extreme)
+            $state.go('sell');
+        }else{
+            response.data.then(function(result){
+		//update the current user
+		$scope.admcst.current = result;
+		//initiate to the right status (that complicated 'cause ngOptions understand references instead of values)
+		//$scope.admcst.status = $scope.admcst.statuses[$scope.admcst.statuses.indexOf(result.status)];
+		
+            });
+        }
+	
+        this.isReadOnly = true;
+	this.toWritingMode = function(){
+	    this.isReadOnly = false;
+	    
+	};
 	
     }]);
