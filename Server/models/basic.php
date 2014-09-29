@@ -30,15 +30,15 @@
 		define(getConstantName($filename), $filename);
 	}
 
-	function loadView($vName, $ERROR = '', $MESSAGE='', $args=array())
+	function loadView($vName, $args=array(), $ERROR = '', $MESSAGE='')
 	{
-		$filename = VIEW.$vName.'.view.php';
-
 		if(!defined('VIEW'))
 		{
 			if(defined('DEBUG') && DEBUG) echo 'Fatal error : can\'t load view '.$vName.' : VIEW not defined';
 			else return;
 		}
+		
+		$filename = VIEW.$vName.'.view.php';
 
 		if(is_file($filename)) include($filename);
 		elseif(defined('DEBUG') && DEBUG) echo 'Fatal error : cannot load view '.$vName;
