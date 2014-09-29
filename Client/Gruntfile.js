@@ -18,6 +18,7 @@ module.exports = function ( grunt ) {
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-ngmin');
     grunt.loadNpmTasks('grunt-html2js');
+    grunt.loadNpmTasks('grunt-todo');
 
     /**
      * Load in our build configuration file.
@@ -150,6 +151,39 @@ module.exports = function ( grunt ) {
 		]
 	    }
 	},
+
+	/**
+	 * 'grunt-todo' makes a file containing all projects TODOs
+	 */
+	
+        todo: {
+            options: {
+                marks: [
+                    {
+                        name: "FIX",
+                        pattern: /FIXME/,
+                        color: "red"
+                    },
+                    {
+                        name: "TODO",
+                        pattern: /TODO/,
+                        color: "yellow"
+                    },
+                    {
+                        name: "NOTE",
+                        pattern: /NOTE/,
+                        color: "blue"
+                    }
+                ],
+                file: "specs.md",
+                githubBoxes: true,
+                colophon: true,
+                usePackage: true
+            },
+            src: [
+		'src/**/*'
+            ]
+        },
 
 	/**
 	 * `grunt concat` concatenates multiple source files into a single file.
@@ -529,7 +563,7 @@ module.exports = function ( grunt ) {
 		    livereload: false
 		}
 	    }
-	}
+	} 
     };
 
     grunt.initConfig( grunt.util._.extend( taskConfig, userConfig ) );
@@ -542,7 +576,7 @@ module.exports = function ( grunt ) {
      * before watching for changes.
      */
     grunt.renameTask( 'watch', 'delta' );
-    grunt.registerTask( 'watch', [ 'build', 'karma:unit', 'delta' ] );
+    grunt.registerTask( 'watch', [ 'build', 'karma:unit', 'delta', 'todo' ] );
 
     /**
      * The default task is to build and compile.
@@ -556,7 +590,7 @@ module.exports = function ( grunt ) {
 	'clean', 'html2js', 'jshint', 'coffeelint', 'coffee', 'less:build',
 	'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
 	'copy:build_appjs', 'copy:build_vendorjs', 'index:build', 'karmaconfig',
-	'karma:continuous' 
+	'karma:continuous', 'todo'
     ]);
 
     /**
