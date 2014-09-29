@@ -3,7 +3,6 @@ angular.module('babar.admin.customer', [
 ])
     .controller('AdmCustomerCtrl', ['$scope', '$state', '$stateParams', 'Server', function($scope, $state, $stateParams, Server){
 
-	console.log($scope);
         this.isReadOnly = true;
         this.toWritingMode = function(){
             this.isReadOnly = false;

@@ -66,7 +66,10 @@ angular.module('babar.server', [])
 		var deferred = $q.defer();
                 window.setTimeout(
                     function(){
-			deferred.resolve(drinksData);
+			deferred.resolve(drinksData.map(function(val, ind, arr){
+			    val.name = val.brand + ' ' + val.type;
+			    return val;
+			}));
 		    }, 200);
 		return deferred.promise;
             };
@@ -78,10 +81,9 @@ angular.module('babar.server', [])
                 window.setTimeout(
                     function(){
                         deferred.resolve({
-			    name: 'Guinness',
+			    brand: 'Guinness',
 			    type: 'stout',
-			    price: '2.4',
-			    degree: '4.2'
+			    price: '2.4'
 			});
                     }, 200);
                 return deferred.promise;
@@ -91,32 +93,30 @@ angular.module('babar.server', [])
 		var deferred = $q.defer();
                 window.setTimeout(
                     function(){
-                        deferred.resolve([{name: 'superman', id:'1'}, {name:'batman', id: '4'}, {name: 'robin', id: '12'}]);
+			var output = usersData.map(function(val, ind, arr){
+			    return {
+				id: val.id,
+				name: val.name
+			    };
+                        }, null);	
+                        deferred.resolve(output);
                     }, 200);
                 return deferred.promise;
 	    };
 
-	    this.getUserInfo = function(){
+	    this.getUserInfo = function(id){
                 var deferred = $q.defer();
-                window.setTimeout(
+		window.setTimeout(
                     function(){
-                        deferred.resolve([
-			    {
-				time: (new Date()).getTime(),
-				amount: 42,
-				customer: 'Eric Dampierre'
-			    },
-			    {
-                                time: (new Date()).getTime(),
-                                amount: 52,
-                                customer: 'Jacques Dupont'
-                            },
-			    {
-                                time: (new Date()).getTime(),
-                                amount: 2,
-                                customer: 'Tintin Milou'
+                        var output = usersData.reduce(function(acc, val, ind, arr){
+                            if(id == val.id){
+                                return val;
                             }
-			]);
+                            else{
+                                return acc;
+                            }
+                        }, null);       
+                        deferred.resolve(output);
                     }, 200);
                 return deferred.promise;
             };
@@ -189,258 +189,190 @@ angular.module('babar.server', [])
 
     }]);
 
+var usersData = [
+    {
+	name: 'superman',
+	id:'0',
+	history: [
+	    {
+		time: (new Date()).getTime() - 16763786300000,
+		amount: 42,
+		customer: 'Eric Dampierre'
+	    },
+	    {
+		time: (new Date()).getTime() - 62822700,
+		amount: 52,
+		customer: 'Jacques Dupont'
+	    },
+	    {
+		time: (new Date()).getTime() - 623863200000,
+		amount: 2,
+		customer: 'Tintin Milou'
+	    }]
+    },
+    {
+        name: 'spiderman',
+        id:'1',
+        history: [
+            {
+                time: (new Date()).getTime(),
+                amount: 42,
+                customer: 'Eric Dampierre'
+            },
+            {
+                time: (new Date()).getTime(),
+                amount: 52,
+                customer: 'Jacques Dupont'
+            },
+            {
+                time: (new Date()).getTime(),
+                amount: 2,
+                customer: 'Tintin Milou'
+            }]
+    },
+    {
+        name: 'batman',
+        id:'2',
+        history: [
+            {
+                time: (new Date()).getTime(),
+                amount: 42,
+                customer: 'Eric Dampierre'
+            },
+            {
+                time: (new Date()).getTime(),
+                amount: 52,
+                customer: 'Jacques Dupont'
+            },
+            {
+                time: (new Date()).getTime(),
+                amount: 2,
+                customer: 'Tintin Milou'
+            }]
+    }
+];
 
 
 var drinksData = [
     {
-        "name": "magna incididunt",
-        "price": 1.95,
+        "brand": "magna",
+	"type": "incididunt",
+	"price": 1.95,
         "id": 0
     },
     {
-        "name": "voluptate commodo",
+        "brand": "voluptate",
+        "type": "commodo",
         "price": 2.94,
         "id": 1
     },
     {
-        "name": "anim ullamco",
+        "brand": "anim",
+        "type": "ullamco",
         "price": 1.13,
         "id": 2
     },
     {
-        "name": "dolore dolore",
+        "brand": "dolore",
+        "type": "dolore",
         "price": 1.25,
         "id": 3
     },
     {
-        "name": "sit voluptate",
+        "brand": "sit",
+        "type": "voluptate",
         "price": 1.52,
         "id": 4
     },
     {
-        "name": "proident proident",
+        "brand": "proident",
+        "type": "proident",
         "price": 2.37,
         "id": 5
     },
     {
-        "name": "reprehenderit ex",
+        "brand": "reprehenderit",
+        "type": "ex",
         "price": 1.98,
         "id": 6
     },
     {
-        "name": "laboris mollit",
+        "brand": "laboris",
+        "type": "mollit",
         "price": 1.6,
         "id": 7
     },
     {
-        "name": "excepteur ex",
+        "brand": "excepteur",
+        "type": "ex",
         "price": 2.79,
         "id": 8
     },
     {
-        "name": "cupidatat consectetur",
+        "brand": "cupidatat",
+        "type": "consectetur",
         "price": 1.63,
         "id": 9
     },
     {
-        "name": "aute minim",
+        "brand": "aute",
+        "type": "minim",
         "price": 2.52,
         "id": 10
     },
     {
-        "name": "esse dolore",
+        "brand": "esse",
+        "type": "dolore",
         "price": 2.79,
         "id": 11
     },
     {
-        "name": "veniam irure",
+        "brand": "veniam",
+        "type": "irure",
         "price": 1.15,
         "id": 12
     },
     {
-        "name": "aliqua adipisicing",
+        "brand": "aliqua",
+        "type": "adipisicing",
         "price": 1.41,
         "id": 13
     },
     {
-        "name": "culpa quis",
+        "brand": "culpa",
+        "type": "quis",
         "price": 1.4,
         "id": 14
     },
     {
-        "name": "amet officia",
+        "brand": "amet",
+        "type": "officia",
         "price": 2.83,
         "id": 15
     },
     {
-        "name": "proident dolore",
+        "brand": "proident",
+        "type": "dolore",
         "price": 1.05,
         "id": 16
     },
     {
-        "name": "occaecat adipisicing",
+        "brand": "occaecat",
+        "type": "adipisicing",
         "price": 1.56,
         "id": 17
     },
     {
-        "name": "ex ex",
+        "brand": "ex",
+        "type": "ex",
         "price": 2.77,
         "id": 18
     },
     {
-        "name": "nisi ut",
+        "brand": "nisi",
+        "type": "ut",
         "price": 2.02,
         "id": 19
-    },
-    {
-        "name": "duis mollit",
-        "price": 2.09,
-        "id": 20
-    },
-    {
-        "name": "consequat ad",
-        "price": 2.26,
-        "id": 21
-    },
-    {
-        "name": "irure est",
-        "price": 2.2,
-        "id": 22
-    },
-    {
-        "name": "qui cillum",
-        "price": 1.9,
-        "id": 23
-    },
-    {
-        "name": "tempor ut",
-        "price": 2.59,
-        "id": 24
-    },
-    {
-        "name": "nisi aute",
-        "price": 2.2,
-        "id": 25
-    },
-    {
-        "name": "ipsum quis",
-        "price": 1.99,
-        "id": 26
-    },
-    {
-        "name": "minim est",
-        "price": 2.57,
-        "id": 27
-    },
-    {
-        "name": "do consectetur",
-        "price": 1.89,
-        "id": 28
-    },
-    {
-        "name": "minim nulla",
-        "price": 1.16,
-        "id": 29
-    },
-    {
-        "name": "consequat cupidatat",
-        "price": 2.54,
-        "id": 30
-    },
-    {
-        "name": "laboris laboris",
-        "price": 2.17,
-        "id": 31
-    },
-    {
-        "name": "laboris non",
-        "price": 2.12,
-        "id": 32
-    },
-    {
-        "name": "labore laborum",
-        "price": 1.42,
-        "id": 33
-    },
-    {
-        "name": "sunt et",
-        "price": 2.89,
-        "id": 34
-    },
-    {
-        "name": "deserunt aliqua",
-        "price": 1.38,
-        "id": 35
-    },
-    {
-        "name": "cupidatat elit",
-        "price": 2.09,
-        "id": 36
-    },
-    {
-        "name": "excepteur dolor",
-        "price": 1.73,
-        "id": 37
-    },
-    {
-        "name": "ut ullamco",
-        "price": 1.25,
-        "id": 38
-    },
-    {
-        "name": "ullamco non",
-        "price": 2.15,
-        "id": 39
-    },
-    {
-        "name": "deserunt exercitation",
-        "price": 2.39,
-        "id": 40
-    },
-    {
-        "name": "ea aliquip",
-        "price": 2.43,
-        "id": 41
-    },
-    {
-        "name": "ex laboris",
-        "price": 2.09,
-        "id": 42
-    },
-    {
-        "name": "officia deserunt",
-        "price": 2.94,
-        "id": 43
-    },
-    {
-        "name": "sit amet",
-        "price": 1.33,
-        "id": 44
-    },
-    {
-        "name": "occaecat labore",
-        "price": 1.25,
-        "id": 45
-    },
-    {
-	"name": "anim eu",
-	"price": 1.1,
-	"id": 46
-    },
-    {
-	"name": "aute et",
-	"price": 1.44,
-	"id": 47
-    },
-    {
-	"name": "id laborum",
-	"price": 1.2,
-	"id": 48
-    },
-    {
-	"name": "elit pariatur",
-	"price": 1.31,
-	"id": 49
     }
 ];
 
