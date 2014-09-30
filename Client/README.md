@@ -1,19 +1,19 @@
 # Welcome to the Client side (we have cookies)
 
 ## Installation
-> git clone git@github.com:Dryvenn/babar.git
-> cd babar*
-> sudo apt-get install nodejs nodejs-legacy npm
-> sudo npm install -g grunt-cli karma bower 
-> cd Client/
-> npm install
-> bower install
+- git clone git@github.com:Dryvenn/babar.git
+- cd babar*
+- sudo apt-get install nodejs nodejs-legacy npm
+- sudo npm install -g grunt-cli karma bower 
+- cd Client/
+- npm install
+- bower install
 
 ### Launch the tasker (dev)
-> grunt watch
+- grunt watch
 
 ### Launch the compiler (prod)
-> grunt
+- grunt
 
 
 ## Website colors
