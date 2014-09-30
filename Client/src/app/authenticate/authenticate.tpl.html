@@ -18,7 +18,7 @@
     </span>
   </div>
   
-  <div
+  <form
      class="input-group auth-form"
      ng-hide="auth.hasAccess">
     
@@ -34,7 +34,7 @@
        class="form-control"
        placeholder="password"
        ng-model="auth.password">
-  </div>
+  </form>
   <span
      style="color:red; font-size:75%">
     {{auth.error}}
@@ -71,13 +71,13 @@
   </div>
 
 <div class="auth-buttons">
-  <span
+  <button
      style="background-color:#428bca"
      ng-click="confirm()"
-     class="btn btn-default auth-confirm"><b>Confirm</b></span>
-  <span
+     class="btn btn-default auth-confirm"><b>Submit</b></button>
+  <button
      ng-click="cancel()"
-     class="btn btn-default auth-cancel"><b>Cancel</b></span>
+     class="btn btn-default auth-cancel"><b>Cancel</b></button>
 </div>
 
 </div> <!-- /auth -->
