@@ -14,7 +14,7 @@
 
 ### Customers
 
-	**Even if you can include the customer ID in the JSON body, only the one in the URI will prevail.**
+	Even if you can include the customer ID in the JSON body, only the one in the URI will prevail.
 
 #### Get
 - **/customer.php?action=list** : returns list of client's full names and id (include alias ?)
