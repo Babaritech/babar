@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 29, 2014 at 11:05 PM
+-- Generation Time: Sep 29, 2014 at 11:14 PM
 -- Server version: 5.5.38-0+wheezy1
 -- PHP Version: 5.4.4-14+deb7u14
 
@@ -42,7 +42,6 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `name` varchar(30) NOT NULL COMMENT 'Nom',
   `nickname` varchar(30) DEFAULT NULL COMMENT 'Surnom',
   `sex` varchar(1) NOT NULL DEFAULT 'M' COMMENT 'Sexe',
-  `status` varchar(20) NOT NULL DEFAULT 'standard' COMMENT 'Status',
   `weight` decimal(5,2) NOT NULL DEFAULT '75.00' COMMENT 'Poids',
   `height` decimal(3,2) NOT NULL DEFAULT '1.75' COMMENT 'Taille',
   `picture` varchar(200) NOT NULL DEFAULT '../images/default.jpg' COMMENT 'Photo'

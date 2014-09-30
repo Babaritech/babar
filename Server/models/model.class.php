@@ -1,345 +1,345 @@
 <?php
 
-if(!defined('MODEL')) die('This page should not be accessed that way');
+	if(!defined('MODEL')) die('This page should not be accessed that way');
 
-if(!defined(BASIC_LOADED)) require_once(MODEL.'basic.php');
-createConst(__FILE__);
+	if(!defined(BASIC_LOADED)) require_once(MODEL.'basic.php');
+	createConst(__FILE__);
 
-loadClass('db');
-loadClass('fields');
+	loadClass('db');
+	loadClass('fields');
 
-abstract class Model
-{
-	private $fields = array();
-	private $fromSql;
-	const SEARCH_QUERY_DEBUG = false;
-
-	public function Model($uniqid = null)
+	abstract class Model
 	{
-		Fields::initFields($this);
+		private $fields = array();
+		private $fromSql;
+		const SEARCH_QUERY_DEBUG = false;
 
-		$this->fromSql = (!is_null($uniqid));
-
-		$this->initClassFields();
-		if(!is_null($uniqid)) $this->getFromDb($uniqid);
-	}
-
-	private function setFromSql($b=true)
-	{
-		$this->fromSql = (bool) $b;
-	}
-
-	public function isFromSql()
-	{
-		return (int) $this->fromSql;
-	}
-
-	private function resetFields()
-	{
-		$this->fields = array();
-	}
-
-	public function getFields()
-	{
-		return $this->fields;
-	}
-
-	public function addField($SQLfieldName, $paramMode = PDO::PARAM_STR, $isUniqueIdentifier = false)
-	{
-		if(!is_array($this->fields)) self::resetFields();
-		$this->fields[] = array('name' => $SQLfieldName, 'type' => (is_numeric($paramMode)) ? $paramMode : PDO::PARAM_STR, 'uniqid' => $isUniqueIdentifier);
-	}
-
-	public function initClassFields()
-	{
-		foreach($this->fields as $sql_field)
+		public function Model($uniqid = null)
 		{
-			$goodNaming = Fields::toCamelCaseNaming($sql_field['name']);
-			$this->$goodNaming = null;
-		}
-	}
+			Fields::initFields($this);
 
-	public function save()
-	{
-		if($this->fromSql) $this->update();
-		else 
-		{
-			$this->insert();
+			$this->fromSql = (!is_null($uniqid));
+
+			$this->initClassFields();
+			if(!is_null($uniqid)) $this->getFromDb($uniqid);
 		}
 
-		$this->setFromSql();
-	}
-
-	public function get($fieldName)
-	{
-		$field_name = Fields::toSqlNaming($fieldName);
-
-		foreach($this->fields as $field)
-			if($field['name'] == $field_name) return $this->$fieldName;
-
-		if (DEBUG) echo ('Fatal error : Trying to acces field '.$fieldName.' in class '.get_class($this));
-		exit;
-	}
-
-	public function set($fieldName, $value)
-	{
-		$field_name = Fields::toSqlNaming($fieldName);
-
-		foreach($this->fields as $field)
+		private function setFromSql($b=true)
 		{
-			if($field['name'] == $field_name)
-			{
-				$this->$fieldName = $value;
-				return ;
-			}
+			$this->fromSql = (bool) $b;
 		}
 
-		if(DEBUG) echo ('Fatal error : Trying to acces field '.$fieldName.' in class '.get_class($this));
-		exit;
-	}
-
-	protected function update()
-	{
-		$DB = DB::getDB();
-		$whereList = '';
-		$updateList = '';
-
-		$sep = ''; $sepW = '';
-
-		foreach($this->fields as $sql_field)
+		public function isFromSql()
 		{
-			if($sql_field['uniqid'])
-			{
-				$whereList .= $sepW.'`'.$sql_field['name'].'` = :'.$sql_field['name'];
-				$sepW = ' AND ';
-			}
-			else
-			{
-				$updateList .= $sep.'`'.$sql_field['name'].'` = :'.$sql_field['name'];
-				$sep = ', ';
-			}
+			return (int) $this->fromSql;
 		}
 
-
-		$tableName = strtolower(get_class($this));
-		$tableName = Fields::getSQLTableName($tableName);
-		$query = 'UPDATE '.$tableName.' SET '.$updateList.' WHERE '.$whereList;
-
-		$prep = $DB->prepare($query);
-
-		foreach($this->fields as $sql_field)
+		private function resetFields()
 		{
-			$goodNaming = Fields::toCamelCaseNaming($sql_field['name']);
-			$prep->bindValue(':'.$sql_field['name'], $this->$goodNaming, $sql_field['type']);
+			$this->fields = array();
 		}
 
-		$prep->execute();
-		self::reportSqlBugIfExists($prep->errorInfo());
-	}
-
-	public static function reportSqlBugIfExists($errorArray)
-	{
-		if($errorArray[0] ==  '0000') return;
-
-		$message= 'SQL_STATE : '.$errorArray[0]."\n";
-		$message.= 'Error code : '.$errorArray[1]."\n";
-		$message.= 'Error message : '.$errorArray[2];
-
-		if(DEBUG) echo $message;
-
-		exit;
-	}
-
-	protected function insert()
-	{
-		$DB = DB::getDB();
-		$listValues = '';
-		$values = '';
-
-		$sep = '';
-
-		foreach($this->fields as $sql_field)
+		public function getFields()
 		{
-			$listValues .= $sep.'`'.$sql_field['name'].'`';
-			$values .= $sep.':'.$sql_field['name'];
-			$sep = ', ';
+			return $this->fields;
 		}
 
-		$tableName = strtolower(get_class($this));
-		$tableName = Fields::getSQLTableName($tableName);
-		$query = 'INSERT INTO '.$tableName.' ('.$listValues.') VALUES('.$values.')';
-
-		$prep = $DB->prepare($query);
-
-		foreach($this->fields as $sql_field)
+		public function addField($SQLfieldName, $paramMode = PDO::PARAM_STR, $isUniqueIdentifier = false)
 		{
-			$goodNaming = Fields::toCamelCaseNaming($sql_field['name']);
-			$value = (!$sql_field['uniqid']) ? $this->$goodNaming : 0;
-			$prep->bindValue(':'.$sql_field['name'], $value, $sql_field['type']);
+			if(!is_array($this->fields)) self::resetFields();
+			$this->fields[] = array('name' => $SQLfieldName, 'type' => (is_numeric($paramMode)) ? $paramMode : PDO::PARAM_STR, 'uniqid' => $isUniqueIdentifier);
 		}
 
-		$prep->execute();
-		self::reportSqlBugIfExists($prep->errorInfo());
-
-		$lid = $DB->lastInsertId();
-		$this->getFromDb($lid);
-	}
-
-	public function delete()
-	{
-		$DB = DB::getDB();
-		$whereList = '';
-		$sepW = '';
-
-		foreach($this->fields as $sql_field)
+		public function initClassFields()
 		{
-			if($sql_field['uniqid'])
-			{
-				$whereList .= $sepW.'`'.$sql_field['name'].'` = :'.$sql_field['name'];
-				$sepW = ' AND ';
-			}
-		}
-
-		$tableName = strtolower(get_class($this));
-		$tableName = Fields::getSQLTableName($tableName);
-		$query = 'DELETE FROM '.$tableName.' WHERE '.$whereList;
-
-		$prep = $DB->prepare($query);
-
-		foreach($this->fields as $sql_field)
-		{
-			if($sql_field['uniqid'])
+			foreach($this->fields as $sql_field)
 			{
 				$goodNaming = Fields::toCamelCaseNaming($sql_field['name']);
-				$prep->bindValue($sql_field['name'], $this->$goodNaming, $sql_field['type']);
+				$this->$goodNaming = null;
 			}
 		}
 
-		$prep->execute();
-		self::reportSqlBugIfExists($prep->errorInfo());
-	}
-
-	public static function search($whereClause, $params, $orderByClause='', $limitClause='')
-	{
-		$className = get_called_class();
-		$fieldGetter = new $className();
-		$fields = $fieldGetter->getFields();
-
-		$DB = DB::getDB();
-
-		$selection = ''; $sep = '';
-
-		foreach($fields as $field)
+		public function save()
 		{
-			$selection .= $sep.'`'.$field['name'].'`';
-			$sep = ', ';
-		}
-
-		$tableName = strtolower($className);
-		$tableName = Fields::getSQLTableName($tableName);
-		$query = 'SELECT '.$selection.' FROM '.$tableName.' WHERE '.$whereClause;
-
-		if(!empty($orderByClause)) $query .= ' ORDER BY '.$orderByClause;
-		if(!empty($limitClause)) $query .= ' LIMIT '.$limitClause;
-
-		if(self::SEARCH_QUERY_DEBUG) echo $query."<br/>";
-
-		$prep = $DB->prepare($query);
-
-		foreach($params as $param)
-		{
-			$prep->bindValue($param['id'], $param['value'], (isset($param['type']) ? intval($param['type']) : PDO::PARAM_STR));
-			if(self::SEARCH_QUERY_DEBUG) echo 'Binding value '.$param['value'].' to '.$param['id']."<br />";
-		}
-
-		if(self::SEARCH_QUERY_DEBUG) echo "<br />";
-
-		$prep->execute();
-		$data = $prep->fetchAll();
-		self::reportSqlBugIfExists($prep->errorInfo());
-
-		if(!count($data)) return array();
-
-		$result = array();
-
-		foreach($data as $elt)
-		{
-			$t = new $className();
-			foreach($fields as $field)
+			if($this->fromSql) $this->update();
+			else 
 			{
-				$goodNaming = Fields::toCamelCaseNaming($field['name']);
-				$t->set($goodNaming, $elt[$field['name']]);
+				$this->insert();
 			}
-			$t->setFromSql();
-			$result[] = $t;
+
+			$this->setFromSql();
 		}
 
-		return $result;
-	}
-
-	private function getFromDb($uniqid)
-	{
-		// Search for uniqid field
-
-		$uniqid_field = null;
-
-		foreach($this->fields as $sql_field)
+		public function get($fieldName)
 		{
-			if($sql_field['uniqid']) 
-			{
-				$uniqid_field = $sql_field;
-				break;
-			}
-		}
+			$field_name = Fields::toSqlNaming($fieldName);
 
-		if(is_null($uniqid_field))
-		{
-			if(DEBUG) echo ('Fatal error : Could not find any unique identifier for class '.get_class($this));
+			foreach($this->fields as $field)
+				if($field['name'] == $field_name) return $this->$fieldName;
+
+			if (DEBUG) echo ('Fatal error : Trying to acces field '.$fieldName.' in class '.get_class($this));
 			exit;
 		}
 
-
-		$whereClause = $uniqid_field['name'].' = :'.$uniqid_field['name'];
-		$params = array(array('id' => ':'.$uniqid_field['name'], 'value' => $uniqid));
-		if(isset($uniqid_field['type'])) $params[0]['type'] = $uniqid_field['type'];
-
-		$results = self::search($whereClause, $params);
-		if(!count($results)) throw new RuntimeException('There is no `'.get_class().'` corresponding to uniqid '.$uniqid);
-
-		foreach($this->fields as $sql_field)
+		public function set($fieldName, $value)
 		{
-			$goodNaming = Fields::toCamelCaseNaming($sql_field['name']);
-			$this->$goodNaming = $results[0]->get($goodNaming);
+			$field_name = Fields::toSqlNaming($fieldName);
+
+			foreach($this->fields as $field)
+			{
+				if($field['name'] == $field_name)
+				{
+					$this->$fieldName = $value;
+					return ;
+				}
+			}
+
+			if(DEBUG) echo ('Fatal error : Trying to acces field '.$fieldName.' in class '.get_class($this));
+			exit;
+		}
+
+		protected function update()
+		{
+			$DB = DB::getDB();
+			$whereList = '';
+			$updateList = '';
+
+			$sep = ''; $sepW = '';
+
+			foreach($this->fields as $sql_field)
+			{
+				if($sql_field['uniqid'])
+				{
+					$whereList .= $sepW.'`'.$sql_field['name'].'` = :'.$sql_field['name'];
+					$sepW = ' AND ';
+				}
+				else
+				{
+					$updateList .= $sep.'`'.$sql_field['name'].'` = :'.$sql_field['name'];
+					$sep = ', ';
+				}
+			}
+
+
+			$tableName = strtolower(get_class($this));
+			$tableName = Fields::getSQLTableName($tableName);
+			$query = 'UPDATE '.$tableName.' SET '.$updateList.' WHERE '.$whereList;
+
+			$prep = $DB->prepare($query);
+
+			foreach($this->fields as $sql_field)
+			{
+				$goodNaming = Fields::toCamelCaseNaming($sql_field['name']);
+				$prep->bindValue(':'.$sql_field['name'], $this->$goodNaming, $sql_field['type']);
+			}
+
+			$prep->execute();
+			self::reportSqlBugIfExists($prep->errorInfo());
+		}
+
+		public static function reportSqlBugIfExists($errorArray)
+		{
+			if($errorArray[0] ==  '0000') return;
+
+			$message= 'SQL_STATE : '.$errorArray[0]."\n";
+			$message.= 'Error code : '.$errorArray[1]."\n";
+			$message.= 'Error message : '.$errorArray[2];
+
+			if(DEBUG) echo $message;
+
+			exit;
+		}
+
+		protected function insert()
+		{
+			$DB = DB::getDB();
+			$listValues = '';
+			$values = '';
+
+			$sep = '';
+
+			foreach($this->fields as $sql_field)
+			{
+				$listValues .= $sep.'`'.$sql_field['name'].'`';
+				$values .= $sep.':'.$sql_field['name'];
+				$sep = ', ';
+			}
+
+			$tableName = strtolower(get_class($this));
+			$tableName = Fields::getSQLTableName($tableName);
+			$query = 'INSERT INTO '.$tableName.' ('.$listValues.') VALUES('.$values.')';
+
+			$prep = $DB->prepare($query);
+
+			foreach($this->fields as $sql_field)
+			{
+				$goodNaming = Fields::toCamelCaseNaming($sql_field['name']);
+				$value = (!$sql_field['uniqid']) ? $this->$goodNaming : 0;
+				$prep->bindValue(':'.$sql_field['name'], $value, $sql_field['type']);
+			}
+
+			$prep->execute();
+			self::reportSqlBugIfExists($prep->errorInfo());
+
+			$lid = $DB->lastInsertId();
+			$this->getFromDb($lid);
+		}
+
+		public function delete()
+		{
+			$DB = DB::getDB();
+			$whereList = '';
+			$sepW = '';
+
+			foreach($this->fields as $sql_field)
+			{
+				if($sql_field['uniqid'])
+				{
+					$whereList .= $sepW.'`'.$sql_field['name'].'` = :'.$sql_field['name'];
+					$sepW = ' AND ';
+				}
+			}
+
+			$tableName = strtolower(get_class($this));
+			$tableName = Fields::getSQLTableName($tableName);
+			$query = 'DELETE FROM '.$tableName.' WHERE '.$whereList;
+
+			$prep = $DB->prepare($query);
+
+			foreach($this->fields as $sql_field)
+			{
+				if($sql_field['uniqid'])
+				{
+					$goodNaming = Fields::toCamelCaseNaming($sql_field['name']);
+					$prep->bindValue($sql_field['name'], $this->$goodNaming, $sql_field['type']);
+				}
+			}
+
+			$prep->execute();
+			self::reportSqlBugIfExists($prep->errorInfo());
+		}
+
+		public static function search($whereClause, $params, $orderByClause='', $limitClause='')
+		{
+			$className = get_called_class();
+			$fieldGetter = new $className();
+			$fields = $fieldGetter->getFields();
+
+			$DB = DB::getDB();
+
+			$selection = ''; $sep = '';
+
+			foreach($fields as $field)
+			{
+				$selection .= $sep.'`'.$field['name'].'`';
+				$sep = ', ';
+			}
+
+			$tableName = strtolower($className);
+			$tableName = Fields::getSQLTableName($tableName);
+			$query = 'SELECT '.$selection.' FROM '.$tableName.' WHERE '.$whereClause;
+
+			if(!empty($orderByClause)) $query .= ' ORDER BY '.$orderByClause;
+			if(!empty($limitClause)) $query .= ' LIMIT '.$limitClause;
+
+			if(self::SEARCH_QUERY_DEBUG) echo $query."<br/>";
+
+			$prep = $DB->prepare($query);
+
+			foreach($params as $param)
+			{
+				$prep->bindValue($param['id'], $param['value'], (isset($param['type']) ? intval($param['type']) : PDO::PARAM_STR));
+				if(self::SEARCH_QUERY_DEBUG) echo 'Binding value '.$param['value'].' to '.$param['id']."<br />";
+			}
+
+			if(self::SEARCH_QUERY_DEBUG) echo "<br />";
+
+			$prep->execute();
+			$data = $prep->fetchAll();
+			self::reportSqlBugIfExists($prep->errorInfo());
+
+			if(!count($data)) return array();
+
+			$result = array();
+
+			foreach($data as $elt)
+			{
+				$t = new $className();
+				foreach($fields as $field)
+				{
+					$goodNaming = Fields::toCamelCaseNaming($field['name']);
+					$t->set($goodNaming, $elt[$field['name']]);
+				}
+				$t->setFromSql();
+				$result[] = $t;
+			}
+
+			return $result;
+		}
+
+		private function getFromDb($uniqid)
+		{
+			// Search for uniqid field
+
+			$uniqid_field = null;
+
+			foreach($this->fields as $sql_field)
+			{
+				if($sql_field['uniqid']) 
+				{
+					$uniqid_field = $sql_field;
+					break;
+				}
+			}
+
+			if(is_null($uniqid_field))
+			{
+				if(DEBUG) echo ('Fatal error : Could not find any unique identifier for class '.get_class($this));
+				exit;
+			}
+
+
+			$whereClause = $uniqid_field['name'].' = :'.$uniqid_field['name'];
+			$params = array(array('id' => ':'.$uniqid_field['name'], 'value' => $uniqid));
+			if(isset($uniqid_field['type'])) $params[0]['type'] = $uniqid_field['type'];
+
+			$results = self::search($whereClause, $params);
+			if(!count($results)) throw new RuntimeException('There is no `'.get_class().'` corresponding to uniqid '.$uniqid);
+
+			foreach($this->fields as $sql_field)
+			{
+				$goodNaming = Fields::toCamelCaseNaming($sql_field['name']);
+				$this->$goodNaming = $results[0]->get($goodNaming);
+			}
+		}
+
+		public static function searchForAll($orderByClause = '', $limitClause='')
+		{
+			$whereClause = '1';
+			$params = array();
+
+			return self::search($whereClause, $params, $orderByClause, $limitClause);
+		}
+
+		public function secure($fieldName)
+		{
+			return Functions::secure($this->get($fieldName));
+		}
+
+		public function secureEcho($fieldName)
+		{
+			echo $this->secure($fieldName);
+		}
+
+		public function secureReduced($fieldName, $n)
+		{
+			return Functions::secure(Functions::reduce($this->get($fieldName), $n));
+		}
+
+		public function secureEchoReduced($fieldName, $n)
+		{
+			echo $this->secureReduced($fieldName, $n);
 		}
 	}
-
-	public static function searchForAll($orderByClause = '', $limitClause='')
-	{
-		$whereClause = '1';
-		$params = array();
-
-		return self::search($whereClause, $params, $orderByClause, $limitClause);
-	}
-
-	public function secure($fieldName)
-	{
-		return Functions::secure($this->get($fieldName));
-	}
-
-	public function secureEcho($fieldName)
-	{
-		echo $this->secure($fieldName);
-	}
-
-	public function secureReduced($fieldName, $n)
-	{
-		return Functions::secure(Functions::reduce($this->get($fieldName), $n));
-	}
-
-	public function secureEchoReduced($fieldName, $n)
-	{
-		echo $this->secureReduced($fieldName, $n);
-	}
-}
 
 ?>
