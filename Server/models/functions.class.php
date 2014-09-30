@@ -7,6 +7,15 @@
 
 	class Functions
 	{
+		public static function setResponse($code)
+		{
+			$test = floor($code/100);
+
+			http_response_code($code);
+
+			if($test >= 4) exit();
+		}
+
 		public static function hash($login, $password)
 		{
 			$l = strtoupper($login);
