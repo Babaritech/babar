@@ -17,16 +17,21 @@
 	Even if you can include the customer ID in the JSON body, only the one in the URI will prevail.
 
 #### Get
-- **/customer.php?action=list** : returns list of client's full names and id (include alias ?)
-- **/customer.php?action=info&amp;id=&lt;customer_id&gt;** : returns the info on someone
+- **/customer.php?action=list**: returns list of client's full names and id (include alias ?)
+- **/customer.php?action=info&amp;id=&lt;customer_id&gt;**: returns the info on someone
+- **/customer.php?action=delete&amp;id=&lt;customer_id&gt;**: deletes  target customer
 
 #### Post
 - **/customer.php?action=new** : body is a new client, returns the client with his id
-- **/Clients/update** : body is an already-existent client (has an id)
-- **/Clients/delete** : body is an already-existent client (has an id)
+- **/customer.php?action=update&amp;id=&lt;customer_id&gt;** : body is an already-existent client (has an id)
 
-#### HTTP status codes handled client-side
+
+### HTTP status codes handled client-side
+
+#### Success
 - 200: OK
+
+#### Error
 - 400: Bad request
 - 401: Access to resource requires authentication
 - 403: Invalid supplied credentials
