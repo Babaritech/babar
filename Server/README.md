@@ -18,7 +18,7 @@
 
 #### Get
 - **/customer.php?action=list** : returns list of client's full names and id (include alias ?)
-- **/customer.php?action=info&id=<customer_id>** : returns the info on someone
+- **/customer.php?action=info&amp;id=&lt;customer_id&gt;** : returns the info on someone
 
 #### Post
 - **/customer.php?action=new** : body is a new client, returns the client with his id
