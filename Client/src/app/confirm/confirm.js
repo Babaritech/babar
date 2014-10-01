@@ -5,11 +5,15 @@ angular.module('babar.confirm', [
     .controller('ConfirmCtrl', ['$scope', 'Server', 'hotkeys', function($scope, Server, Hotkeys){
 	this.customer = $scope.ngDialogData[0];
 	this.drink = $scope.ngDialogData[1];
-	
+	var actualMoney = $scope.ngDialogData[2];
 	
 	$scope.buy = function(){
-	    Server.perform('buy', {customer: this.customer, drink: this.drink});
-            $scope.closeThisDialog('bought');
+	    if(actualMoney>0){
+		Server.perform('buy', {customer: $scope.confirm.customer, drink: $scope.confirm.drink});
+		$scope.closeThisDialog('bought');
+            }else{
+		$scope.closeThisDialog('forbidden');
+            }
         };
 	$scope.cancel = function(){
             $scope.closeThisDialog('cancelled');

@@ -35,7 +35,8 @@ angular.module('babar.authenticate', [
 	$scope.confirm = function(){
 	    if(!$scope.auth.hasAccess){ //not authorized, gotta authenticate or cancel
 		if($scope.auth.login === "" && $scope.auth.password === ""){
-		    $scope.auth.error = "You must provide a valid login/password combination or cancel.";		}else{
+		    $scope.auth.error = "You must provide a valid login/password combination or cancel.";
+		}else{
 			var response = Rights.ask($scope.auth.login, $scope.auth.password, $scope.auth.chosenDuration, $scope.auth.data.admin);
                         if(response !== 'ok'){
                             $scope.auth.error = response;
@@ -58,7 +59,7 @@ angular.module('babar.authenticate', [
         };
 
 	var perform = function(){
-            var response = Server.perform($scope.auth.action, {customer:$scope.auth.customer, amount:$scope.auth.data.amount});
+            var response = Server.perform($scope.auth.action, {customer:$scope.auth.customer, data:$scope.auth.data});
 	    if(response==='ok'){
 		$scope.closeThisDialog('success');
 	    }else{

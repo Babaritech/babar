@@ -145,7 +145,7 @@ angular.module('babar.sell', [
 	    console.log(Hotkeys.get('enter'));
 	    // this.loadHotkeys();
 	};
-
+	
         //an easter egg
         $scope.unicorn = false;
         $rootScope.$on('konamiEvent', function(args){
@@ -164,12 +164,21 @@ angular.module('babar.sell', [
 		return true;
 	    }
 	};
+
+	//a refresh method
+	this.refresh = function(){
+            $scope.sell.customer.refresh();
+            $scope.sell.drink.refresh();
+            //Gotta reload Hotkeys' binding
+            $scope.sell.loadHotkeys();
+        };
 	
 	//load customers' list
 	this.customers = [];
 	Server.getCustomers()
-	    .then(function(customers){
-		$scope.sell.customers = customers;
+	    .then(function(res){
+		//TODO deal with status
+		$scope.sell.customers = res;
 	    });
 	
         //load drinks' list
@@ -216,6 +225,17 @@ angular.module('babar.sell', [
 		}else{
 		    return null;
 		}
+	    },
+	    getActualMoney: function(){
+		//change money indication for peculiar statuses
+                var money = this.details.money;
+                if(this.details.status === 'Barman' ||
+                   this.details.status === 'Barchief'){
+                    money+=20;
+                }else if(this.details.status === 'VIP'){
+                    money += 50;
+                }
+		return money;
 	    },
 	    refresh: function(){
 		Server.getCustomerInfo(
@@ -300,14 +320,7 @@ angular.module('babar.sell', [
 	    },
             blockIndex: function(){
                 $scope.sell.drink.setIndex(0, false);
-            },
-	    buy: function(customer){
-		//DIALOG
-		this.details = null;
-	    },
-	    cancel: function(){
-		this.details = null;
-	    }
+            }
         };
 
         //setting up watches so the highlighted item will always be zero during a search
@@ -318,18 +331,23 @@ angular.module('babar.sell', [
             var dialog = ngDialog.open({
                 template: 'confirm/confirm.tpl.html',
                 controller: 'ConfirmCtrl as confirm',
-                data: [$scope.sell.customer.details, $scope.sell.drink.details],
+                data: [$scope.sell.customer.details, $scope.sell.drink.details, $scope.sell.customer.getActualMoney()],
                 className: 'ngdialog-theme-plain',
                 showClose: false,
                 closeByEscape: false,
                 closeByDocument: false
             });
             dialog.closePromise.then(function(promised){
-		$scope.sell.customer.refresh();
-		$scope.sell.drink.refresh();
-		//Gotta reload Hotkeys' binding
-		$scope.sell.loadHotkeys();
-		Focus.setLocation('drink');
+		if(promised.value === 'forbidden'){
+		    var promise = $scope.sell.authenticate('buy', {drink: $scope.sell.drink.details});
+                    promise.then(function(promised){
+			$scope.sell.refresh();
+                        Focus.setLocation('drink');
+                    });
+		}else{
+                    $scope.sell.refresh();
+                    Focus.setLocation('drink');
+                }
             });
         };
 	
@@ -337,18 +355,21 @@ angular.module('babar.sell', [
 	this.getMoneyColor = function(){
 	    if (this.customer.details === null){
 		return '#EE999C'; //pink
-	    }
-	    else if(this.customer.details.money > 15){
-		return '#15BF25'; //green
-	    }
-	    else if(this.customer.details.money > 10){
-		return '#FFA005'; //yellow
-	    }
-	    else if(this.customer.details.money > 5){
-		return '#FF5900'; //orange
-            }
-	    else {
-		return '#E5251E'; //red
+	    }else{
+		var money = this.customer.getActualMoney();
+		//resolve appropriate color
+		if(money > 15){
+		    return '#15BF25'; //green
+		}
+		else if(money > 10){
+		    return '#FFA005'; //yellow
+		}
+		else if(money > 5){
+		    return '#FF5900'; //orange
+		}
+		else{
+		    return '#E5251E'; //red
+		}
 	    }
 	};
 
@@ -387,15 +408,11 @@ angular.module('babar.sell', [
 		if(promised.value !== 0){
 		    var promise = $scope.sell.authenticate('deposit', {amount: promised.value});
 		    promise.then(function(promised){
-                        $scope.sell.customer.refresh();
-                        //Gotta reload Hotkeys' binding
-                        $scope.sell.loadHotkeys();
-                        Focus.setLocation('drink');
+			$scope.sell.refresh();
+			Focus.setLocation('drink');
                     });
                 }else{
-                    $scope.sell.customer.refresh();
-                    //Gotta reload Hotkeys' binding
-                    $scope.sell.loadHotkeys();
+		    $scope.sell.refresh();
                     Focus.setLocation('drink');
 		}  
             });

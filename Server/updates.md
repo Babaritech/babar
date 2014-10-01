@@ -1,4 +1,5 @@
 ### Customer:
+- id
 - firstname
 - nickname (must be unique)
 - lastname
@@ -11,11 +12,13 @@
 	  - time (since epoch, in millis)
 
 ### Drink:
+- id
 - brand (eg 'Hoegarden')
 - type (eg 'Grand Cru')(field to be renamed ?)
 - price
 
 ### User:
+- id
 - name (must be exactly similar to one nickname)
 - history :
   	  - amount

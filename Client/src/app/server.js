@@ -23,7 +23,7 @@ angular.module('babar.server', [])
 		case 400 :
 		    return "This is a bad request rejected by the client.";
                 case 418 :
-                    return "The server's saying she's a teapot.";
+                    return "The server's saying she's a keg.";
                 default:
                     return "Ouch! The server encountered an unexpected error.";
                 }
@@ -31,7 +31,9 @@ angular.module('babar.server', [])
 	    };
 	    
 	    this.getCustomers = function(){
-		var deferred = $q.defer();
+
+		//return $http.get('http://137.194.14.116/babar/Server/customer.php?action=list');
+		  var deferred = $q.defer();
 		window.setTimeout(
 		    function(){
 			var output = customersData.map(function(val, ind, arr){
@@ -41,8 +43,10 @@ angular.module('babar.server', [])
                             };
                         });
 			deferred.resolve(output);
-		    }, 200);
-		return deferred.promise;
+			}, 200);
+			
+			return deferred.promise;
+		
 	    };
 
 	    this.getCustomerInfo = function(id){
@@ -134,11 +138,11 @@ angular.module('babar.server', [])
 		var status;
 		switch(action){
 		case 'buy':
-		    //data[0] bought a data[1] at time()
+		    //data.customer bought a data.data.drink at time()
 		    status = 200;
 		    break;
 		case 'deposit':
-		    //data[0] addded data[1]€ at time()
+		    //data.customer addded data.data.amount € at time()
 		    status = 200;
 		    break;
 		default:
