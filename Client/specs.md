@@ -11,15 +11,25 @@
 
 ## src/app/admin/partials/customer.js
 
--  [ ] **TODO** `(line 23)`  ('cause a bit extreme)
--  [ ] **TODO** `(line 29)` : uncomment when ready
--  [ ] **TODO** `(line 42)`  make a post
--  [ ] **TODO** `(line 50)`  make a get
+-  [ ] **TODO** `(line 22)`  ('cause a bit extreme)
+-  [ ] **TODO** `(line 28)` : uncomment when ready
+-  [ ] **TODO** `(line 41)`  make a post
+-  [ ] **TODO** `(line 49)`  make a get
+
+## src/app/admin/partials/drink.js
+
+-  [ ] **TODO** `(line 19)`  ('cause a bit extreme)
+-  [ ] **TODO** `(line 36)`  make a post
+-  [ ] **TODO** `(line 44)`  make a get
+
+## src/app/admin/partials/user.js
+
+-  [ ] **TODO** `(line 27)`  ('cause a bit extreme)
 
 ## src/app/sell/sell.js
 
--  [ ] **TODO** `(line 176)`  : put total money spent in details
--  [ ] **TODO** `(line 180)`  : check if ain't faster to handle this server-side
+-  [ ] **TODO** `(line 191)`  : put total money spent in details
+-  [ ] **TODO** `(line 195)`  : check if ain't faster to handle this server-side
 
 ## src/app/server.js
 
@@ -32,4 +42,4 @@
 
 * * *
 
-Last generated: Mon Sep 29 2014 19:44:34 by [grunt-todo](https://github.com/leny/grunt-todo).
+Last generated: Wed Oct 01 2014 09:37:17 by [grunt-todo](https://github.com/leny/grunt-todo).

@@ -3,6 +3,7 @@ angular.module('babar.sell', [
     'babar.confirm',
     'babar.deposit',
     'babar.authenticate',
+    'babar.easter',
     'ngDialog',
     'cfp.hotkeys',
     'ui.router'
@@ -138,18 +139,30 @@ angular.module('babar.sell', [
         return new Focus();
     }])
 
-    .controller('SellCtrl', ['$rootScope', '$scope', '$state', 'Server', 'Focus', 'chronologicalFilter', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, Server, Focus, chronologicalFilter, searchFilter, selectFilter, Hotkeys, ngDialog){
+    .controller('SellCtrl', ['$rootScope', '$scope', '$state', 'Server', 'Focus', 'Konami', 'chronologicalFilter', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, Server, Focus, Konami, chronologicalFilter, searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
 	    console.log(Hotkeys.get('enter'));
 	    // this.loadHotkeys();
 	};
 
+        //an easter egg
+        $scope.unicorn = false;
+        $rootScope.$on('konamiEvent', function(args){
+	    $scope.unicorn = !$scope.unicorn;
+	    window.setTimeout(function(){
+		$scope.unicorn = false;
+		$scope.$apply();
+	    }, 1000*60*5);
+	});
+	
 	//disable tab key 'cause it triggers sh*t
 	document.onkeydown = function (e) {
             if(e.which == 9){
                 return false;
-            }
+            }else{
+		return true;
+	    }
 	};
 	
 	//load customers' list
@@ -449,6 +462,7 @@ angular.module('babar.sell', [
             $scope.sell.drink.refresh();
         };
 	var hotkUp = function(){
+	    Konami.on('up');
 	    if(Focus.getLocation() === 'customer'){
                 $scope.sell.customer.up();
 	    }else if(Focus.getLocation() === 'drink'){
@@ -457,12 +471,29 @@ angular.module('babar.sell', [
 	};
 	
 	var hotkDown = function(){
+	    Konami.on('down');
 	    if(Focus.getLocation() === 'customer'){
                 $scope.sell.customer.down();
             }else if(Focus.getLocation() === 'drink'){
                 $scope.sell.drink.down();
             }  
 	};
+
+	var hotkLeft = function(){
+	    Konami.on('left');
+	};
+
+	var hotkRight = function(){
+	    Konami.on('right');
+        };
+
+	var hotkA = function(){
+	    Konami.on('a');
+        };
+
+	var hotkB = function(){
+	    Konami.on('b');
+        };
 
 	this.loadHotkeys = function(){
             Hotkeys.add({
@@ -489,6 +520,22 @@ angular.module('babar.sell', [
                 callback: hotkDown,
                 allowIn: ['INPUT']
 	    });
+            Hotkeys.add({
+                combo: 'left',
+                callback: hotkLeft
+            });
+            Hotkeys.add({
+                combo: 'right',
+                callback: hotkRight
+            });
+            Hotkeys.add({
+                combo: 'a',
+                callback: hotkA
+            });
+            Hotkeys.add({
+                combo: 'b',
+                callback: hotkB
+            });
 	};
 	this.loadHotkeys();
 	

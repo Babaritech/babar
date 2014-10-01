@@ -3,6 +3,7 @@ angular.module( 'babar', [
     'templates-common',
     'ui.router',
     'ui.bootstrap',
+    'unicorn-directive',
     'babar.sell',
     'babar.admin',
     'babar.admin.customer',

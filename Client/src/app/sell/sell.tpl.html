@@ -97,10 +97,14 @@ Goal is to select a customer and file in the drink he had.
           <b>Made with love by Dryvenn and Iansus.</b>
         </div>
       </div> <!-- /text -->
+      <div
+         ng-show="unicorn"
+         style="position:relative;z-index:-10;display:inline;float:right;margin-top:4%;">
+        <unicorn></unicorn>
+      </div>
       </div> <!-- /sell-details-info -->
 
       <div class="sell-details-history" ng-hide="sell.customer.details===null">
-	<h4>History :</h4>
 	<ul class="list-group custom-list">
           <li
 	     class="list-group-item"

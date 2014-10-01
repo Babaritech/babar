@@ -68,7 +68,8 @@ module.exports = {
 	    'vendor/angular-ui-router/release/angular-ui-router.js',
 	    'vendor/angular-ui-utils/modules/route/route.js',
 	    'vendor/angular-hotkeys/build/hotkeys.min.js',
-	    'vendor/ngDialog/js/ngDialog.min.js'
+	    'vendor/ngDialog/js/ngDialog.min.js',
+	    'vendor/angular-unicorn-directive/unicorn.js'
         ],
 	css: [
 	    'vendor/angular-hotkeys/hotkeys.css',
