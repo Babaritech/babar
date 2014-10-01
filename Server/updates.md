@@ -17,12 +17,12 @@
 
 ### User:
 - name (must be exactly similar to one nickname)
-- history :
+- history : => Sera recupere via un appel à l'API
   	  - amount
 	  - customer (concat of first + nick + last ?)
 	  - time (since epoch, in millis)
 	  
 	  
 # Policy
-- VIP now authorized only to a 50-euros deficit
+- VIP now authorized only to a 50-euros deficit => Dangereux, a voir avec tout le monde d'abord
 
