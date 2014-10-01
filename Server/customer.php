@@ -78,6 +78,36 @@
 		return $c;	
 	}
 
+	function updateCustomer($id)
+	{
+		if(is_null($id))
+			Functions::setResponse(400);
+
+		$data = Functions::getJSONData();
+
+		try
+		{
+			$c = new Customer($id);
+
+			foreach($c->getFields() as $field)
+			{
+				$value = Functions::elt($data, $field['name']);
+
+				if(is_null($value))
+					Functions::setResponse(400);
+
+				$c->set($field['name'], $value);
+			}
+
+			$c->set('id', $id);
+			$c->save();
+		}
+		catch (RuntimeException $e)
+		{
+			Functions::setResponse(404);
+		}	
+	}
+
 	function deleteCustomer($id)
 	{
 		if(is_null($id))
@@ -118,6 +148,10 @@
 		$data = addCustomer();
 		break;
 
+	case 'update':
+		$data = updateCustomer(Functions::get('id'));
+		break;
+
 	case 'info':
 		$data = infoCustomer(Functions::get('id'));
 		break;
@@ -127,7 +161,6 @@
 		break;
 
 	case 'list':
-
 		$data = listCustomers();
 		break;
 
