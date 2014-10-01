@@ -21,3 +21,8 @@
   	  - amount
 	  - customer (concat of first + nick + last ?)
 	  - time (since epoch, in millis)
+	  
+	  
+# Policy
+- VIP now authorized only to a 50-euros deficit
+
