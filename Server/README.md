@@ -10,23 +10,33 @@
 ## Remote access
 137.194.14.116
 
-## Services
+## API Description
 
-### Get
-- **/Clients** : returns list of client's names and id
-- **/Clients/<someId>** : returns the info on someone
+### Customers
 
-### Post
-- **/Clients/new** : body is a new client, returns the client with his id
-- **/Clients/update** : body is an already-existent client (has an id)
-- **/Clients/delete** : body is an already-existent client (has an id)
+	Even if you can include the customer ID in the JSON body, only the one in the URI will prevail.
+
+#### Get
+- **/customer.php?action=list**: returns list of client's full names and id (include alias ?)
+- **/customer.php?action=info&amp;id=&lt;customer_id&gt;**: returns the info on someone
+- **/customer.php?action=delete&amp;id=&lt;customer_id&gt;**: deletes  target customer
+
+#### Post
+- **/customer.php?action=new** : body is a new client, returns the client with his id
+- **/customer.php?action=update&amp;id=&lt;customer_id&gt;** : body is an already-existent client (has an id)
+
 
 ### HTTP status codes handled client-side
-- 200 (ok)
-- 403 (invalid login or operation)
-- 401 (wrong password)
-- 404 (wtf is that)
-- 418 (to send from time to time)
 
-### Random facts
+#### Success
+- 200: OK
+
+#### Error
+- 400: Bad request
+- 401: Access to resource requires authentication
+- 403: Invalid supplied credentials
+- 404: Resource is missing (will be thrown in get/update/delete methods)
+- 418: "Hello, I'm a keg !"
+
+# Random facts
 - Server's female

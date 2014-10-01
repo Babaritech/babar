@@ -9,10 +9,6 @@
     
     class Customer extends Model
     {
-		public function a()
-		{
-			return;
-		}
     }
 
 ?>
