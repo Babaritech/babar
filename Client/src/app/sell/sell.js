@@ -172,9 +172,11 @@ angular.module('babar.sell', [
             $scope.sell.drink.refresh();
             //Gotta reload Hotkeys' binding
             $scope.sell.loadHotkeys();
+	    //Set the focus back
+	    Focus.setLocation('drink');
         };
-	
-	//load customers' list
+        
+        //load customers' list
 	this.customers = [];
 	Server.getCustomers()
 	    .then(function(res){
@@ -270,9 +272,9 @@ angular.module('babar.sell', [
 	    setIndex: function(index, isAMouseAttempt){
 		this.index = index;
 		if(isAMouseAttempt){
-		    Focus.setLocation('customer');
 		    this.refresh();
-		}
+		    Focus.setLocation('customer');
+                }
             },
 	    blockIndex: function(){
 		$scope.sell.customer.setIndex(0, false);
@@ -314,7 +316,6 @@ angular.module('babar.sell', [
             setIndex: function(index, isAMouseAttempt){
                 this.index = index;
 		if(isAMouseAttempt){
-		    Focus.setLocation('drink');
                     this.refresh();
 		    $scope.sell.mouseAttempt();
 		}
@@ -343,11 +344,10 @@ angular.module('babar.sell', [
 		    var promise = $scope.sell.authenticate('buy', {drink: $scope.sell.drink.details});
                     promise.then(function(promised){
 			$scope.sell.refresh();
-                        Focus.setLocation('drink');
                     });
 		}else{
                     $scope.sell.refresh();
-                    Focus.setLocation('drink');
+		    
                 }
             });
         };
@@ -396,6 +396,7 @@ angular.module('babar.sell', [
 	//When one needs to add some money
 	this.makeDeposit = function(){
 	    Focus.lose();
+	    this.disableHotkeys();
             var dialog = ngDialog.open({
                 template: 'deposit/deposit.tpl.html',
                 controller: 'DepositCtrl as deposit',
@@ -410,11 +411,9 @@ angular.module('babar.sell', [
 		    var promise = $scope.sell.authenticate('deposit', {amount: promised.value});
 		    promise.then(function(promised){
 			$scope.sell.refresh();
-			Focus.setLocation('drink');
                     });
                 }else{
 		    $scope.sell.refresh();
-                    Focus.setLocation('drink');
 		}  
             });
 	};
@@ -422,6 +421,7 @@ angular.module('babar.sell', [
 	//When one needs to authenticate himself
 	this.authenticate = function(action, data){
 	    Focus.lose();
+	    this.disableHotkeys();
 	    var dialog = ngDialog.open({
                 template: 'authenticate/authenticate.tpl.html',
                 controller: 'AuthenticateCtrl as auth',
@@ -555,6 +555,17 @@ angular.module('babar.sell', [
                 callback: hotkB
             });
 	};
+	this.disableHotkeys = function(){
+	    Hotkeys.del('up');
+	    Hotkeys.del('down');
+	    Hotkeys.del('left');
+	    Hotkeys.del('right');
+            Hotkeys.del('a');
+	    Hotkeys.del('b');
+            Hotkeys.del('enter');
+	    Hotkeys.del('escape');
+	};
 	this.loadHotkeys();
+
 	
     }]);
