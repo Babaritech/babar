@@ -142,6 +142,7 @@ angular.module('babar.sell', [
     .controller('SellCtrl', ['$rootScope', '$scope', '$state', 'Server', 'Focus', 'Konami', 'chronologicalFilter', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, Server, Focus, Konami, chronologicalFilter, searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
+	    Server.debug();
 	    console.log(Hotkeys.get('enter'));
 	    // this.loadHotkeys();
 	};

@@ -26,6 +26,11 @@ angular.module( 'babar', [
 		controller: "SellCtrl",
 		controllerAs: "sell"
             })
+	    .state('error', {
+		url: "/error/:status",
+		templateUrl: "error/error.tpl.html",
+		controllerAs: "error"
+	    })
             .state('admin', {
                 url: "/admin",
                 templateUrl: "admin/admin.tpl.html",

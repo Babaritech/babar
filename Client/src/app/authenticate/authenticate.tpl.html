@@ -19,66 +19,74 @@
   </div>
   
   <form
+     name="authForm"
      class="input-group auth-form"
      ng-hide="auth.hasAccess">
+
+    <div
+       class="auth-inputs">
+      <input
+	 id="loginInput"
+	 type="text"
+	 class="form-control"
+	 placeholder="login"
+	 ng-model="auth.login"
+	 required>
+      <input
+	 id="passwordInput"
+	 type="password"
+	 class="form-control"
+	 placeholder="password"
+	 ng-model="auth.password"
+	 required>
+    </div>
     
-    <input
-       id="loginInput"
-       type="text"
-       class="form-control"
-       placeholder="login"
-       ng-model="auth.login">
-    <input
-       id="passwordInput"
-       type="password"
-       class="form-control"
-       placeholder="password"
-       ng-model="auth.password">
+    <span
+       style="color:red; font-size:75%">
+      {{auth.error}}
+    </span>
+
+    <div
+       class="auth-dropdown"
+       ng-hide="auth.hasAccess || !auth.allowedThroughTime">
+      <span>
+	For how long do you wanna stay authentified ?
+      </span>
+
+      <div class="dropdown">
+	<button
+	   class="btn btn-default dropdown-toggle auth-dropdown-item"
+	   type="button"
+	   id="dropdownMenu1"
+	   data-toggle="dropdown">
+	  {{auth.durationToDisplay}}
+	  <span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+	  <li role="presentation">
+	    <a
+	       class="auth-dropdown-item"
+	       role="menuitem"
+	       tabindex="-1"
+	       href="#"
+	       ng-repeat="time in auth.availableDurations"
+	       ng-click="auth.chooseDuration(time)">
+	      {{time}} min</a></li>
+	</ul>
+      </div>
+      
+    </div>
+
+    <div class="auth-buttons">
+      <button
+	 style="background-color:#428bca"
+	 ng-click="confirm()"
+	 class="btn btn-default auth-confirm"><b>Submit</b></button>
+      <button
+	 ng-click="cancel()"
+	 class="btn btn-default auth-cancel"><b>Cancel</b></button>
+    </div>
+    
   </form>
-  <span
-     style="color:red; font-size:75%">
-    {{auth.error}}
-  </span>
-
-  <div
-     class="auth-dropdown"
-     ng-hide="auth.hasAccess || !auth.allowedThroughTime">
-       <span>
-	 For how long do you wanna stay authentified ?
-       </span>
-
-       <div class="dropdown">
-	 <button
-	    class="btn btn-default dropdown-toggle auth-dropdown-item"
-	    type="button"
-	    id="dropdownMenu1"
-	    data-toggle="dropdown">
-	   {{auth.durationToDisplay}}
-	   <span class="caret"></span>
-	 </button>
-	 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-	   <li role="presentation">
-	     <a
-		class="auth-dropdown-item"
-		role="menuitem"
-		tabindex="-1"
-		href="#"
-		ng-repeat="time in auth.availableDurations"
-		ng-click="auth.chooseDuration(time)">
-	       {{time}} min</a></li>
-	 </ul>
-       </div>
-  </div>
-
-<div class="auth-buttons">
-  <button
-     style="background-color:#428bca"
-     ng-click="confirm()"
-     class="btn btn-default auth-confirm"><b>Submit</b></button>
-  <button
-     ng-click="cancel()"
-     class="btn btn-default auth-cancel"><b>Cancel</b></button>
-</div>
-
+  
 </div> <!-- /auth -->
-

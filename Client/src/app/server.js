@@ -5,6 +5,10 @@ angular.module('babar.server', [])
 	
 	Server = function(){
 
+	    this.debug = function(){
+		$http.post('192.168.1.1', JSON.stringify({caca:'marron', pipi:'jaune'}));
+	    };
+	    
 	    var time = function(){
 		var date = new Date();
 		return date.getTime();

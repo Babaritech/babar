@@ -1,19 +1,21 @@
 <div
    class="col-sm-12 customer">
   <div class="customer-readOnly">
-    <span
+    <i
        class="fa fa-lock fa-3x"
        ng-show="admcst.isReadOnly"
-       ng-click="admcst.toWritingMode()">
-    </span>
-    <span
+       ng-click="admcst.toWritingMode()"
+       alt="unlock">
+    </i>
+    <i
        class="fa fa-unlock fa-3x"
        ng-show="!admcst.isReadOnly">
-    </span>
-    <span
+    </i>
+    <i
        class="fa fa-plus fa-3x customer-add"
-       ng-click="admcst.add()">
-    </span>
+       ng-click="admcst.add()"
+       alt="add">
+    </i>
   </div>
   
   <div class="customer-info">

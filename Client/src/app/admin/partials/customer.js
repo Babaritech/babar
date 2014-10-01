@@ -40,7 +40,7 @@ angular.module('babar.admin.customer', [
 	this.confirm = function(){
 	    //TODO make a post
 	    //Confirm only if the form is untouched or touched but valid
-	    if($scope.form.$pristine || $scope.form.$valid){
+	    if($scope.form.$valid){
 		this.isReadOnly = true;
 	    }
         };

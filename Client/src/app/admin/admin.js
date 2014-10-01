@@ -13,10 +13,6 @@ angular.module('babar.admin', [
                 return true;
             }
         };
-	this.debug = function(){
-	    console.log('debug');
-	    $state.go('admin.customer');
-        };
 	
 	this.domains = [
 	    {

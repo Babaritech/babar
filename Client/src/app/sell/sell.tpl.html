@@ -10,11 +10,12 @@ Goal is to select a customer and file in the drink he had.
 	 style="background-color:{{sell.getMoneyColor()}}">
       <h2><b>BABAR-EXPRESS</b></h2>
       <a
-	 href="#">
-	<span
-	   class="fa fa-wrench fa-2x sell-toAdmin"
-	   ng-click="sell.admin()">
-	</span>
+	 href="/#/">
+	<i
+	   class="fa fa-wrench fa-3x sell-toAdmin"
+	   ng-click="sell.admin()"
+	   alt="settings">
+	</i>
       </a>
       <div
 	 class="sell-header-duration"
@@ -81,7 +82,7 @@ Goal is to select a customer and file in the drink he had.
 
     <div class="col-md-4 col-xs-12 sell-details sell">
       <div class="sell-details-info">
-      <img class="sell-details-info-image"
+	<img class="sell-details-info-image"
 	   src="../assets/king_babar.jpg"
 	   ng-click="sell.debug()"></img>
       
@@ -94,8 +95,8 @@ Goal is to select a customer and file in the drink he had.
           <li><b>{{sell.customer.details.money}}&#8364</b></li>
         </ul>
         <div ng-show="sell.customer.details===null">
-          Made with <i class="fa fa-heart"></i>
-            by <a href="https://github.com/Dryvenn">Dryvenn</a> and <a href="https://github.com/Iansus">Iansus</a>.
+          Made with <i class="fa fa-heart" alt="love"></i>
+          by <a href="https://github.com/Dryvenn">Dryvenn</a> and <a href="https://github.com/Iansus">Iansus</a>.
         </div>
       </div> <!-- /text -->
       <div
