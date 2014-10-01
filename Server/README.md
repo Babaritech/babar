@@ -16,12 +16,12 @@
 
 	Even if you can include the customer ID in the JSON body, only the one in the URI will prevail.
 
-#### Get
+#### GET
 - **/customer.php?action=list**: returns list of client's full names and id (include alias ?)
 - **/customer.php?action=info&amp;id=&lt;customer_id&gt;**: returns the info on someone
 - **/customer.php?action=delete&amp;id=&lt;customer_id&gt;**: deletes  target customer
 
-#### Post
+#### POST (POST data is JSON data)
 - **/customer.php?action=new** : body is a new client, returns the client with his id
 - **/customer.php?action=update&amp;id=&lt;customer_id&gt;** : body is an already-existent client (has an id)
 

@@ -33,9 +33,9 @@
 		foreach($customerList as $customer)
 		{
 			$retList[] = array(
-								'customerId' => $customer->get('customerId'),
-								'surname' => $customer->get('surname'),
-								'name' => $customer->get('name'),
+								'id' => $customer->get('id'),
+								'firstname' => $customer->get('firstname'),
+								'lastname' => $customer->get('lastname'),
 								'nickname' => $customer->get('nickname'),
 							);
 		}
@@ -60,11 +60,12 @@
 
 	function addCustomer()
 	{
+		$data = Functions::getJSONData();
 		$c = new Customer();
 
 		foreach($c->getFields() as $field)
 		{
-			$value = Functions::post($field['name']); 
+			$value = Functions::elt($data, $field['name']); 
 
 			if (is_null($value))
 				Functions::setResponse(400);
@@ -72,7 +73,28 @@
 			$c->set($field['name'], $value);
 		}
 
+		$c->save();
+
 		return $c;	
+	}
+
+	function deleteCustomer($id)
+	{
+		if(is_null($id))
+			Functions::setResponse(400);
+
+		try 
+		{
+			$c = new Customer($id);
+			$c->delete();
+
+			return true;
+		} 
+		catch (RuntimeException $e)
+		{
+			Functions::setResponse(404);
+		}
+
 	}
 
 	function infoFields()
@@ -88,7 +110,7 @@
 	switch($action)
 	{
 
-	case 'fieldsInfo':
+	case 'fields_info':
 		$data = infoFields();
 		break;
 
@@ -98,6 +120,10 @@
 
 	case 'info':
 		$data = infoCustomer(Functions::get('id'));
+		break;
+	
+	case 'delete':
+		$data = deleteCustomer(Functions::get('id'));
 		break;
 
 	case 'list':

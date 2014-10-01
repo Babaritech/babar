@@ -139,9 +139,9 @@
 		{
 			if($errorArray[0] ==  '0000') return;
 
-			$message= 'SQL_STATE : '.$errorArray[0]."\n";
-			$message.= 'Error code : '.$errorArray[1]."\n";
-			$message.= 'Error message : '.$errorArray[2];
+			$message= 'SQL_STATE : '.$errorArray[0]."\n<br />";
+			$message.= 'Error code : '.$errorArray[1]."\n<br />\n<br />";
+			$message.= $errorArray[2];
 
 			if(DEBUG) echo $message;
 

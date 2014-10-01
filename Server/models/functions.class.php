@@ -7,6 +7,11 @@
 
 	class Functions
 	{
+		public static function getJSONData()
+		{
+			return (array) json_decode(file_get_contents('php://input'));
+		}
+
 		public static function setResponse($code)
 		{
 			$test = floor($code/100);
@@ -128,14 +133,19 @@
 			return ($id>0 || $allowZero);
 		}
 
+		public static function elt($array, $index)
+		{
+			return (isset($array[$index])) ? $array[$index] : null;
+		}
+
 		public static function post($index)
 		{
-			return (isset($_POST[$index])) ? $_POST[$index] : null;
+			return Functions::elt($_POST, $index);
 		}
 
 		public static function get($index)
 		{
-			return (isset($_GET[$index])) ? $_GET[$index] : null;
+			return Functions::elt($_GET, $index);
 		}
 
 		public static function reduce($txt, $n)
