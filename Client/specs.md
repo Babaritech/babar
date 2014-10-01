@@ -7,7 +7,7 @@
 ## src/app/admin/admin.js
 
 -  [ ] **TODO** `(line 8)` : do a server call to ensure that one has the right to be here
--  [ ] **TODO** `(line 58)`  ('cause a bit extreme)
+-  [ ] **TODO** `(line 54)`  ('cause a bit extreme)
 
 ## src/app/admin/partials/customer.js
 
@@ -28,13 +28,13 @@
 
 ## src/app/sell/sell.js
 
--  [ ] **TODO** `(line 180)`  deal with status
--  [ ] **TODO** `(line 198)`  : put total money spent in details
--  [ ] **TODO** `(line 202)`  : check if ain't faster to handle this server-side
+-  [ ] **TODO** `(line 182)`  deal with status
+-  [ ] **TODO** `(line 200)`  : put total money spent in details
+-  [ ] **TODO** `(line 204)`  : check if ain't faster to handle this server-side
 
 ## src/app/server.js
 
--  [ ] **TODO** `(line 4)` : implement real server communication
+-  [ ] **TODO** `(line 28)` : implement real server communication
 
 ## src/less/main.less
 
@@ -43,4 +43,4 @@
 
 * * *
 
-Last generated: Wed Oct 01 2014 19:56:05 by [grunt-todo](https://github.com/leny/grunt-todo).
+Last generated: Wed Oct 01 2014 22:30:01 by [grunt-todo](https://github.com/leny/grunt-todo).

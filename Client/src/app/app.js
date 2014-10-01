@@ -29,6 +29,7 @@ angular.module( 'babar', [
 	    .state('error', {
 		url: "/error/:status",
 		templateUrl: "error/error.tpl.html",
+		controller: "ErrorCtrl",
 		controllerAs: "error"
 	    })
             .state('admin', {

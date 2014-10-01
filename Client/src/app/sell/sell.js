@@ -144,7 +144,6 @@ angular.module('babar.sell', [
 	this.debug = function(arg){
 	    Server.debug();
 	    console.log(Hotkeys.get('enter'));
-	    // this.loadHotkeys();
 	};
 	
         //an easter egg

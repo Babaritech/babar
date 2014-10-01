@@ -1,5 +1,29 @@
 angular.module('babar.server', [])
-    .factory('Server', ['$q', '$http', function($q, $http){
+
+    .factory('StatusResolving', [function(){
+
+
+        this.getMessage = function(code){
+            switch(code){
+            case 200:
+                return "ok";
+            case 403 :
+                return "You're not allowed to do this (wrong login ?).";
+            case 401 :
+                return "This is not the correct password.";
+            case 404 :
+                return "This content couldn't be found on server.";
+            case 400 :
+                return "This is a bad request rejected by the client.";
+            case 418 :
+                return "The server's saying she's a keg.";
+            default:
+                return "Ouch! The server encountered an unexpected error.";
+            }  
+        };
+    }])
+
+    .factory('Server', ['$q', '$http', 'StatusResolving', function($q, $http, StatusResolving){
 
 	//TODO: implement real server communication
 	
@@ -12,26 +36,6 @@ angular.module('babar.server', [])
 	    var time = function(){
 		var date = new Date();
 		return date.getTime();
-	    };
-
-	    var resolveStatus = function(code){
-                switch(code){
-                case 200:
-                    return "ok";
-                case 403 :
-                    return "You're not allowed to do this (wrong login ?).";
-                case 401 :
-                    return "This is not the correct password.";
-                case 404 :
-                    return "This content couldn't be found on server.";
-		case 400 :
-		    return "This is a bad request rejected by the client.";
-                case 418 :
-                    return "The server's saying she's a keg.";
-                default:
-                    return "Ouch! The server encountered an unexpected error.";
-                }
-            
 	    };
 	    
 	    this.getCustomers = function(){
@@ -154,12 +158,12 @@ angular.module('babar.server', [])
 		    status = 400;
 		    break;
 		}
-		return resolveStatus(status);
+		return StatusResolving.getMessage(status);
 	    };
 	    
 	    this.authenticate = function(level, login, password, duration){
 		//authenticate the user here
-		return resolveStatus(200);
+		return StatusResolving.getMessage(200);
 	    };
 
 	    this.getAdminItems = function(domain){
