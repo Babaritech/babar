@@ -58,12 +58,43 @@
 		}
 	}
 
+	function addCustomer()
+	{
+		$c = new Customer();
+
+		foreach($c->getFields() as $field)
+		{
+			$value = Functions::post($field['name']); 
+
+			if (is_null($value))
+				Functions::setResponse(400);
+
+			$c->set($field['name'], $value);
+		}
+
+		return $c;	
+	}
+
+	function infoFields()
+	{
+		$c = new Customer();
+		return $c->getFields();
+	}
+
 	/* </functions> */	
 
 	$action = Functions::get('action');
 
 	switch($action)
 	{
+
+	case 'fieldsInfo':
+		$data = infoFields();
+		break;
+
+	case 'new':
+		$data = addCustomer();
+		break;
 
 	case 'info':
 		$data = infoCustomer(Functions::get('id'));

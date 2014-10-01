@@ -9,10 +9,6 @@
     
     class Status extends Model
     {
-		public function a()
-		{
-			return;
-		}
     }
 
 ?>

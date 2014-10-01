@@ -47,14 +47,16 @@
 		public function addField($SQLfieldName, $paramMode = PDO::PARAM_STR, $isUniqueIdentifier = false)
 		{
 			if(!is_array($this->fields)) self::resetFields();
-			$this->fields[] = array('name' => $SQLfieldName, 'type' => (is_numeric($paramMode)) ? $paramMode : PDO::PARAM_STR, 'uniqid' => $isUniqueIdentifier);
+			$ccName = Fields::toCamelCaseNaming($SQLfieldName);
+
+			$this->fields[] = array('name' => $ccName, 'sql_name' => $SQLfieldName, 'type' => (is_numeric($paramMode)) ? $paramMode : PDO::PARAM_STR, 'uniqid' => $isUniqueIdentifier);
 		}
 
 		public function initClassFields()
 		{
 			foreach($this->fields as $sql_field)
 			{
-				$goodNaming = Fields::toCamelCaseNaming($sql_field['name']);
+				$goodNaming = $sql_field['name'];
 				$this->$goodNaming = null;
 			}
 		}
@@ -72,10 +74,9 @@
 
 		public function get($fieldName)
 		{
-			$field_name = Fields::toSqlNaming($fieldName);
 
 			foreach($this->fields as $field)
-				if($field['name'] == $field_name) return $this->$fieldName;
+				if($field['name'] == $fieldName) return $this->$fieldName;
 
 			if (DEBUG) echo ('Fatal error : Trying to acces field '.$fieldName.' in class '.get_class($this));
 			exit;
@@ -83,11 +84,9 @@
 
 		public function set($fieldName, $value)
 		{
-			$field_name = Fields::toSqlNaming($fieldName);
-
 			foreach($this->fields as $field)
 			{
-				if($field['name'] == $field_name)
+				if($field['name'] == $fieldName)
 				{
 					$this->$fieldName = $value;
 					return ;
@@ -110,12 +109,12 @@
 			{
 				if($sql_field['uniqid'])
 				{
-					$whereList .= $sepW.'`'.$sql_field['name'].'` = :'.$sql_field['name'];
+					$whereList .= $sepW.'`'.$sql_field['sql_name'].'` = :'.$sql_field['sql_name'];
 					$sepW = ' AND ';
 				}
 				else
 				{
-					$updateList .= $sep.'`'.$sql_field['name'].'` = :'.$sql_field['name'];
+					$updateList .= $sep.'`'.$sql_field['sql_name'].'` = :'.$sql_field['sql_name'];
 					$sep = ', ';
 				}
 			}
@@ -129,8 +128,7 @@
 
 			foreach($this->fields as $sql_field)
 			{
-				$goodNaming = Fields::toCamelCaseNaming($sql_field['name']);
-				$prep->bindValue(':'.$sql_field['name'], $this->$goodNaming, $sql_field['type']);
+				$prep->bindValue(':'.$sql_field['sql_name'], $this->$sql_field['name'], $sql_field['type']);
 			}
 
 			$prep->execute();
@@ -147,7 +145,7 @@
 
 			if(DEBUG) echo $message;
 
-			exit;
+			Functions::setResponse(500);
 		}
 
 		protected function insert()
@@ -160,8 +158,8 @@
 
 			foreach($this->fields as $sql_field)
 			{
-				$listValues .= $sep.'`'.$sql_field['name'].'`';
-				$values .= $sep.':'.$sql_field['name'];
+				$listValues .= $sep.'`'.$sql_field['sql_name'].'`';
+				$values .= $sep.':'.$sql_field['sql_name'];
 				$sep = ', ';
 			}
 
@@ -173,9 +171,8 @@
 
 			foreach($this->fields as $sql_field)
 			{
-				$goodNaming = Fields::toCamelCaseNaming($sql_field['name']);
-				$value = (!$sql_field['uniqid']) ? $this->$goodNaming : 0;
-				$prep->bindValue(':'.$sql_field['name'], $value, $sql_field['type']);
+				$value = (!$sql_field['uniqid']) ? $this->$sql_field['name'] : 0;
+				$prep->bindValue(':'.$sql_field['sql_name'], $value, $sql_field['type']);
 			}
 
 			$prep->execute();
@@ -195,7 +192,7 @@
 			{
 				if($sql_field['uniqid'])
 				{
-					$whereList .= $sepW.'`'.$sql_field['name'].'` = :'.$sql_field['name'];
+					$whereList .= $sepW.'`'.$sql_field['sql_name'].'` = :'.$sql_field['sql_name'];
 					$sepW = ' AND ';
 				}
 			}
@@ -210,8 +207,7 @@
 			{
 				if($sql_field['uniqid'])
 				{
-					$goodNaming = Fields::toCamelCaseNaming($sql_field['name']);
-					$prep->bindValue($sql_field['name'], $this->$goodNaming, $sql_field['type']);
+					$prep->bindValue($sql_field['sql_name'], $this->$sql_field['name'], $sql_field['type']);
 				}
 			}
 
@@ -231,7 +227,7 @@
 
 			foreach($fields as $field)
 			{
-				$selection .= $sep.'`'.$field['name'].'`';
+				$selection .= $sep.'`'.$field['sql_name'].'`';
 				$sep = ', ';
 			}
 
@@ -267,8 +263,7 @@
 				$t = new $className();
 				foreach($fields as $field)
 				{
-					$goodNaming = Fields::toCamelCaseNaming($field['name']);
-					$t->set($goodNaming, $elt[$field['name']]);
+					$t->set($field['name'], $elt[$field['sql_name']]);
 				}
 				$t->setFromSql();
 				$result[] = $t;
@@ -299,8 +294,8 @@
 			}
 
 
-			$whereClause = $uniqid_field['name'].' = :'.$uniqid_field['name'];
-			$params = array(array('id' => ':'.$uniqid_field['name'], 'value' => $uniqid));
+			$whereClause = $uniqid_field['sql_name'].' = :'.$uniqid_field['sql_name'];
+			$params = array(array('id' => ':'.$uniqid_field['sql_name'], 'value' => $uniqid));
 			if(isset($uniqid_field['type'])) $params[0]['type'] = $uniqid_field['type'];
 
 			$results = self::search($whereClause, $params);
@@ -308,8 +303,7 @@
 
 			foreach($this->fields as $sql_field)
 			{
-				$goodNaming = Fields::toCamelCaseNaming($sql_field['name']);
-				$this->$goodNaming = $results[0]->get($goodNaming);
+				$this->$sql_field['name'] = $results[0]->get($sql_field['name']);
 			}
 		}
 

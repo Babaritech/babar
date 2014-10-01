@@ -16,57 +16,43 @@
 
 			case 'customer' :
 
-				$object->addField('customer_id', PDO::PARAM_INT, true);
-				$object->addField('surname');
-				$object->addField('name');
+				$object->addField('id', PDO::PARAM_INT, true);
+				$object->addField('status_id', PDO::PARAM_INT);
+				$object->addField('firstname');
+				$object->addField('lastname');
 				$object->addField('nickname');
-				$object->addField('sex');
-				$object->addField('status');
-				$object->addField('weight');
-				$object->addField('height');
-				$object->addField('picture');
+				$object->addField('password');
+				$object->addField('email');
 
 				break;
 
 			case 'status' :
-				$object->addField('name', PDO::PARAM_STR, true);
+				$object->addField('id', PDO::PARAM_INT, true);
+				$object->addField('name');
 				$object->addField('overdraft');
 
 				break;
 
 			case 'drink':
-				$object->addField('drink_id', PDO::PARAM_INT, true);
+				$object->addField('id', PDO::PARAM_INT, true);
+				$object->addField('brand');
 				$object->addField('name');
 				$object->addField('price');
-				$object->addField('volume');
-				$object->addField('alcohol');
-				$object->addField('hidden', PDO::PARAM_INT);
 
 				break;
 			
 			case 'entry':
 
-				$object->addField('entry_id', PDO::PARAM_INT, true);
+				$object->addField('id', PDO::PARAM_INT, true);
 				$object->addField('customer_id');
+				$object->addField('debitant_id');
 				$object->addField('amount');
 				$object->addField('date');
 
 				break;
 
-			case 'manager':
-				$object->addField('login', PDO::PARAM_STR, true);
-				$object->addField('pass');
-
-				break;
-
-			case 'balance':
-				$object->addField('customer_id', PDO::PARAM_INT, true);
-				$object->addField('balance');
-
-				break;
-
 			case 'sell':
-				$object->addField('sell_id', PDO::PARAM_INT, true);
+				$object->addField('id', PDO::PARAM_INT, true);
 				$object->addField('customer_id');
 				$object->addField('drink_id');
 				$object->addField('quantity');
@@ -88,9 +74,8 @@
 				'customer' 	=> 	'customers',
 				'status' 	=> 	'status',
 				'drink' 	=> 	'drinks',
-				'manager' 	=> 	'managers',
-				'balance' 	=> 	'balances',
 				'entry'		=>	'entries',
+				'sell'		=>	'sells'
 						   );
 
 			if (isset($tables[$tableName]))
