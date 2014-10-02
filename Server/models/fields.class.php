@@ -61,6 +61,11 @@
 
 				break;
 
+			case 'totalentries':
+				$object->addField('customer_id', PDO::PARAM_INT, true);
+				$object->addField('total');
+				break;
+
 			default:
 				if (DEBUG) echo ('Fatal error : Unable to load fields for class '.$className.' !');
 				exit;
@@ -71,11 +76,12 @@
 		public static function getSQLTableName($tableName)
 		{
 			$tables = array(
-				'customer' 	=> 	'customers',
-				'status' 	=> 	'status',
-				'drink' 	=> 	'drinks',
-				'entry'		=>	'entries',
-				'sell'		=>	'sells'
+				'customer' 		=> 	'customers',
+				'status' 		=> 	'status',
+				'drink' 		=> 	'drinks',
+				'entry'			=>	'entries',
+				'sell'			=>	'sells',
+				'totalentries'	=>	'total_entries'
 						   );
 
 			if (isset($tables[$tableName]))

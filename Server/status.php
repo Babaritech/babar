@@ -17,42 +17,30 @@
 
 	/* Load models */
 
-	loadClass('customer');
+	loadClass('status');
 
 	/* Load SQL Views */
-
-	loadClass('totalentries');
 
 	/* <controller> */
 
 	/* <functions> */
 
-	function listCustomers()
+	function listStatuses()
 	{
-		$customerList = Customer::searchForAll();
+		$statusList = Status::searchForAll();
 		$retList = array();
 
-		foreach($customerList as $customer)
-		{
-			$retList[] = array(
-								'id' => $customer->get('id'),
-								'firstname' => $customer->get('firstname'),
-								'lastname' => $customer->get('lastname'),
-								'nickname' => $customer->get('nickname'),
-							);
-		}
-
-		return $retList;
+		return $statusList;
 	}
 
-	function infoCustomer($id)
+	function infoStatus($id)
 	{
 		if(is_null($id))
 			Functions::setResponse(400);
 
 		try 
 		{
-			return new Customer($id);
+			return new Status($id);
 		} 
 		catch (RuntimeException $e)
 		{
@@ -60,27 +48,27 @@
 		}
 	}
 
-	function addCustomer()
+	function addStatus()
 	{
 		$data = Functions::getJSONData();
-		$c = new Customer();
+		$s = new Status();
 
-		foreach($c->getFields() as $field)
+		foreach($s->getFields() as $field)
 		{
 			$value = Functions::elt($data, $field['name']); 
 
 			if (is_null($value))
 				Functions::setResponse(400);
 
-			$c->set($field['name'], $value);
+			$s->set($field['name'], $value);
 		}
 
-		$c->save();
+		$s->save();
 
-		return $c;	
+		return $s;	
 	}
 
-	function updateCustomer($id)
+	function updateStatus($id)
 	{
 		if(is_null($id))
 			Functions::setResponse(400);
@@ -89,20 +77,20 @@
 
 		try
 		{
-			$c = new Customer($id);
+			$s = new Status($id);
 
-			foreach($c->getFields() as $field)
+			foreach($s->getFields() as $field)
 			{
 				$value = Functions::elt($data, $field['name']);
 
 				if(is_null($value))
 					Functions::setResponse(400);
 
-				$c->set($field['name'], $value);
+				$s->set($field['name'], $value);
 			}
 
-			$c->set('id', $id);
-			$c->save();
+			$s->set('id', $id);
+			$s->save();
 
 			return true;
 		}
@@ -112,15 +100,15 @@
 		}	
 	}
 
-	function deleteCustomer($id)
+	function deleteStatus($id)
 	{
 		if(is_null($id))
 			Functions::setResponse(400);
 
 		try 
 		{
-			$c = new Customer($id);
-			$c->delete();
+			$s = new Status($id);
+			$s->delete();
 
 			return true;
 		} 
@@ -131,29 +119,10 @@
 
 	}
 
-	function getTotalEntries($id)
-	{
-		if(is_null($id))
-			Functions::setResponse(400);
-
-		try
-		{
-			$c = new Customer($id);
-			$te = new TotalEntries($id);
-
-			return $te;
-		}
-		catch (RuntimeException $e)
-		{
-			if(!isset($c)) Functions::setResponse(404);
-			else return array('customer_id' => $id, 'amount' => 0);
-		}
-	}
-
 	function infoFields()
 	{
-		$c = new Customer();
-		return $c->getFields();
+		$s = new Status();
+		return $s->getFields();
 	}
 
 	/* </functions> */	
@@ -168,27 +137,23 @@
 		break;
 
 	case 'new':
-		$data = addCustomer();
+		$data = addStatus();
 		break;
 
 	case 'update':
-		$data = updateCustomer(Functions::get('id'));
+		$data = updateStatus(Functions::get('id'));
 		break;
 
 	case 'info':
-		$data = infoCustomer(Functions::get('id'));
+		$data = infoStatus(Functions::get('id'));
 		break;
 	
 	case 'delete':
-		$data = deleteCustomer(Functions::get('id'));
-		break;
-
-	case 'total_entries':
-		$data = getTotalEntries(Functions::get('id'));
+		$data = deleteStatus(Functions::get('id'));
 		break;
 
 	case 'list':
-		$data = listCustomers();
+		$data = listStatuses();
 		break;
 
 	default:

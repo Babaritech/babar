@@ -17,42 +17,28 @@
 
 	/* Load models */
 
+	loadClass('entry');
 	loadClass('customer');
 
 	/* Load SQL Views */
-
-	loadClass('totalentries');
 
 	/* <controller> */
 
 	/* <functions> */
 
-	function listCustomers()
+	function listEntries()
 	{
-		$customerList = Customer::searchForAll();
-		$retList = array();
-
-		foreach($customerList as $customer)
-		{
-			$retList[] = array(
-								'id' => $customer->get('id'),
-								'firstname' => $customer->get('firstname'),
-								'lastname' => $customer->get('lastname'),
-								'nickname' => $customer->get('nickname'),
-							);
-		}
-
-		return $retList;
+		return Entry::searchForAll();
 	}
 
-	function infoCustomer($id)
+	function infoEntry($id)
 	{
 		if(is_null($id))
 			Functions::setResponse(400);
 
 		try 
 		{
-			return new Customer($id);
+			return new Entry($id);
 		} 
 		catch (RuntimeException $e)
 		{
@@ -60,10 +46,10 @@
 		}
 	}
 
-	function addCustomer()
+	function addEntry()
 	{
 		$data = Functions::getJSONData();
-		$c = new Customer();
+		$c = new Entry();
 
 		foreach($c->getFields() as $field)
 		{
@@ -80,7 +66,7 @@
 		return $c;	
 	}
 
-	function updateCustomer($id)
+	function updateEntry($id)
 	{
 		if(is_null($id))
 			Functions::setResponse(400);
@@ -89,7 +75,7 @@
 
 		try
 		{
-			$c = new Customer($id);
+			$c = new Entry($id);
 
 			foreach($c->getFields() as $field)
 			{
@@ -112,14 +98,14 @@
 		}	
 	}
 
-	function deleteCustomer($id)
+	function deleteEntry($id)
 	{
 		if(is_null($id))
 			Functions::setResponse(400);
 
 		try 
 		{
-			$c = new Customer($id);
+			$c = new Entry($id);
 			$c->delete();
 
 			return true;
@@ -131,7 +117,7 @@
 
 	}
 
-	function getTotalEntries($id)
+	function getCustomerHistory($id)
 	{
 		if(is_null($id))
 			Functions::setResponse(400);
@@ -139,20 +125,22 @@
 		try
 		{
 			$c = new Customer($id);
-			$te = new TotalEntries($id);
+			$whereClause = 'customer_id = :cid';
+			$params = array( array('id' => ':cid', 'value' => $id, 'type' => PDO::PARAM_INT) );
 
-			return $te;
+			return Entry::search($whereClause, $params);
 		}
 		catch (RuntimeException $e)
 		{
-			if(!isset($c)) Functions::setResponse(404);
-			else return array('customer_id' => $id, 'amount' => 0);
+			if(!isset($c))
+				Functions::setResponse(404);
+
 		}
 	}
 
 	function infoFields()
 	{
-		$c = new Customer();
+		$c = new Entry();
 		return $c->getFields();
 	}
 
@@ -168,27 +156,27 @@
 		break;
 
 	case 'new':
-		$data = addCustomer();
+		$data = addEntry();
 		break;
 
 	case 'update':
-		$data = updateCustomer(Functions::get('id'));
+		$data = updateEntry(Functions::get('id'));
 		break;
 
 	case 'info':
-		$data = infoCustomer(Functions::get('id'));
+		$data = infoEntry(Functions::get('id'));
 		break;
 	
 	case 'delete':
-		$data = deleteCustomer(Functions::get('id'));
+		$data = deleteEntry(Functions::get('id'));
 		break;
 
-	case 'total_entries':
-		$data = getTotalEntries(Functions::get('id'));
+	case 'customer_history':
+		$data = getCustomerHistory(Functions::get('id'));
 		break;
 
 	case 'list':
-		$data = listCustomers();
+		$data = listEntries();
 		break;
 
 	default:
