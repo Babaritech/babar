@@ -39,17 +39,17 @@
 
 ### OBJECT=	entry
 
--
+- **_GET_	ACTION= customer_history	MORE_ARGS=id**: Retrieves the customer entry history.
 
 ### OBJECT=	right
 
--
+- _No more action_
 
 ### OBJECT=	sell
 
--
+- **_GET_	ACTION= customer_history	MORE_ARGS=id**: Retrieves the customer sell history.
 
 ### OBJECT=	status
 
--
+- _No more action_
 
