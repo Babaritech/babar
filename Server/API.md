@@ -5,6 +5,14 @@
 
 	Data transmission format is JSON
 
+## Object description
+
+- Customer: one of the many Babar users
+- Entry: Object created when an user puts money on his/her account
+- Right: An order (allow/deny) associated with a couple user/action
+- Sell: Object create when an user pays a drink
+- Status: The name an allowed overdraft granted to someone
+
 ## Error Codes
 
 ### Success
