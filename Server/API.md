@@ -26,7 +26,7 @@
 - **_GET_	ACTION= list**: Lists objects in the database.
 - **_GET_	ACTION= info 	MORE_ARGS=id**: Gets an object from the DB.
 - **_POST_	ACTION= update 	MORE_ARGS=id**: Posts update to object; all fields required.
-- **_POST_	ACTION= new	**: Posts new object; all fields required.
+- **_POST_	ACTION= new**: Posts new object; all fields required.
 - **_GET_	ACTION= delete	MORE_ARGS=id**: Deletes object from the database.
 
 ### OBJECT=	customer
