@@ -14,6 +14,18 @@
 			switch($className)
 			{
 
+			case 'action':
+				$object->addField('id', PDO::PARAM_INT, true);
+				$object->addField('name');
+				break;
+
+			case 'right':
+				$object->addField('id', PDO::PARAM_INT, true);
+				$object->addField('action_id');
+				$object->addField('status_id');
+				$object->addField('right');
+				break;
+
 			case 'customer' :
 
 				$object->addField('id', PDO::PARAM_INT, true);
@@ -78,7 +90,7 @@
 			
 			default:
 				if (DEBUG) echo ('Fatal error : Unable to load fields for class '.$className.' !');
-				exit;
+				Functions::setResponse(500);
 				break;
 			}
 		}
@@ -86,10 +98,12 @@
 		public static function getSQLTableName($tableName)
 		{
 			$tables = array(
+				'action'		=>	'actions',
 				'customer' 		=> 	'customers',
 				'status' 		=> 	'status',
 				'drink' 		=> 	'drinks',
 				'entry'			=>	'entries',
+				'right'			=>	'rights',
 				'sell'			=>	'sells',
 				'totalentries'	=>	'total_entries',
 				'totalsells'	=>	'total_sells',
@@ -99,7 +113,10 @@
 			if (isset($tables[$tableName]))
 				return $tables[$tableName];
 			else
+			{
 				if (DEBUG) echo ('Fatal error : Unable to load the table name for class '.$className.' !');
+				Functions::setResponse(500);
+			}
 
 			return;
 			

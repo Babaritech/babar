@@ -29,6 +29,24 @@
 
 	/* <functions> */
 
+	function testUniqueness($nickname, $email)
+	{
+		
+		$whereClause = 'nickname=:nickname OR email=:email';
+		$params = array(
+						array('id' => ':nickname', 'value' => $nickname),
+						array('id' => ':email', 'value' => $email)
+					);
+
+		$test = Customer::search($whereClause, $params);
+
+		return count($test)==0;
+	}
+
+	/* </functions> */
+
+	/* <Actions> */
+
 	function listCustomers()
 	{
 		$customerList = Customer::searchForAll();
@@ -77,6 +95,10 @@
 			$c->set($field['name'], $value);
 		}
 
+	
+		if(!testUniqueness($c->get('nickname'), $c->get('email')))
+			Functions::setResponse(409);
+
 		$c->save();
 
 		return $c;	
@@ -104,6 +126,9 @@
 			}
 
 			$c->set('id', $id);
+			if(!testUniqueness($c->get('nickname'), $c->get('email')))
+				Functions::setResponse(409);
+			
 			$c->save();
 
 			return true;
