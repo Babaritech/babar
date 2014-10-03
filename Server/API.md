@@ -1,6 +1,7 @@
 # API Description
 
-	The API is used by querying the URIs in this form : (GET|POST) /Server/<OBJECT_NAME>.php?action=<ACTION>&<MORE_ARGS>
+	The API is used by querying the URIs in this form : 
+	(GET|POST) /Server/<OBJECT_NAME>.php?action=<ACTION>&<MORE_ARGS>
 
 	Data transmission format is JSON
 
