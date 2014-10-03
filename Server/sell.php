@@ -18,6 +18,7 @@
 	/* Load models */
 
 	loadClass('sell');
+	loadClass('customer');
 
 	/* Load SQL Views */
 
@@ -119,6 +120,27 @@
 
 	}
 
+	function getCustomerHistory($id)
+	{
+		if(is_null($id))
+			Functions::setResponse(400);
+
+		try
+		{
+			$c = new Customer($id);
+			$whereClause = 'customer_id = :cid';
+			$params = array( array('id' => ':cid', 'value' => $id, 'type' => PDO::PARAM_INT) );
+
+			return Sell::search($whereClause, $params);
+		}
+		catch (RuntimeException $e)
+		{
+			if(!isset($c))
+				Functions::setResponse(404);
+
+		}
+	}
+
 	function infoFields()
 	{
 		$s = new Sell();
@@ -147,7 +169,7 @@
 	case 'info':
 		$data = infoSell(Functions::get('id'));
 		break;
-	
+
 	case 'delete':
 		$data = deleteSell(Functions::get('id'));
 		break;
@@ -156,11 +178,15 @@
 		$data = listSells();
 		break;
 
+	case 'customer_history':
+		$data = getCustomerHistory(Functions::get('id'));
+		break;
+
 	default:
 		Functions::setResponse(400);
 	}
 
 	/* </controller> */
-	
+
 	loadview('json', $data);
 ?>
