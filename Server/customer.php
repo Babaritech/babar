@@ -22,6 +22,8 @@
 	/* Load SQL Views */
 
 	loadClass('totalentries');
+	loadClass('totalsells');
+	loadClass('balance');
 
 	/* <controller> */
 
@@ -146,10 +148,48 @@
 		catch (RuntimeException $e)
 		{
 			if(!isset($c)) Functions::setResponse(404);
-			else return array('customer_id' => $id, 'amount' => 0);
+			else return array('customer_id' => $id, 'total' => 0);
 		}
 	}
 
+	function getTotalSells($id)
+	{
+		if(is_null($id))
+			Functions::setResponse(400);
+
+		try
+		{
+			$c = new Customer($id);
+			$ts = new TotalSells($id);
+
+			return $ts;
+		}
+		catch (RuntimeException $e)
+		{
+			if(!isset($c)) Functions::setResponse(404);
+			else return array('customer_id' => $id, 'total' => 0);
+		}
+	}
+
+	function getBalance($id)
+	{
+		if(is_null($id))
+			Functions::setResponse(400);
+
+		try
+		{
+			$c = new Customer($id);
+			$b = new Balance($id);
+
+			return $b;
+		}
+		catch (RuntimeException $e)
+		{
+			if(!isset($c)) Functions::setResponse(404);
+			else return array('customer_id' => $id, 'balance' => 0);
+		}
+	}
+	
 	function infoFields()
 	{
 		$c = new Customer();
@@ -186,6 +226,15 @@
 	case 'total_entries':
 		$data = getTotalEntries(Functions::get('id'));
 		break;
+
+	case 'total_sells':
+		$data = getTotalSells(Functions::get('id'));
+		break;
+
+	case 'balance':
+		$data = getBalance(Functions::get('id'));
+		break;
+
 
 	case 'list':
 		$data = listCustomers();

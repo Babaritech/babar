@@ -66,6 +66,16 @@
 				$object->addField('total');
 				break;
 
+			case 'totalsells':
+				$object->addField('customer_id', PDO::PARAM_INT, true);
+				$object->addField('total');
+				break;
+
+			case 'balance':
+				$object->addField('customer_id', PDO::PARAM_INT, true);
+				$object->addField('balance');
+				break;
+			
 			default:
 				if (DEBUG) echo ('Fatal error : Unable to load fields for class '.$className.' !');
 				exit;
@@ -81,7 +91,9 @@
 				'drink' 		=> 	'drinks',
 				'entry'			=>	'entries',
 				'sell'			=>	'sells',
-				'totalentries'	=>	'total_entries'
+				'totalentries'	=>	'total_entries',
+				'totalsells'	=>	'total_sells',
+				'balance'		=>	'balances'
 						   );
 
 			if (isset($tables[$tableName]))
