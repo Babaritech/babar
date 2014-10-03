@@ -7,24 +7,24 @@
 
 ## Object description
 
-- Customer: one of the many Babar users
-- Entry: Object created when an user puts money on his/her account
-- Right: An order (allow/deny) associated with a couple user/action
-- Sell: Object create when an user pays a drink
-- Status: The name an allowed overdraft granted to someone
+- **Customer:** one of the many Babar users
+- **Entry:** Object created when an user puts money on his/her account
+- **Right:** An order (allow/deny) associated with a couple user/action
+- **Sell:** Object create when an user pays a drink
+- **Status:** The name an allowed overdraft granted to someone
 
 ## Error Codes
 
 ### Success
-- 200: OK
+- **200:** OK
 
 ### Error
-- 400: Bad request
-- 401: Access to resource requires authentication
-- 403: Invalid supplied credentials
-- 404: Resource is missing (will be thrown in get/update/delete methods)
-- 409: Conflict with existing resource on unique field
-- 418: "Hello, I'm a keg"
+- **400:** Bad request
+- **401:** Access to resource requires authentication
+- **403:** Invalid supplied credentials
+- **404:** Resource is missing (will be thrown in get/update/delete methods)
+- **409:** Conflict with existing resource on unique field
+- **418:** "Hello, I'm a keg"
 
 ## Interfaces
 
