@@ -22,7 +22,7 @@
 
 ### Common object actions
 
-- **_GET_	ACTION= fields_info				**: Returns JSON description of object fields.
+- **_GET_	ACTION= fields_info**: Returns JSON description of object fields.
 - **_GET_	ACTION= list					**: Lists objects in the database.
 - **_GET_	ACTION= info 	MORE_ARGS=id	**: Gets an object from the DB.
 - **_POST_	ACTION= update 	MORE_ARGS=id	**: Posts update to object; all fields required.
