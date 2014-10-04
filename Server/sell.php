@@ -19,10 +19,13 @@
 
 	loadClass('sell');
 	loadClass('customer');
+	loadClass('token');
 
 	/* Load SQL Views */
 
 	/* <controller> */
+
+	Token::purge();
 
 	/* <functions> */
 
