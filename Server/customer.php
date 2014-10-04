@@ -95,7 +95,7 @@
 			$c->set($field['name'], $value);
 		}
 
-	
+		$c->set('password', Functions::hash($c->get('password')));	
 		if(!testUniqueness($c->get('nickname'), $c->get('email')))
 			Functions::setResponse(409);
 
@@ -122,10 +122,13 @@
 				if(is_null($value))
 					Functions::setResponse(400);
 
-				$c->set($field['name'], $value);
+				if($field['name']!='password' || !is_null(Functions::get('updatePassword')))
+					$c->set($field['name'], $value);
 			}
 
 			$c->set('id', $id);
+			$c->set('password', Functions::hash($c->get('password')));
+
 			if(!testUniqueness($c->get('nickname'), $c->get('email')))
 				Functions::setResponse(409);
 			

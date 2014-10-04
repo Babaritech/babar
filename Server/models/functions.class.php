@@ -21,11 +21,10 @@
 			if($test >= 4) exit();
 		}
 
-		public static function hash($login, $password)
+		public static function hash($password)
 		{
-			$l = strtoupper($login);
-			$hMD5 = $l.md5($l.$password);
-			return sha1($hMD5.$password.strrev($hMD5));
+			$salt = 'Er4"4gG4D*!';
+			return hash('sha512', $salt.$password.$salt);
 		}
 
 		public static function randomHash()
