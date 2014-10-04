@@ -18,10 +18,13 @@
 	/* Load models */
 
 	loadClass('right');
+	loadClass('token');
 
 	/* Load SQL Views */
 
 	/* <controller> */
+
+	Token::purge();
 
 	/* <functions> */
 

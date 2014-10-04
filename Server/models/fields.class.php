@@ -73,6 +73,16 @@
 
 				break;
 
+			case 'token':
+				$object->addField('id', PDO::PARAM_INT, true);
+				$object->addField('customer_id');
+				$object->addField('value');
+				$object->addField('expiration');
+				$object->addField('action_count');
+				break;
+
+			// SQL Views
+
 			case 'totalentries':
 				$object->addField('customer_id', PDO::PARAM_INT, true);
 				$object->addField('total');
@@ -105,6 +115,8 @@
 				'entry'			=>	'entries',
 				'right'			=>	'rights',
 				'sell'			=>	'sells',
+				'token'			=>	'tokens',
+
 				'totalentries'	=>	'total_entries',
 				'totalsells'	=>	'total_sells',
 				'balance'		=>	'balances'
