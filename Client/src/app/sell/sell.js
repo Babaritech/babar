@@ -177,8 +177,9 @@ angular.module('babar.sell', [
         
         //load customers' list
 	this.customers = [];
-	Server.getCustomers()
+	Server.get('customer')
 	    .then(function(res){
+		console.log('res');
 		//TODO deal with status
 		$scope.sell.customers = res;
 	    });

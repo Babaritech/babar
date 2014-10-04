@@ -1,3 +1,5 @@
+var serverIP = '137.194.14.116';
+
 angular.module('babar.server', [])
 
     .factory('StatusResolving', [function(){
@@ -8,15 +10,17 @@ angular.module('babar.server', [])
 		case 200:
                     return "ok";
 		case 403 :
-                    return "You're not allowed to do this (wrong login ?).";
+                    return "Those are incorrect credentials (login/password).";
 		case 401 :
-                    return "This is not the correct password.";
+                    return "This operation requires an authentication.";
 		case 404 :
                     return "This content couldn't be found on server.";
 		case 400 :
-                    return "This is a bad request rejected by the client.";
+                    return "This is a bad request.";
 		case 418 :
                     return "The server's saying she's a keg.";
+		case 409 :
+		    return "This content already exists on server.";
 		default:
                     return "Ouch! The server encountered an unexpected error.";
 		}  
@@ -40,70 +44,42 @@ angular.module('babar.server', [])
 		var date = new Date();
 		return date.getTime();
 	    };
-	    
-	    this.getCustomers = function(){
 
-		//return $http.get('http://137.194.14.116/babar/Server/customer.php?action=list');
-		var deferred = $q.defer();
-		window.setTimeout(
-		    function(){
-			var output = customersData.map(function(val, ind, arr){
-                            return {
-                                id: val.id,
-                                name: val.firstname + ' (' + val.nickname + ') ' + val.lastname
-                            };
-                        });
-			deferred.resolve(output);
-		    }, 200);
-		
-		return deferred.promise;
-		
+	    //This prepares and makes all server's requests and returns a promise
+	    this.request = function(object, params, data){
+		var url = 'http://' + serverIP + '/Server/' + object + '.php';
+		var config = {
+		    'url': url,
+		    'params':params,
+		    'header': {
+			'Access-Control-Allow-Origin': '*'
+		    }
+		};
+		if(data){
+		    config.data = data;
+		    config.method = 'POST';
+		}else{
+		    config.method = 'GET';
+		}
+		return $http(config);
 	    };
 
-	    this.getCustomerInfo = function(id){
-                var deferred = $q.defer();
-                window.setTimeout(
-		    function(){
-			var output =  customersData.reduce(function(acc, val, ind, arr){
-			    if(id == val.id){
-				return val;
-			    }
-			    else{
-				return acc;
-			    }
-			}, null);
-			deferred.resolve(output);
-		    }, 200);
-		return deferred.promise;
-            };
-
-	    this.getDrinks = function(){
-		var deferred = $q.defer();
-                window.setTimeout(
-                    function(){
-			deferred.resolve(drinksData.map(function(val, ind, arr){
-			    val.name = val.brand + ' ' + val.type;
-			    return val;
-			}));
-		    }, 200);
-		return deferred.promise;
-            };
+	    //This regroups all sorts of gets.
+	    //id is either the id of a specific object, either 'all'
+	    //A promise is returned
+	    this.get = function(object, id){
+		if(id){
+		    this.request(object, {
+			'action': 'info'
+		    });   
+		}else{
+		    this.request(object, {
+			'action': 'list'
+		    });   
+                }
+	    };
 
 	    
-
-	    this.getDrinkInfo = function(id){
-		var deferred = $q.defer();
-                window.setTimeout(
-                    function(){
-                        deferred.resolve({
-			    brand: 'Guinness',
-			    type: 'stout',
-			    price: '2.4'
-			});
-                    }, 200);
-                return deferred.promise;
-            };
-
 	    this.getUsers = function(){
 		var deferred = $q.defer();
                 window.setTimeout(
