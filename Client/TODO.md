@@ -4,4 +4,4 @@ gets
 posts
 rm history
 rm user & drink
-sign out
+tokens

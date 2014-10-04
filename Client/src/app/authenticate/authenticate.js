@@ -33,29 +33,30 @@ angular.module('babar.authenticate', [
 	
 	//in case of confirmation
 	$scope.confirm = function(){
-	    if($scope.authForm.$valid === true){
-		if(!$scope.auth.hasAccess){ //not authorized, gotta authenticate or cancel
-		    if($scope.auth.login === "" && $scope.auth.password === ""){
-			$scope.auth.error = "You must provide a valid login/password combination or cancel.";
-		    }else{
-			var response = Rights.ask($scope.auth.login, $scope.auth.password, $scope.auth.chosenDuration, $scope.auth.data.admin);
-                        if(response !== 'ok'){
-                            $scope.auth.error = response;
-                        }else{
-			    if(!$scope.auth.data.admin){
-				perform();
-			    }else{ //if this concerns admin rights (ie config)
-				$scope.closeThisDialog('admin');
-			    }
-                        }
-		    }
-		}else{
-		    perform();
-		}
-	    }
+
+	    if($scope.auth.hasAccess){
+		//already has access, perform the sh*t
+		perform();
+	    }else if($scope.authForm.$valid === true){
+		//form's well filled, ask permission
+		var response = Rights.ask($scope.auth.login, $scope.auth.password, $scope.auth.chosenDuration, $scope.auth.data.admin);	
+                if(response !== 'ok'){
+		    //permission not granted
+                    $scope.auth.error = response;
+                }else{
+		    //permission granted
+                    if(!$scope.auth.data.admin){
+			//if this isn't about going to the config page, perform an action
+                        perform();
+                    }else{
+			//this is about config, no action to perform
+                        $scope.closeThisDialog('admin');
+                    }
+                }
+            }
         };
 
-	//in case of cancellation
+	//in case of cancel
 	$scope.cancel = function(){
             $scope.closeThisDialog('cancelled');
         };

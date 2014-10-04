@@ -19,12 +19,13 @@
   </div>
   
   <form
+     novalidate
      name="authForm"
-     class="input-group auth-form"
-     ng-hide="auth.hasAccess">
+     class="input-group auth-form">
 
     <div
-       class="auth-inputs">
+       class="auth-inputs"
+       ng-hide="auth.hasAccess">
       <input
 	 id="loginInput"
 	 type="text"
@@ -42,7 +43,8 @@
     </div>
     
     <span
-       style="color:red; font-size:75%">
+       style="color:red; font-size:75%"       
+       ng-hide="auth.hasAccess">
       {{auth.error}}
     </span>
 
@@ -71,7 +73,8 @@
 	       href="#"
 	       ng-repeat="time in auth.availableDurations"
 	       ng-click="auth.chooseDuration(time)">
-	      {{time}} min</a></li>
+	      {{time}} min</a>
+	  </li>
 	</ul>
       </div>
       
@@ -79,12 +82,11 @@
 
     <div class="auth-buttons">
       <button
-	 style="background-color:#428bca"
 	 ng-click="confirm()"
-	 class="btn btn-default auth-confirm"><b>Submit</b></button>
+	 class="btn btn-success auth-confirm"><b>Submit</b></button>
       <button
 	 ng-click="cancel()"
-	 class="btn btn-default auth-cancel"><b>Cancel</b></button>
+	 class="btn btn-danger auth-cancel"><b>Cancel</b></button>
     </div>
     
   </form>

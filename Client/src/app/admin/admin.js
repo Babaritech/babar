@@ -73,30 +73,9 @@ angular.module('babar.admin', [
         this.changeItem = function(item){
 	    this.currentItem = item.name;
         };
-	
-	this.detailsBoilerplates = {
-	    drink: {
-		name: {
-		    string: 'Name',
-		    type: 'text',
-		    data: null
-		},
-		degree: {
-		    string: 'Percentage of alcohol',
-		    type: 'number',
-		    data: null
-		},
-		volume: {
-		    string: 'Volume (in cL)',
-		    type: 'number',
-		    data: null
-		},
-		price: {
-		    string: 'Price (in €)',
-		    type: 'number',
-		    data: null
-		}
-	    }
+
+	this.signOut = function(){
+	    Server.signOut();
 	};
 	    
     }]);

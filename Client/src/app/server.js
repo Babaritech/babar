@@ -2,25 +2,28 @@ angular.module('babar.server', [])
 
     .factory('StatusResolving', [function(){
 
+	StatusResolving = function(){
+            this.getMessage = function(code){
+		switch(code){
+		case 200:
+                    return "ok";
+		case 403 :
+                    return "You're not allowed to do this (wrong login ?).";
+		case 401 :
+                    return "This is not the correct password.";
+		case 404 :
+                    return "This content couldn't be found on server.";
+		case 400 :
+                    return "This is a bad request rejected by the client.";
+		case 418 :
+                    return "The server's saying she's a keg.";
+		default:
+                    return "Ouch! The server encountered an unexpected error.";
+		}  
+            };
+	};
 
-        this.getMessage = function(code){
-            switch(code){
-            case 200:
-                return "ok";
-            case 403 :
-                return "You're not allowed to do this (wrong login ?).";
-            case 401 :
-                return "This is not the correct password.";
-            case 404 :
-                return "This content couldn't be found on server.";
-            case 400 :
-                return "This is a bad request rejected by the client.";
-            case 418 :
-                return "The server's saying she's a keg.";
-            default:
-                return "Ouch! The server encountered an unexpected error.";
-            }  
-        };
+	return new StatusResolving();
     }])
 
     .factory('Server', ['$q', '$http', 'StatusResolving', function($q, $http, StatusResolving){
@@ -41,7 +44,7 @@ angular.module('babar.server', [])
 	    this.getCustomers = function(){
 
 		//return $http.get('http://137.194.14.116/babar/Server/customer.php?action=list');
-		  var deferred = $q.defer();
+		var deferred = $q.defer();
 		window.setTimeout(
 		    function(){
 			var output = customersData.map(function(val, ind, arr){
@@ -51,9 +54,9 @@ angular.module('babar.server', [])
                             };
                         });
 			deferred.resolve(output);
-			}, 200);
-			
-			return deferred.promise;
+		    }, 200);
+		
+		return deferred.promise;
 		
 	    };
 
@@ -195,7 +198,11 @@ angular.module('babar.server', [])
                     return {status: 400};
                 }
             };
-		
+
+	    this.signOut = function(){
+		//signout
+	    };
+	    
 	};
 	return new Server();
 

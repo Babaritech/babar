@@ -3,8 +3,10 @@ angular.module('babar.admin.customer', [
 ])
     .controller('AdmCustomerCtrl', ['$scope', '$state', '$stateParams', 'Server', function($scope, $state, $stateParams, Server){
 
-        this.isReadOnly = true;
+        this.isReadOnly = true; //when reading existing customers
+	this.isWriteOnly = false; //when creating a customer
         this.toWritingMode = function(){
+	    this.isWriteOnly = true;
             this.isReadOnly = false;
             
         };
@@ -36,12 +38,18 @@ angular.module('babar.admin.customer', [
 	    $scope.$parent.admin.currentItem = null;
 	    $state.go('admin.customer', {id:-1});
 	};
+
+	this.del = function(){
+	    //del current user
+	    $state.go('admin');
+	};
 	
 	this.confirm = function(){
 	    //TODO make a post
 	    //Confirm only if the form is untouched or touched but valid
 	    if($scope.form.$valid){
 		this.isReadOnly = true;
+		this.isWriteOnly = false;
 	    }
         };
 

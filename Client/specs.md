@@ -11,10 +11,10 @@
 
 ## src/app/admin/partials/customer.js
 
--  [ ] **TODO** `(line 22)`  ('cause a bit extreme)
--  [ ] **TODO** `(line 28)` : uncomment when ready
--  [ ] **TODO** `(line 41)`  make a post
--  [ ] **TODO** `(line 49)`  make a get
+-  [ ] **TODO** `(line 24)`  ('cause a bit extreme)
+-  [ ] **TODO** `(line 30)` : uncomment when ready
+-  [ ] **TODO** `(line 48)`  make a post
+-  [ ] **TODO** `(line 57)`  make a get
 
 ## src/app/admin/partials/drink.js
 
@@ -34,7 +34,7 @@
 
 ## src/app/server.js
 
--  [ ] **TODO** `(line 28)` : implement real server communication
+-  [ ] **TODO** `(line 31)` : implement real server communication
 
 ## src/less/main.less
 
@@ -43,4 +43,4 @@
 
 * * *
 
-Last generated: Wed Oct 01 2014 22:30:01 by [grunt-todo](https://github.com/leny/grunt-todo).
+Last generated: Sat Oct 04 2014 15:11:28 by [grunt-todo](https://github.com/leny/grunt-todo).

@@ -16,6 +16,12 @@
        ng-click="admcst.add()"
        alt="add">
     </i>
+    <i
+       class="fa fa-times fa-3x customer-add"
+       ng-click="admcst.del()"
+       ng-show="admcst.isWriteOnly"
+       alt="add">
+    </i>
   </div>
   
   <div class="customer-info">
