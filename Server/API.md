@@ -44,6 +44,7 @@
 - **_GET_	ACTION=	total_entries	MORE_ARGS=id**: Get the money total a customer has given.
 - **_GET_	ACTION= total_sells		MORE_ARGS=id**: Get the money total a customer has spent.
 - **_GET_	ACTION= balance			MORE_ARGS=id**: Get the customer balance.
+- On _update_ action, additional parameter **udpatePassword** shall be passed in the URL to trigger password update (needed due to hash storage).
 
 ### OBJECT=	entry
 
