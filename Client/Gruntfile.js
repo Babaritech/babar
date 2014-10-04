@@ -15,7 +15,7 @@ module.exports = function ( grunt ) {
     grunt.loadNpmTasks('grunt-conventional-changelog');
     grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-coffeelint');
-    grunt.loadNpmTasks('grunt-karma');
+    //grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-ngmin');
     grunt.loadNpmTasks('grunt-html2js');
     grunt.loadNpmTasks('grunt-todo');
@@ -461,7 +461,7 @@ module.exports = function ( grunt ) {
 	     * plugin should auto-detect.
 	     */
 	    options: {
-		livereload: true
+		livereload: 35728
 	    },
 
 	    /**
@@ -484,7 +484,9 @@ module.exports = function ( grunt ) {
 		files: [ 
 		    '<%= app_files.js %>'
 		],
-		tasks: [ 'jshint:src', 'karma:unit:run', 'copy:build_appjs' ]
+		tasks: [ 'jshint:src',
+			 //'karma:unit:run',
+			 'copy:build_appjs' ]
 	    },
 
 	    /**
@@ -544,7 +546,9 @@ module.exports = function ( grunt ) {
 		files: [
 		    '<%= app_files.jsunit %>'
 		],
-		tasks: [ 'jshint:test', 'karma:unit:run' ],
+		tasks: [ 'jshint:test'
+			 //	 ,'karma:unit:run'
+		       ],
 		options: {
 		    livereload: false
 		}
@@ -558,7 +562,9 @@ module.exports = function ( grunt ) {
 		files: [
 		    '<%= app_files.coffeeunit %>'
 		],
-		tasks: [ 'coffeelint:test', 'karma:unit:run' ],
+		tasks: [ 'coffeelint:test'
+			 //, 'karma:unit:run'
+		       ],
 		options: {
 		    livereload: false
 		}
@@ -576,7 +582,9 @@ module.exports = function ( grunt ) {
      * before watching for changes.
      */
     grunt.renameTask( 'watch', 'delta' );
-    grunt.registerTask( 'watch', [ 'build', 'karma:unit', 'delta', 'todo' ] );
+    grunt.registerTask( 'watch', [ 'build',
+				   //'karma:unit',
+				   'delta', 'todo' ] );
 
     /**
      * The default task is to build and compile.
@@ -589,8 +597,9 @@ module.exports = function ( grunt ) {
     grunt.registerTask( 'build', [
 	'clean', 'html2js', 'jshint', 'coffeelint', 'coffee', 'less:build',
 	'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
-	'copy:build_appjs', 'copy:build_vendorjs', 'index:build', 'karmaconfig',
-	'karma:continuous', 'todo'
+	'copy:build_appjs', 'copy:build_vendorjs', 'index:build',
+	//'karmaconfig','karma:continuous',
+	'todo'
     ]);
 
     /**
