@@ -11,7 +11,7 @@ angular.module('babar.sell', [
     .filter('search', function(){
 	return function(input, keyword){
 	    return input.filter(function(val, ind, arr){
-		// test if keyword is included in the name or surname
+		// test if keyword is included in the name
 		return val.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
 	    });
 	};
@@ -139,11 +139,10 @@ angular.module('babar.sell', [
         return new Focus();
     }])
 
-    .controller('SellCtrl', ['$rootScope', '$scope', '$state', 'Server', 'Focus', 'Konami', 'chronologicalFilter', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, Server, Focus, Konami, chronologicalFilter, searchFilter, selectFilter, Hotkeys, ngDialog){
+    .controller('SellCtrl', ['$rootScope', '$scope', '$state', 'Server', 'StatusResolving', 'Focus', 'Konami', 'chronologicalFilter', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, Server, StatusResolving, Focus, Konami, chronologicalFilter, searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
-	    Server.debug();
-	    console.log(Hotkeys.get('enter'));
+	    console.log($scope.sell.customer.details);
 	};
 	
         //an easter egg
@@ -179,16 +178,21 @@ angular.module('babar.sell', [
 	this.customers = [];
 	Server.get('customer')
 	    .then(function(res){
-		console.log('res');
-		//TODO deal with status
-		$scope.sell.customers = res;
+		StatusResolving.act(res.status);
+		//add an useful 'name' attribute
+		$scope.sell.customers = res.data.map(function(val, ind, arr){
+		    val.name = val.firstname + " ("+ val.nickname + ") " + val.lastname;
+		    return val;
+		});
+		
 	    });
 	
         //load drinks' list
 	this.drinks = [];
-        Server.getDrinks()
-            .then(function(drinks){
-                $scope.sell.drinks = drinks;
+        Server.get('drink')
+            .then(function(res){
+		StatusResolving.act(res.status);
+                $scope.sell.drinks = res.data;
             });
 	
 	// current customer
@@ -197,37 +201,39 @@ angular.module('babar.sell', [
 	    index: 0,
 	    size: 0,
 	    details: null,
-	    totalSpent: function(){
-		//TODO : put total money spent in details
-		return '42';
+	    getCurrentId : function(){
+		return selectFilter(searchFilter($scope.sell.customers, this.keyword), this.index)[this.index].id;
 	    },
-	    favDrink: function(){
-		//TODO : check if ain't faster to handle this server-side
-		if(this.details !== null){
-                    var favourite;
-		    var times = {};
-                    chronologicalFilter(this.details.history).forEach(function(val, ind, arr){
-			if(!times[val.name]){
-			    times[val.name] = 1;
-			}else{
-			    times[val.name] += 1;
-			}
+	    getTotalSpent: function(){
+		Server.get('customer', this.details.id, 'total_entries')
+		    .then(function(res){
+			$scope.sell.customer.details.totalSpent = res.data.total;
 		    });
-		    var howMany = 0;
-		    for(var drink in times){
-			if(times[drink] > howMany){
-			    favourite = drink;
-			    howMany = times[drink];
-			}
-		    }
-		    if(howMany !== 0){
-			return favourite;
+	    },
+	    getFavDrink: function(){
+		var ret = null;
+                var favourite;
+		var times = {};
+                chronologicalFilter(this.details.history).forEach(function(val, ind, arr){
+		    if(!times[val.name]){
+			times[val.name] = 1;
 		    }else{
-			return 'none';
+			times[val.name] += 1;
 		    }
-		}else{
-		    return null;
+		});
+		var howMany = 0;
+		for(var drink in times){
+		    if(times[drink] > howMany){
+			favourite = drink;
+			howMany = times[drink];
+		    }
 		}
+		if(howMany !== 0){
+		    ret = favourite;
+		}else{
+		    ret = 'none';
+		}
+		this.details.favDrink = ret; 
 	    },
 	    getActualMoney: function(){
 		//change money indication for peculiar statuses
@@ -240,18 +246,47 @@ angular.module('babar.sell', [
                 }
 		return money;
 	    },
-	    refresh: function(){
-		Server.getCustomerInfo(
-		    selectFilter(
-			searchFilter(
-			    $scope.sell.customers,
-			    this.keyword),
-			this.index)
-		    [this.index].id)
-		    .then(function(details){
-			$scope.sell.customer.details = details;
+	    getBalance: function(){
+		//get the amount money a customer has
+		Server.get('customer', this.getCurrentId(), 'balance')
+		    .then(function(res){
+			StatusResolving.act(res.status);
+			$scope.sell.customer.details.money = res.data.balance;
 		    });
-		this.size = selectFilter(
+            },
+	    getHistory: function(){
+		//get the consumption history of the customer
+                Server.get('sell', this.getCurrentId(), 'customer_history')
+                    .then(function(res){
+                        StatusResolving.act(res.status);
+			$scope.sell.customer.details.history = res.data.map(function(val, ind, arr){
+			    return {
+				name: val.brand + " " + val.name,
+				time: val.date,
+				price: val.price
+			    };
+			});
+			//once the history is retrieve, we can get some extra info
+                        $scope.sell.customer.getFavDrink();
+                        $scope.sell.customer.getTotalSpent();                        
+                    });
+	    },
+            refresh: function(){
+		//get the customer's basic info
+		Server.get('customer', this.getCurrentId())
+		    .then(function(res){
+			StatusResolving.act(res.status);
+                        //gotta interpret the customer status (rank)
+			res.data.status = getRankFromId(res.data.statusId);
+			$scope.sell.customer.details = res.data;
+			
+                        //get the customer's further info
+                        $scope.sell.customer.getBalance();
+			$scope.sell.customer.getHistory();
+                    });
+
+		//updata the size of the list
+                this.size = selectFilter(
                     searchFilter(
                         $scope.sell.customers,
                         this.keyword),
@@ -314,7 +349,7 @@ angular.module('babar.sell', [
 		}
             },
             setIndex: function(index, isAMouseAttempt){
-                this.index = index;
+		this.index = index;
 		if(isAMouseAttempt){
                     this.refresh();
 		    $scope.sell.mouseAttempt();
@@ -323,6 +358,19 @@ angular.module('babar.sell', [
             blockIndex: function(){
                 $scope.sell.drink.setIndex(0, false);
             }
+        };
+
+	var getRankFromId = function(statusId){
+	    switch(statusId){
+	    case 1:
+		return "VIP";
+	    case 2:
+		return "Barman";
+	    case 3:
+		return "Barchief";
+	    default:
+                return "Customer";
+	    }
         };
 
         //setting up watches so the highlighted item will always be zero during a search
@@ -376,7 +424,7 @@ angular.module('babar.sell', [
 
 	// convert a date to something readable
 	this.toDateString = function(date){
-	    var dateObj = new Date(date);
+	    var dateObj = new Date(parseInt(date, 10));
 	    return dateObj.toDateString();
 	};
 

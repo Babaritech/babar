@@ -1,12 +1,14 @@
 var serverIP = '137.194.14.116';
 
-angular.module('babar.server', [])
+angular.module('babar.server', [
+    'babar.error'
+])
 
-    .factory('StatusResolving', [function(){
+    .factory('StatusResolving', ['$state', function($state){
 
 	StatusResolving = function(){
-            this.getMessage = function(code){
-		switch(code){
+            this.getMessage = function(status){
+		switch(status){
 		case 200:
                     return "ok";
 		case 403 :
@@ -23,8 +25,14 @@ angular.module('babar.server', [])
 		    return "This content already exists on server.";
 		default:
                     return "Ouch! The server encountered an unexpected error.";
-		}  
+		}
             };
+
+	    this.act = function(status){
+		if(status !== 200){
+		    $state.go("error", {'status': status});
+		}
+	    };
 	};
 
 	return new StatusResolving();
@@ -47,13 +55,10 @@ angular.module('babar.server', [])
 
 	    //This prepares and makes all server's requests and returns a promise
 	    this.request = function(object, params, data){
-		var url = 'http://' + serverIP + '/Server/' + object + '.php';
+		var url = 'http://' + serverIP + '/babar/Server/' + object + '.php';
 		var config = {
 		    'url': url,
-		    'params':params,
-		    'header': {
-			'Access-Control-Allow-Origin': '*'
-		    }
+		    'params':params
 		};
 		if(data){
 		    config.data = data;
@@ -67,50 +72,25 @@ angular.module('babar.server', [])
 	    //This regroups all sorts of gets.
 	    //id is either the id of a specific object, either 'all'
 	    //A promise is returned
-	    this.get = function(object, id){
+	    this.get = function(object, id, specialAction){
 		if(id){
-		    this.request(object, {
-			'action': 'info'
-		    });   
+		    if(specialAction){
+			return this.request(object, {
+                            'action': specialAction,
+			    'id': id
+                        });
+		    }else{
+			return this.request(object, {
+			    'action': 'info',
+			    'id': id
+			});
+		    }
 		}else{
-		    this.request(object, {
+		    return this.request(object, {
 			'action': 'list'
 		    });   
                 }
 	    };
-
-	    
-	    this.getUsers = function(){
-		var deferred = $q.defer();
-                window.setTimeout(
-                    function(){
-			var output = usersData.map(function(val, ind, arr){
-			    return {
-				id: val.id,
-				name: val.name
-			    };
-                        }, null);	
-                        deferred.resolve(output);
-                    }, 200);
-                return deferred.promise;
-	    };
-
-	    this.getUserInfo = function(id){
-                var deferred = $q.defer();
-		window.setTimeout(
-                    function(){
-                        var output = usersData.reduce(function(acc, val, ind, arr){
-                            if(id == val.id){
-                                return val;
-                            }
-                            else{
-                                return acc;
-                            }
-                        }, null);       
-                        deferred.resolve(output);
-                    }, 200);
-                return deferred.promise;
-            };
 
 	    this.getStats = function(){
 		var deferred = $q.defer();
@@ -148,9 +128,9 @@ angular.module('babar.server', [])
 	    this.getAdminItems = function(domain){
 		switch(domain){
 		case 'customer':
-		    return {status: 200, data: this.getCustomers()};
+		    return this.get('customer');
 		case 'drink':
-		    return {status: 200, data: this.getDrinks()};
+		    return this.get('drink');
 		case 'user':
 		    return {status: 200, data: this.getUsers()};
 		case 'stat':

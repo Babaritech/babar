@@ -28,13 +28,12 @@
 
 ## src/app/sell/sell.js
 
--  [ ] **TODO** `(line 183)`  deal with status
 -  [ ] **TODO** `(line 201)`  : put total money spent in details
 -  [ ] **TODO** `(line 205)`  : check if ain't faster to handle this server-side
 
 ## src/app/server.js
 
--  [ ] **TODO** `(line 35)` : implement real server communication
+-  [ ] **TODO** `(line 43)` : implement real server communication
 
 ## src/less/main.less
 
@@ -43,4 +42,4 @@
 
 * * *
 
-Last generated: Sat Oct 04 2014 22:15:24 by [grunt-todo](https://github.com/leny/grunt-todo).
+Last generated: Sat Oct 04 2014 22:49:13 by [grunt-todo](https://github.com/leny/grunt-todo).
