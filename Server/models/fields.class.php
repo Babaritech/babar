@@ -69,6 +69,8 @@
 				$object->addField('drink_id');
 				$object->addField('quantity');
 				$object->addField('price');
+				$object->addField('brand');
+				$object->addField('name');
 				$object->addField('date');
 
 				break;
