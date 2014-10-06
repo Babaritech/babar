@@ -8,7 +8,9 @@ angular.module('babar.confirm', [
 	var actualMoney = $scope.ngDialogData[2];
 	
 	$scope.buy = function(){
+	    console.log('buy');
 	    if(actualMoney>0){
+		console.log('confirm');
 		Server.perform('buy', {customer: $scope.confirm.customer, drink: $scope.confirm.drink});
 		$scope.closeThisDialog('bought');
             }else{

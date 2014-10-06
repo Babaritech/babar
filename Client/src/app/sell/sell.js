@@ -139,7 +139,7 @@ angular.module('babar.sell', [
         return new Focus();
     }])
 
-    .controller('SellCtrl', ['$rootScope', '$scope', '$state', 'Server', 'StatusResolving', 'Focus', 'Konami', 'chronologicalFilter', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, Server, StatusResolving, Focus, Konami, chronologicalFilter, searchFilter, selectFilter, Hotkeys, ngDialog){
+    .controller('SellCtrl', ['$rootScope', '$scope', '$state', 'Server', 'StatusResolving', 'Decode', 'Focus', 'Konami', 'chronologicalFilter', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, Server, StatusResolving, Decode, Focus, Konami, chronologicalFilter, searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
 	    console.log($scope.sell.customer.details);
@@ -259,13 +259,7 @@ angular.module('babar.sell', [
                 Server.get('sell', this.getCurrentId(), 'customer_history')
                     .then(function(res){
                         StatusResolving.act(res.status);
-			$scope.sell.customer.details.history = res.data.map(function(val, ind, arr){
-			    return {
-				name: val.brand + " " + val.name,
-				time: val.date,
-				price: val.price
-			    };
-			});
+			$scope.sell.customer.details.history = Decode.history(res.data);
 			//once the history is retrieve, we can get some extra info
                         $scope.sell.customer.getFavDrink();
                         $scope.sell.customer.getTotalSpent();                        
