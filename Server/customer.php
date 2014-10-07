@@ -270,7 +270,7 @@
 
 		$results = Token::search($whereClause, $params);
 		if (!count($results))
-			Functions::setResponse(404);
+			return true;
 
 		foreach($results as $result)
 		{

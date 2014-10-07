@@ -36,7 +36,7 @@
 			define('LOGGED_OUT_STATUS', 'standard');
 			$loggedOut = false;
 
-			if(is_null($token)) $loggedOut = true;
+			if(is_null($token) || strtolower($token)=='null') $loggedOut = true;
 			else
 			{
 				$whereClause = 'value=:value';
@@ -44,7 +44,7 @@
 				$result = Token::search($whereClause, $params);
 
 				if(!count($result))
-					$loggedOut = true;
+					Functions::setResponse(498);
 				else
 				{
 					$token = $result[0];
