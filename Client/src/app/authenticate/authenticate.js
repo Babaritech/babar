@@ -5,14 +5,9 @@ angular.module('babar.authenticate', [
 ])
     .controller('AuthenticateCtrl', ['$scope', 'Server', 'Rights', 'hotkeys', function($scope, Server, Rights, Hotkeys){
 
-	this.customer = $scope.ngDialogData[0];
-	this.action = $scope.ngDialogData[1];
-	this.data = $scope.ngDialogData[2];
-
 	this.login = "";
 	this.password = "";
-	this.hasAccess = Rights.can();
-
+	
 	this.error = "";
 
 	this.allowedThroughTime = true;
@@ -23,38 +18,15 @@ angular.module('babar.authenticate', [
 	    this.chosenDuration = duration;
 	    this.durationToDisplay = duration.toString() + ' min';
 	};
-
 	
-	//if the requests concerns admin rights, lot of things change
-	if(this.data.admin){
-	    this.hasAccess = false;
-	    this.allowedThroughTime = false;
-	}
 	
 	//in case of confirmation
 	$scope.confirm = function(){
-
-	    if($scope.auth.hasAccess){
-		//already has access, perform the sh*t
-		perform();
-	    }else if($scope.authForm.$valid === true){
+	    if($scope.authForm.$valid === true){
 		//form's well filled, ask permission
-		current.reset();
-		var response = Rights.ask($scope.auth.login, $scope.auth.password, $scope.auth.chosenDuration, $scope.auth.data.admin);	
-                if(response !== 'ok'){
-		    //permission not granted
-                    $scope.auth.error = response;
-                }else{
-		    //permission granted
-                    if(!$scope.auth.data.admin){
-			//if this isn't about going to the config page, perform an action
-                        perform();
-                    }else{
-			//this is about config, no action to perform
-                        $scope.closeThisDialog('admin');
-                    }
-                }
-            }
+		Server.authenticate();
+		$scope.closeThisDialog('authentication');
+	    }
         };
 
 	//in case of cancel
@@ -62,24 +34,13 @@ angular.module('babar.authenticate', [
             $scope.closeThisDialog('cancelled');
         };
 
-	var perform = function(){
-            var response = Server.perform($scope.auth.action, {customer:$scope.auth.customer, data:$scope.auth.data});
-	    if(response==='ok'){
-		$scope.closeThisDialog('success');
-	    }else{
-		$scope.auth.error = response;
-		$scope.auth.hasAccess = false;
-	    }
-        };
 
-	var tabs = 0;
 	$scope.selectField = function(){
-	    if(tabs%2 === 0){
-		document.getElementById('loginInput').focus();
-	    }else{
+	    if(document.getElementById('loginInput') === document.activeElement){
 		document.getElementById('passwordInput').focus();
+	    }else{
+		document.getElementById('loginInput').focus();
 	    }
-	    tabs++;
         };
 
 

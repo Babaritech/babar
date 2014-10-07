@@ -34,7 +34,7 @@ angular.module('babar.server', [
 	return new StatusResolving();
     }])
 
-    .filter('react', ['Server', 'Focus', function(Server, Focus){
+    .filter('react', ['Focus', function(Focus){
 	return function(promise){
 
 	    promise.then(function(promised){
@@ -73,14 +73,14 @@ angular.module('babar.server', [
                     $state.go("error", {'status': 500});
 		    break;
 		}
-	    
-	    return promise;
+		
+		return promise;
 	    });
 
 	};
     }])
-		      
-		      
+
+
     .factory('Server', ['$q', '$http', 'StatusResolving', 'Encode', 'Decode', 'reactFilter', function($q, $http, StatusResolving, Encode, Decode, reactFilter){
 
 	Server = function(){
@@ -176,33 +176,32 @@ angular.module('babar.server', [
             };
 
 	    //This allow one to be authentified
-	    this.authenticate= function(login, password, duration){
+	    this.authenticate = function(login, password, duration){
 		var endTime = 0;
 		if(duration!==0){
 		    endTime = (new Date()).getTime() + duration*60*1000;
 		}
 		//authentication, delivers the:
-		var promise = null;
+		var promise = null; //don't forget to react
 		promise.then(function(promised){
+		    //if successful, do the sh*t, else reactFilter will handle it
 		    if(promised.status === 200){
-                    current.user = login;
-                    current.endTime = endTime;
 			//fire an event which will result in the display of the remaining time in the main view
 			//TODO handle the token
-		    $rootScope.$emit('authenticatedEvent', {login: login, endTime: endTime});
-                }
-		return response;
+			$rootScope.$emit('authenticatedEvent', {login: login, endTime: endTime});
+                    }
+		});
 	    };
 
 	    
 	    //FIXME
 	    this.getStats = function(){
 		var deferred = $q.defer();
-                window.setTimeout(
-                    function(){
-                        deferred.resolve([{name: 'pipi le plus loin', id: '0'}, {name: 'caca le plus gros', id: '1'}]);
-                    }, 200);
-                return deferred.promise;
+		window.setTimeout(
+		    function(){
+			deferred.resolve([{name: 'pipi le plus loin', id: '0'}, {name: 'caca le plus gros', id: '1'}]);
+		    }, 200);
+		return deferred.promise;
 	    };
 
 
@@ -224,18 +223,18 @@ angular.module('babar.server', [
 
 	    //FIXME
 	    this.getAdminDetails = function(domain, id){
-                switch(domain){
-                case 'customer':
+		switch(domain){
+		case 'customer':
 		    return {status: 200, data: this.getCustomerInfo(id)};
-                case 'drink':
+		case 'drink':
 		    return {status: 200, data: this.getDrinkInfo(id)};
-                case 'user':
+		case 'user':
 		    return {status: 200, data: this.getUserInfo(id)};
-                case 'stat':
+		case 'stat':
 		    return {status: 200, data: this.getStatInfo(id)};
-                default:
+		default:
 		    return {status: 400};
-                }
+		}
 	    };
 
 	    //FIXME
