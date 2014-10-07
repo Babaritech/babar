@@ -25,20 +25,6 @@ angular.module('babar.authenticate', [
 	};
 
 	
-	//keeps tracks on wether someone's identified
-	var current = {
-	    user: null,
-	    endTime: null,
-	    reset: function(){
-                this.user = null;
-                this.endTime = null;
-	    },
-	    isValid: function(){
-		var time = (new Date()).getTime();
-		return this.user!==null && time<this.endTime;
-	    }
-	};
-
 	//if the requests concerns admin rights, lot of things change
 	if(this.data.admin){
 	    this.hasAccess = false;
