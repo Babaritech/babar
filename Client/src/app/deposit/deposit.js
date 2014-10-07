@@ -17,11 +17,12 @@ angular.module('babar.deposit', [
 	    }else if($scope.deposit.money > 100){
 		$scope.deposit.error = "Can't deposit more than 100€ at a time.";
 	    }else{
-		$scope.closeThisDialog($scope.deposit.money); //deposited
+		Server.perform('deposit', {amount: $scope.deposit.money});
+		$scope.closeThisDialog('deposited');
 	    }
         };
 	$scope.cancel = function(){
-            $scope.closeThisDialog(0); //cancelled
+            $scope.closeThisDialog('cancelled');
         };
 
 	$scope.selectField = function(){

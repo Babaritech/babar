@@ -2,7 +2,6 @@ angular.module('babar.sell', [
     'babar.server',
     'babar.confirm',
     'babar.deposit',
-    'babar.authenticate',
     'babar.easter',
     'ngDialog',
     'cfp.hotkeys',
@@ -382,16 +381,9 @@ angular.module('babar.sell', [
                 closeByDocument: false
             });
             dialog.closePromise.then(function(promised){
-		if(promised.value === 'forbidden'){
-		    var promise = $scope.sell.authenticate('buy', {drink: $scope.sell.drink.details});
-                    promise.then(function(promised){
-			$scope.sell.refresh();
-                    });
-		}else{
-                    $scope.sell.refresh();
-		    
-                }
-            });
+		console.log(promised.value);
+                $scope.sell.refresh();
+	    });
         };
 	
         // takes the money value and returns an appropriate color
@@ -449,33 +441,12 @@ angular.module('babar.sell', [
                 closeByDocument: false
             });
             dialog.closePromise.then(function(promised){
-		if(promised.value !== 0){
-		    var promise = $scope.sell.authenticate('deposit', {amount: promised.value});
-		    promise.then(function(promised){
-			$scope.sell.refresh();
-                    });
-                }else{
-		    $scope.sell.refresh();
-		}  
-            });
+		console.log(promised.value);
+		$scope.sell.refresh();
+	    });
 	};
 
-	//When one needs to authenticate himself
-	this.authenticate = function(action, data){
-	    Focus.lose();
-	    this.disableHotkeys();
-	    var dialog = ngDialog.open({
-                template: 'authenticate/authenticate.tpl.html',
-                controller: 'AuthenticateCtrl as auth',
-                data: [$scope.sell.customer.details, action, data],
-                className: 'ngdialog-theme-plain',
-                showClose: false,
-                closeByEscape: false,
-                closeByDocument: false
-            });
-            return dialog.closePromise;
-	};
-
+	
 	//When an user is authenticated through time, we gotta diplay it
 	this.authenticatedUser = null;
 	this.remainingTime = 0;
@@ -499,62 +470,10 @@ angular.module('babar.sell', [
 
 	//Go to the admin page !
 	this.admin = function(){
-	    var promise = this.authenticate('config', {admin: true});
-	    promise.then(function(promised){
-		if(promised.value === 'admin'){
-                    $state.go('admin');
-		}
-	    });
-        };
+	    $state.go('admin');
+	};
         
         //This sets up some hotkeys
-        var hotkConfirm = function(){
-            if(Focus.forward()){ //isWaitingForConfirm
-                $scope.sell.confirm();
-	    }else{
-		$scope.sell.customer.refresh();
-		$scope.sell.drink.refresh();
-	    }
-        };
-        var hotkCancel= function(){
-	    Focus.backward();
-            $scope.sell.customer.refresh();
-            $scope.sell.drink.refresh();
-        };
-	var hotkUp = function(){
-	    Konami.on('up');
-	    if(Focus.getLocation() === 'customer'){
-                $scope.sell.customer.up();
-	    }else if(Focus.getLocation() === 'drink'){
-		$scope.sell.drink.up();
-	    }
-	};
-	
-	var hotkDown = function(){
-	    Konami.on('down');
-	    if(Focus.getLocation() === 'customer'){
-                $scope.sell.customer.down();
-            }else if(Focus.getLocation() === 'drink'){
-                $scope.sell.drink.down();
-            }  
-	};
-
-	var hotkLeft = function(){
-	    Konami.on('left');
-	};
-
-	var hotkRight = function(){
-	    Konami.on('right');
-        };
-
-	var hotkA = function(){
-	    Konami.on('a');
-        };
-
-	var hotkB = function(){
-	    Konami.on('b');
-        };
-
 	this.loadHotkeys = function(){
             Hotkeys.add({
                 combo: 'enter',
@@ -597,6 +516,7 @@ angular.module('babar.sell', [
                 callback: hotkB
             });
 	};
+
 	this.disableHotkeys = function(){
 	    Hotkeys.del('up');
 	    Hotkeys.del('down');
@@ -607,6 +527,48 @@ angular.module('babar.sell', [
             Hotkeys.del('enter');
 	    Hotkeys.del('escape');
 	};
+
+        var hotkConfirm = function(){
+            if(Focus.forward()){ //isWaitingForConfirm
+                $scope.sell.confirm();
+	    }else{
+		$scope.sell.customer.refresh();
+		$scope.sell.drink.refresh();
+	    }
+        };
+        var hotkCancel= function(){
+	    Focus.backward();
+            $scope.sell.customer.refresh();
+            $scope.sell.drink.refresh();
+        };
+	var hotkUp = function(){
+	    Konami.on('up');
+	    if(Focus.getLocation() === 'customer'){
+                $scope.sell.customer.up();
+	    }else if(Focus.getLocation() === 'drink'){
+		$scope.sell.drink.up();
+	    }
+	};
+	var hotkDown = function(){
+	    Konami.on('down');
+	    if(Focus.getLocation() === 'customer'){
+                $scope.sell.customer.down();
+            }else if(Focus.getLocation() === 'drink'){
+                $scope.sell.drink.down();
+            }  
+	};
+	var hotkLeft = function(){
+	    Konami.on('left');
+	};
+	var hotkRight = function(){
+	    Konami.on('right');
+        };
+	var hotkA = function(){
+	    Konami.on('a');
+        };
+	var hotkB = function(){
+	    Konami.on('b');
+        };
 	this.loadHotkeys();
 
 	

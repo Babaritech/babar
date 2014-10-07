@@ -26,14 +26,11 @@
 
 -  [ ] **TODO** `(line 27)`  ('cause a bit extreme)
 
-## src/app/sell/sell.js
-
--  [ ] **TODO** `(line 201)`  : put total money spent in details
--  [ ] **TODO** `(line 205)`  : check if ain't faster to handle this server-side
-
 ## src/app/server.js
 
--  [ ] **TODO** `(line 43)` : implement real server communication
+-  [ ] **FIX** `(line 161)` 
+-  [ ] **FIX** `(line 172)` 
+-  [ ] **FIX** `(line 188)` 
 
 ## src/less/main.less
 
@@ -42,4 +39,4 @@
 
 * * *
 
-Last generated: Sat Oct 04 2014 22:49:13 by [grunt-todo](https://github.com/leny/grunt-todo).
+Last generated: Tue Oct 07 2014 19:18:17 by [grunt-todo](https://github.com/leny/grunt-todo).

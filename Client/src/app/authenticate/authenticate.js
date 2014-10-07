@@ -24,6 +24,20 @@ angular.module('babar.authenticate', [
 	    this.durationToDisplay = duration.toString() + ' min';
 	};
 
+	
+	//keeps tracks on wether someone's identified
+	var current = {
+	    user: null,
+	    endTime: null,
+	    reset: function(){
+                this.user = null;
+                this.endTime = null;
+	    },
+	    isValid: function(){
+		var time = (new Date()).getTime();
+		return this.user!==null && time<this.endTime;
+	    }
+	};
 
 	//if the requests concerns admin rights, lot of things change
 	if(this.data.admin){
@@ -39,6 +53,7 @@ angular.module('babar.authenticate', [
 		perform();
 	    }else if($scope.authForm.$valid === true){
 		//form's well filled, ask permission
+		current.reset();
 		var response = Rights.ask($scope.auth.login, $scope.auth.password, $scope.auth.chosenDuration, $scope.auth.data.admin);	
                 if(response !== 'ok'){
 		    //permission not granted
