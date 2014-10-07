@@ -129,6 +129,7 @@
 	/* </functions> */	
 
 	$action = Functions::get('action');
+	Functions::checkRights(__FILE__, $action, Functions::get('token'));
 
 	switch($action)
 	{

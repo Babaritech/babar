@@ -66,18 +66,21 @@
 	$listRights = array();
 	foreach($actions as $action)
 		foreach($statuses as $status)
-			$listRights[] = array($action->get('id'), $status->get('id'));
+			$listRights[] = $action->get('id').'.'.$status->get('id');
+
+	$oldrights = array();
 
 	foreach($rights as $right)
 	{
 		$actionId = $right->get('actionId');
 		$statusId = $right->get('statusId');
 
-		if(!in_array(array($actionId, $statusId), $listRights))
+		if(!in_array($actionId.'.'.$statusId, $listRights))
 		{
 			echo "Deleting ($actionId,$statusId)<br />\n";
 			$right->delete();
 		}
+		else $oldrights[] = $actionId.'.'.$statusId;
 	}
 
 	foreach($actions as $action)
@@ -87,12 +90,15 @@
 			$actionId = $action->get('id');
 			$statusId = $status->get('id');
 
-			echo "Adding ($actionId,$statusId)<br />\n";
-			$new = new Right();
-			$new->set('actionId', $actionId);
-			$new->set('statusId', $statusId);
-			$new->set('right', 'deny');
-			$new->save();
+			if(!in_array($actionId.'.'.$statusId, $oldrights))
+			{
+				echo "Adding ($actionId,$statusId)<br />\n";
+				$new = new Right();
+				$new->set('actionId', $actionId);
+				$new->set('statusId', $statusId);
+				$new->set('right', 'deny');
+				$new->save();
+			}
 		}
 	}
 

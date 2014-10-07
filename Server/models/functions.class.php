@@ -7,6 +7,79 @@
 
 	class Functions
 	{
+		public static function checkRights($page, $action, $token)
+		{
+			loadClass('status');
+			loadClass('token');
+			loadClass('action');
+			loadClass('right');
+			loadClass('customer');
+
+			if(is_null($action))
+				Functions::setResponse(400);
+
+			$pagename = str_replace('.php','', basename($page));
+			$actionName = $pagename.'-'.$action;
+
+			$whereClause = 'name=:name';
+			$params = array(array('id'=>':name', 'value'=>$actionName));
+			$result = Action::search($whereClause, $params);
+
+			if(!count($result))
+			{
+				echo 'Please update actions and rights!';
+				Functions::setResponse(500);
+			}
+
+			$action = $result[0];
+
+			define('LOGGED_OUT_STATUS', 'standard');
+			$loggedOut = false;
+
+			if(is_null($token)) $loggedOut = true;
+			else
+			{
+				$whereClause = 'value=:value';
+				$params = array(array('id'=>':value', 'value'=>$token));
+				$result = Token::search($whereClause, $params);
+
+				if(!count($result))
+					$loggedOut = true;
+				else
+				{
+					$token = $result[0];
+					$customer = new Customer($token->get('customerId'));
+					$status = new Status($customer->get('statusId'));
+				}
+
+			}
+			
+			if($loggedOut)
+			{
+				$whereClause = 'name=:name';
+				$params = array( array('id'=>':name', 'value'=>LOGGED_OUT_STATUS) );
+				$result = Status::search($whereClause, $params);
+
+				if(!count($result))
+					Functions::setResponse(500);
+
+				$status = $result[0];
+			}
+
+			$whereClause = 'action_id=:action_id AND status_id=:status_id';
+			$params = array(
+							array('id'=>':action_id', 'value'=> $action->get('id')),
+							array('id'=>':status_id', 'value'=> $status->get('id')),
+						);
+
+			$result = Right::search($whereClause, $params);
+			if(!count($result))
+				Functions::setResponse(401);
+
+			if($result[0]->get('right') == 'deny')
+				Functions::setResponse(401);
+		}
+
 		public static function getJSONData()
 		{
 			return (array) json_decode(file_get_contents('php://input'));

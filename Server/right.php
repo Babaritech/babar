@@ -122,6 +122,25 @@
 
 	}
 
+	function searchRight($actionId, $statusId)
+	{
+		if(is_null($actionId) || is_null($statusId))
+			Functions::setResponse(400);
+
+		$whereClause = 'action_id=:action_id AND status_id=:status_id';
+		$params = array(
+						array('id'=>':action_id', 'value'=>$actionId),
+						array('id'=>':status_id', 'value'=>$statusId),
+					);
+
+		$result = Right::search($whereClause, $params);
+
+		if(!count($result))
+			Functions::setResponse(404);
+
+		return $result[0];
+	}
+
 	function infoFields()
 	{
 		$s = new Right();
@@ -131,6 +150,7 @@
 	/* </functions> */	
 
 	$action = Functions::get('action');
+	Functions::checkRights(__FILE__, $action, Functions::get('token'));
 
 	switch($action)
 	{
@@ -153,6 +173,10 @@
 	
 	case 'delete':
 		$data = deleteRight(Functions::get('id'));
+		break;
+
+	case 'search':
+		$data = searchRight(Functions::get('actionId'), Functions::get('statusId'));
 		break;
 
 	case 'list':
