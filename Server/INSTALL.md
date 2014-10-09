@@ -38,7 +38,7 @@ In the event you have user1 and user2 in the dev team:
 ### DataBase Management System (DBMS)
 
 For improved convenience, you should use a DBMS to manage the databases, their structure and data.
-We __strongly__ recommend you use [PhpMyAdmin][http://sourceforge.net/projects/phpmyadmin/files/latest/download?source=files].
+We __strongly__ recommend you use PhpMyAdmin: http://sourceforge.net/projects/phpmyadmin/files/latest/download?source=files
 
 Then, unzip the previously downloaded archive in the _/var/www/_ directory:
 
