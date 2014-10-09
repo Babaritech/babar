@@ -177,7 +177,6 @@ angular.module('babar.sell', [
 	this.customers = [];
 	Server.get('customer')
 	    .then(function(res){
-		StatusResolving.act(res.status);
 		//add an useful 'name' attribute
 		$scope.sell.customers = res.data.map(function(val, ind, arr){
 		    val.name = val.firstname + " ("+ val.nickname + ") " + val.lastname;
@@ -190,7 +189,6 @@ angular.module('babar.sell', [
 	this.drinks = [];
         Server.get('drink')
             .then(function(res){
-		StatusResolving.act(res.status);
                 $scope.sell.drinks = res.data;
             });
 	
@@ -236,45 +234,48 @@ angular.module('babar.sell', [
 	    },
 	    getActualMoney: function(){
 		//change money indication for peculiar statuses
-                var money = this.details.money;
-                if(this.details.status === 'Barman' ||
-                   this.details.status === 'Barchief'){
-                    money+=20;
-                }else if(this.details.status === 'VIP'){
-                    money += 50;
-                }
-		return money;
+		if(this.details.status){
+                    var money = this.details.money;
+		    money -= parseInt(this.details.status.overdraft, 10);
+		    return money;
+		}else{
+		    return 100;
+		}
 	    },
 	    getBalance: function(){
 		//get the amount money a customer has
 		Server.get('customer', this.getCurrentId(), 'balance')
 		    .then(function(res){
-			StatusResolving.act(res.status);
 			$scope.sell.customer.details.money = res.data.balance;
 		    });
             },
+	    getStatus: function(){
+		//get the status from the statusId
+		Server.get('status', this.details.statusId)
+		    .then(function(res){
+			$scope.sell.customer.details.status = res.data;
+		    });
+	    },
 	    getHistory: function(){
 		//get the consumption history of the customer
                 Server.get('sell', this.getCurrentId(), 'customer_history')
                     .then(function(res){
-                        StatusResolving.act(res.status);
 			$scope.sell.customer.details.history = Decode.history(res.data);
 			//once the history is retrieve, we can get some extra info
-                        $scope.sell.customer.getFavDrink();
-                        $scope.sell.customer.getTotalSpent();                        
+			$scope.sell.customer.getFavDrink();
+                        $scope.sell.customer.getTotalSpent();
                     });
 	    },
             refresh: function(){
 		//get the customer's basic info
 		Server.get('customer', this.getCurrentId())
 		    .then(function(res){
-			StatusResolving.act(res.status);
                         //gotta interpret the customer status (rank)
-			res.data.status = getRankFromId(res.data.statusId);
 			$scope.sell.customer.details = res.data;
 			
                         //get the customer's further info
-                        $scope.sell.customer.getBalance();
+			$scope.sell.customer.getStatus();
+			$scope.sell.customer.getBalance();
 			$scope.sell.customer.getHistory();
                     });
 
@@ -353,18 +354,6 @@ angular.module('babar.sell', [
             }
         };
 
-	var getRankFromId = function(statusId){
-	    switch(statusId){
-	    case 1:
-		return "VIP";
-	    case 2:
-		return "Barman";
-	    case 3:
-		return "Barchief";
-	    default:
-                return "Customer";
-	    }
-        };
 
         //setting up watches so the highlighted item will always be zero during a search
         $scope.$watch(this.customer.keyword, this.customer.blockIndex);

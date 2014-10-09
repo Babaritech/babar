@@ -11,7 +11,10 @@ angular.module( 'babar', [
     'babar.admin.drink',
     'babar.admin.stat'
     
-])
+], function($rootScopeProvider){
+    //digest iterations max
+    $rootScopeProvider.digestTtl(10); //default
+})
 
     .config( ['$stateProvider', '$urlRouterProvider',  function myAppConfig ( $stateProvider, $urlRouterProvider ) {
 	//

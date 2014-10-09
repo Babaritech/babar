@@ -48,10 +48,11 @@ angular.module('babar.server', [
                     //When one needs to authenticate himself
                     Focus.lose();
 		    console.log($scope);
+		    console.log(promised);
                     var dialog = ngDialog.open({
                         template: 'authenticate/authenticate.tpl.html',
                         controller: 'AuthenticateCtrl as auth',
-                        data: [$scope.sell.customer.details, action, data],
+                        data: [],
                         className: 'ngdialog-theme-plain',
                         showClose: false,
                         closeByEscape: false,
@@ -74,9 +75,8 @@ angular.module('babar.server', [
 		    break;
 		}
 		
-		return promise;
 	    });
-
+		return promise;
 	};
     }])
 
@@ -181,7 +181,7 @@ angular.module('babar.server', [
 		if(duration!==0){
 		    endTime = (new Date()).getTime() + duration*60*1000;
 		}
-		//authentication, delivers the:
+		//TODO authentication, delivers the:
 		var promise = null; //don't forget to react
 		promise.then(function(promised){
 		    //if successful, do the sh*t, else reactFilter will handle it
@@ -282,6 +282,7 @@ angular.module('babar.server', [
 	Decode = function(){
 	    
 	    this.history = function(history){
+		console.log(history);
 		return history.map(function(val, ind, arr){
 		    return {
 			name: val.brand + " " + val.name,
