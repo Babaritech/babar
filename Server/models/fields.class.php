@@ -99,7 +99,22 @@
 				$object->addField('customer_id', PDO::PARAM_INT, true);
 				$object->addField('balance');
 				break;
-			
+
+			case 'effectiveright':
+				$object->addField('action_id', PDO::PARAM_INT);
+				$object->addField('action_name');
+				$object->addField('status_id', PDO::PARAM_INT);
+				$object->addField('status_name');
+				$object->addField('right_id', PDO::PARAM_INT, true);
+				$object->addField('right');
+				break;
+
+			case 'favdrink':
+				$object->addField('customer_id', PDO::PARAM_INT, true);
+				$object->addField('drink_id', PDO::PARAM_INT);
+				$object->addField('total', PDO::PARAM_INT);
+				break;
+
 			default:
 				if (DEBUG) echo ('Fatal error : Unable to load fields for class '.$className.' !');
 				Functions::setResponse(500);
@@ -121,7 +136,9 @@
 
 				'totalentries'	=>	'total_entries',
 				'totalsells'	=>	'total_sells',
-				'balance'		=>	'balances'
+				'balance'		=>	'balances',
+				'effectiveright'=>	'effective_rights',
+				'favdrink'		=>	'favdrinks',
 						   );
 
 			if (isset($tables[$tableName]))

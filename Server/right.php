@@ -22,6 +22,8 @@
 
 	/* Load SQL Views */
 
+	loadClass('effectiveRight');
+
 	/* <controller> */
 
 	Token::purge();
@@ -31,7 +33,13 @@
 	function listRights()
 	{
 		$rightList = Right::searchForAll();
-		$retList = array();
+
+		return $rightList;
+	}
+
+	function listRightsEasy()
+	{
+		$rightList = EffectiveRight::searchForAll();
 
 		return $rightList;
 	}
@@ -181,6 +189,10 @@
 
 	case 'list':
 		$data = listRights();
+		break;
+
+	case 'list_easy':
+		$data = listRightsEasy();
 		break;
 
 	default:

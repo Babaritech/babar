@@ -280,6 +280,19 @@
 		return true;
 	}
 
+	function getFavDrink($id)
+	{
+		if(is_null($id))
+			Functions::setResponse(400);
+
+		$whereClause = 'customer_id = :cid';
+		$params = array( array('id'=>':cid', 'value'=>$cid) );
+
+		$result = FavDrink::search($whereClause, $params);
+
+		return (count($result)) ? $result[0]: null;
+	}
+
 	function infoFields()
 	{
 		$c = new Customer();
@@ -324,6 +337,10 @@
 
 	case 'balance':
 		$data = getBalance(Functions::get('id'));
+		break;
+
+	case 'favdrink':
+		$data = getFavDrink(Functions::get('id'));
 		break;
 
 	case 'login':
