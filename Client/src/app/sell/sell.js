@@ -9,14 +9,21 @@ angular.module('babar.sell', [
 ])
     .filter('search', function(){
 	return function(input, keyword){
-	    return input.filter(function(val, ind, arr){
+	    return input.filter(function(ival, ind, arr){
 		// test if keyword is included in the name
-		return val.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+		//return val.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+
+		//test if all the letters of the keyword are included in the name
+		//choose the above if this is too slow
+		return keyword.split('').every(function(kval, ind, arr){
+		    return ival.name.toLowerCase().indexOf(kval.toLowerCase()) > -1;
+		});
 	    });
 	};
     })
 
     .filter('select', function(){
+	//update each item 'active' value for item highlighting
 	return function(input, index){
 	    return input.map(function(val, ind, arr){
 		if(ind === index){
@@ -27,20 +34,6 @@ angular.module('babar.sell', [
 		return val;
 	    });
 	};
-    })
-
-    .filter('chronological', function(){
-	return function(input){
-	    //sort items chronogically
-	    if(input){
-		return input.sort(function(a, b){
-		    var dateA = new Date(a.time);
-		    var dateB = new Date(b.time);
-		    return dateB.getTime() - dateA.getTime();
-		});
-	    }
-	};
-	
     })
 
     .factory('Focus', [function(){
@@ -138,11 +131,15 @@ angular.module('babar.sell', [
         return new Focus();
     }])
 
-    .controller('SellCtrl', ['$rootScope', '$scope', '$state', 'Server', 'StatusResolving', 'Decode', 'Focus', 'Konami', 'chronologicalFilter', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, Server, StatusResolving, Decode, Focus, Konami, chronologicalFilter, searchFilter, selectFilter, Hotkeys, ngDialog){
+    .controller('SellCtrl', ['$rootScope', '$scope', '$state', '$filter', 'Server', 'StatusResolving', 'Decode', 'Focus', 'Konami', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, $filter, Server, StatusResolving, Decode, Focus, Konami, searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
 	    console.log($scope.sell.customer.details);
 	};
+
+	//this serves the chronological filter
+	this.chronological = 'time';
+	var orderBy = $filter('orderBy');
 	
         //an easter egg
         $scope.unicorn = false;
@@ -211,7 +208,7 @@ angular.module('babar.sell', [
 		var ret = null;
                 var favourite;
 		var times = {};
-                chronologicalFilter(this.details.history).forEach(function(val, ind, arr){
+		orderBy(this.details.history, $scope.sell.chronological, true).forEach(function(val, ind, arr){
 		    if(!times[val.name]){
 			times[val.name] = 1;
 		    }else{
@@ -260,6 +257,98 @@ angular.module('babar.sell', [
 		//get the consumption history of the customer
                 Server.get('sell', this.getCurrentId(), 'customer_history')
                     .then(function(res){
+			var test = [
+                            {
+                                brand: 'Kro',
+                                name: 'pinte',
+                                time: 145634684,
+                                price: '1.8'
+                            },
+                            {
+                                brand: 'Kro',
+                                name: 'pinte',
+                                time: 145634684,
+                                price: '1.8'
+                            },
+                            {
+                                brand: 'Kro',
+                                name: 'pinte',
+                                time: 145634684,
+                                price: '1.8'
+                            },
+                            {
+                                brand: 'Kro',
+                                name: 'pinte',
+                                time: 145634684,
+                                price: '1.8'
+                            },
+                            {
+                                brand: 'Kro',
+                                name: 'pinte',
+                                time: 145634684,
+                                price: '1.8'
+                            },
+                            {
+                                brand: 'Kro',
+                                name: 'pinte',
+                                time: 145634684,
+                                price: '1.8'
+                            },
+                            {
+                                brand: 'Kro',
+                                name: 'pinte',
+                                time: 145634684,
+                                price: '1.8'
+                            },
+                            {
+                                brand: 'Kro',
+                                name: 'pinte',
+                                time: 145634684,
+                                price: '1.8'
+                            },
+                            {
+                                brand: 'Kro',
+                                name: 'pinte',
+                                time: 145634684,
+                                price: '1.8'
+                            },
+                            {
+                                brand: 'Kro',
+                                name: 'pinte',
+                                time: 145634684,
+                                price: '1.8'
+                            },
+                            {
+                                brand: 'Kro',
+                                name: 'pinte',
+                                time: 145634684,
+                                price: '1.8'
+                            },
+                            {
+                                brand: 'Kro',
+                                name: 'pinte',
+                                time: 145634684,
+                                price: '1.8'
+                            },
+                            {
+                                brand: 'Kro',
+                                name: 'pinte',
+                                time: 145634684,
+                                price: '1.8'
+                            },
+			    {
+				brand: 'Kro',
+				name: 'pinte',
+				time: 145634684,
+				price: '1.8'
+			    },
+                            {
+                                brand: 'Kro',
+                                name: 'pinte',
+                                time: 1456344684,
+                                price: '1.8'
+                            }
+			];
 			$scope.sell.customer.details.history = Decode.history(res.data);
 			//once the history is retrieve, we can get some extra info
 			$scope.sell.customer.getFavDrink();

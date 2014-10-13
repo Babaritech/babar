@@ -28,6 +28,7 @@
 
 ## src/app/server.js
 
+-  [ ] **TODO** `(line 184)`  authentication, delivers the:
 -  [ ] **TODO** `(line 190)`  handle the token
 -  [ ] **FIX** `(line 197)` 
 -  [ ] **FIX** `(line 208)` 
@@ -41,4 +42,4 @@
 
 * * *
 
-Last generated: Thu Oct 09 2014 19:30:25 by [grunt-todo](https://github.com/leny/grunt-todo).
+Last generated: Sun Oct 12 2014 23:30:02 by [grunt-todo](https://github.com/leny/grunt-todo).

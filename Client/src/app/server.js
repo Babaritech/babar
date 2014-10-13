@@ -282,16 +282,14 @@ angular.module('babar.server', [
 	Decode = function(){
 	    
 	    this.history = function(history){
-		console.log(history);
 		return history.map(function(val, ind, arr){
 		    return {
 			name: val.brand + " " + val.name,
-			time: val.date,
+			time: parseInt(val.date, 10),
 			price: val.price
 		    };
 		});
 	    };
-	    
 	};
 	return new Decode();
     }]);

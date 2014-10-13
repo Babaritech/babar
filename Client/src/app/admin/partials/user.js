@@ -1,22 +1,12 @@
 angular.module('babar.admin.user', [
+    'babar.sell',
     'babar.server'
 ])
 
-    .filter('chronological', [function(){
-	return function(input){
-	    //sort items chronogically
-            if(input){
-                return input.sort(function(a, b){
-                    var dateA = new Date(a.time);
-                    var dateB = new Date(b.time);
-                    return dateB.getTime() - dateA.getTime();
-                });
-            }
-	};
-    }])
-
     .controller('AdmUserCtrl', ['$scope', '$state', '$stateParams', 'Server', function($scope, $state, $stateParams, Server){
 
+	//this serves the chronological filter
+	this.chronological = 'time';
 
 	//Selected user
 	this.current = null;
