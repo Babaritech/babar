@@ -36,7 +36,7 @@
 			define('LOGGED_OUT_STATUS', 'standard');
 			$loggedOut = false;
 
-			if(is_null($token) || strtolower($token)=='null') $loggedOut = true;
+			if(is_null($token) || strtolower($token)=='none') $loggedOut = true;
 			else
 			{
 				$whereClause = 'value=:value';
