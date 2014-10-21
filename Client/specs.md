@@ -6,8 +6,7 @@
 
 ## src/app/admin/admin.js
 
--  [ ] **TODO** `(line 8)` : do a server call to ensure that one has the right to be here
--  [ ] **TODO** `(line 54)`  ('cause a bit extreme)
+-  [ ] **TODO** `(line 52)`  ('cause a bit extreme)
 
 ## src/app/admin/partials/customer.js
 
@@ -24,16 +23,16 @@
 
 ## src/app/admin/partials/user.js
 
--  [ ] **TODO** `(line 27)`  ('cause a bit extreme)
+-  [ ] **TODO** `(line 17)`  ('cause a bit extreme)
 
 ## src/app/server.js
 
--  [ ] **TODO** `(line 184)`  authentication, delivers the:
--  [ ] **TODO** `(line 190)`  handle the token
--  [ ] **FIX** `(line 197)` 
--  [ ] **FIX** `(line 208)` 
--  [ ] **FIX** `(line 224)` 
--  [ ] **FIX** `(line 240)` 
+-  [ ] **TODO** `(line 203)`  authentication, delivers the:
+-  [ ] **TODO** `(line 209)`  handle the token
+-  [ ] **FIX** `(line 216)` 
+-  [ ] **FIX** `(line 227)` 
+-  [ ] **FIX** `(line 243)` 
+-  [ ] **FIX** `(line 259)` 
 
 ## src/less/main.less
 
@@ -42,4 +41,4 @@
 
 * * *
 
-Last generated: Sun Oct 12 2014 23:30:02 by [grunt-todo](https://github.com/leny/grunt-todo).
+Last generated: Tue Oct 21 2014 17:29:54 by [grunt-todo](https://github.com/leny/grunt-todo).

@@ -1,7 +1,8 @@
 var serverIP = '137.194.14.116';
 
 angular.module('babar.server', [
-    'babar.error'
+    'babar.error',
+    'ngDialog'
 ])
 
     .factory('StatusResolving', ['$state', function($state){
@@ -34,22 +35,33 @@ angular.module('babar.server', [
 	return new StatusResolving();
     }])
 
-    .filter('react', ['Focus', function(Focus){
-	return function(promise){
+    .factory('ServerInterceptor', ['$q', function($q){
+	var token =  {
+            value: 'none',
+            reset: function(){
+                this.value = 'none';
+            }
+	};
+        return {
+            'request': function(config) {
+		if(config.params){
+                    config.params.token = 'none';
+		}
+                return config;
+            },
 
-	    promise.then(function(promised){
-		switch(promised.status){
+            'response': function(response) {
+		switch(response.status){
+
 		case 200:
-                    //allright
+                    console.log('ok');
                     break;
-		    
+                    
                 case 401:
                     //ask for login and do it again
                     //When one needs to authenticate himself
-                    Focus.lose();
-		    console.log($scope);
-		    console.log(promised);
-                    var dialog = ngDialog.open({
+		    console.log('here');
+		    var dialog = ngDialog.open({
                         template: 'authenticate/authenticate.tpl.html',
                         controller: 'AuthenticateCtrl as auth',
                         data: [],
@@ -58,50 +70,58 @@ angular.module('babar.server', [
                         closeByEscape: false,
                         closeByDocument: false
                     });
+		    dialog.closePromise.then(function(promised){
+			console.log(promised.value);
+		    });
                     break;
-		    
+                    
                 case 498:
                     //session has expired, reset token and retry
-		    Server.token.reset();
+                    token.reset();
                     break;
-		    
+                    
                 case 403:
                     //wrong password, auth will say it, nothing more to be done here
                     break;
-		    
+                    
                 default:
-                    //go on error page
+                    //go on the error page
                     $state.go("error", {'status': 500});
-		    break;
+                    break;
 		}
-		
-	    });
-		return promise;
-	};
+		return response;
+	    }
+        };
+
+    }])
+
+    .config(['$httpProvider', function($httpProvider) {
+        $httpProvider.interceptors.push('ServerInterceptor');
     }])
 
 
-    .factory('Server', ['$q', '$http', 'StatusResolving', 'Encode', 'Decode', 'reactFilter', function($q, $http, StatusResolving, Encode, Decode, reactFilter){
+
+    .factory('Server', ['$q', '$http', 'StatusResolving', 'Encode', 'Decode', function($q, $http, StatusResolving, Encode, Decode){
 
 	Server = function(){
 
-	    //Get current time
-	    var time = function(){
-		var date = new Date();
-		return date.getTime();
-	    };
+	    
+            //Get current time
+            var time = function(){
+                var date = new Date();
+                return date.getTime();
+            };
 
-	    //Handle current token
-	    var token = {
-		value: null,
-		reset: function(){
-		    this.value = null;
-		}
+            
+	    this.debug = function(){
+		return this.get('customer').then(function(promised){
+		    return this.value;
+		});
 	    };
+	    
 
 	    //This prepares and makes all server's requests and returns a promise
 	    this.request = function(object, params, data){
-		params.token = token.value;
 		var url = 'http://' + serverIP + '/babar/Server/' + object + '.php';
 		var config = {
 		    'url': url,
@@ -138,7 +158,7 @@ angular.module('babar.server', [
 			'action': 'list'
 		    });   
                 }
-		return reactFilter(promise);
+		return promise;
 	    };
 
 	    //This regroups all sorts of posts
@@ -155,7 +175,7 @@ angular.module('babar.server', [
                         'action': 'new'
                     }, data);
 		}
-		return reactFilter(promise);
+		return promise;
 	    };
 
 	    
@@ -167,7 +187,7 @@ angular.module('babar.server', [
                     return this.post('sell', Encode.sell(data.customer, data.drink, time()));
                 case 'deposit':
                     //data.customer addded data.amount € at time()
-                    return this.post('entry', {'customer': data.customer, 'amount': data.amount, 'time': time});
+                    return this.post('entry', Encode.entry(data.customer, data.amount, time()));
 		    
                 default:
                     //nothing happens
@@ -186,7 +206,7 @@ angular.module('babar.server', [
 		promise.then(function(promised){
 		    //if successful, do the sh*t, else reactFilter will handle it
 		    if(promised.status === 200){
-			//fire an event which will result in the display of the remaining time in the main view
+			//fire an event which will result in the display of the remaining time in the main view, and repeat the initial request
 			//TODO handle the token
 			$rootScope.$emit('authenticatedEvent', {login: login, endTime: endTime});
                     }
@@ -266,6 +286,8 @@ angular.module('babar.server', [
 
 	    this.entry = function(customer, amount, time){
 		return {
+		    id: 0,
+		    debitantId: 1,
 		    customerId: customer.id,
 		    amount: amount,
 		    date: time

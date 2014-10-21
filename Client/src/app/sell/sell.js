@@ -134,7 +134,7 @@ angular.module('babar.sell', [
     .controller('SellCtrl', ['$rootScope', '$scope', '$state', '$filter', 'Server', 'StatusResolving', 'Decode', 'Focus', 'Konami', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, $filter, Server, StatusResolving, Decode, Focus, Konami, searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
-	    console.log($scope.sell.customer.details);
+	    console.log(Server.debug());
 	};
 
 	//this serves the chronological filter
@@ -546,11 +546,6 @@ angular.module('babar.sell', [
 	    updateCountdown();
 	});
 
-	//Go to the admin page !
-	this.admin = function(){
-	    $state.go('admin');
-	};
-        
         //This sets up some hotkeys
 	this.loadHotkeys = function(){
             Hotkeys.add({

@@ -5,8 +5,6 @@ angular.module('babar.admin', [
 
     .controller('AdminCtrl', ['$scope', '$state', 'Server', function($scope, $state, Server){
 
-	//TODO: do a server call to ensure that one has the right to be here
-
 	//Re-enable tab key, 'cause 'twill be useful in forms
 	document.onkeydown = function (e) {
             if(e.which == 9){

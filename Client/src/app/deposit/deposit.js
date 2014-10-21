@@ -17,7 +17,7 @@ angular.module('babar.deposit', [
 	    }else if($scope.deposit.money > 100){
 		$scope.deposit.error = "Can't deposit more than 100€ at a time.";
 	    }else{
-		Server.perform('deposit', {amount: $scope.deposit.money});
+		Server.perform('deposit', {customer: $scope.deposit.customer, amount: $scope.deposit.money});
 		$scope.closeThisDialog('deposited');
 	    }
         };
