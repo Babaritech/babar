@@ -44,6 +44,7 @@ angular.module('babar.server', [
 	};
         return {
             'request': function(config) {
+		console.log('and there too');
 		if(config.params){
                     config.params.token = 'none';
 		}
@@ -51,11 +52,12 @@ angular.module('babar.server', [
             },
 
             'response': function(response) {
+		console.log('there');
 		switch(response.status){
 
 		case 200:
                     console.log('ok');
-                    break;
+                    return response;
                     
                 case 401:
                     //ask for login and do it again
@@ -73,23 +75,22 @@ angular.module('babar.server', [
 		    dialog.closePromise.then(function(promised){
 			console.log(promised.value);
 		    });
-                    break;
+                    return response;
                     
                 case 498:
                     //session has expired, reset token and retry
                     token.reset();
-                    break;
+                    return response;
                     
                 case 403:
                     //wrong password, auth will say it, nothing more to be done here
-                    break;
+                    return response;
                     
                 default:
                     //go on the error page
                     $state.go("error", {'status': 500});
-                    break;
+                    return response;
 		}
-		return response;
 	    }
         };
 
