@@ -1,12 +1,15 @@
 angular.module('babar.authenticate', [
     'babar.server',
-    'babar.rights',
+    'babar.error',
     'cfp.hotkeys'
 ])
-    .controller('AuthenticateCtrl', ['$scope', 'Server', 'Rights', 'hotkeys', function($scope, Server, Rights, Hotkeys){
+    .controller('AuthenticateCtrl', ['$scope', '$state', 'Server', 'hotkeys', function($scope, $state, Server, Hotkeys){
 
 	this.login = "";
 	this.password = "";
+
+	//if you wanna have a simple confirmation for an already logged user, use $stateParams to set this boolean to true
+	this.hasAccess = false;
 	
 	this.error = "";
 
@@ -24,14 +27,23 @@ angular.module('babar.authenticate', [
 	$scope.confirm = function(){
 	    if($scope.authForm.$valid === true){
 		//form's well filled, ask permission
-		Server.authenticate();
-		$scope.closeThisDialog('authentication');
-	    }
+		var promise = Server.authenticate($scope.auth.login, $scope.auth.password, $scope.auth.chosenDuration);
+		promise.then(function(promised) { //allright
+		    $scope.closeThisDialog('authenticated');
+		}, function(promised) { //there's an error
+		    if(promised.status === 403) {
+			$scope.auth.error = "Wrong login/password combination.";
+		    }
+		    else {
+			$state.go('error', {'status': promised.status.toString()});
+		    }
+		});
+            }
         };
 
 	//in case of cancel
 	$scope.cancel = function(){
-            $scope.closeThisDialog('cancelled');
+	    $scope.closeThisDialog('cancelled');
         };
 
 

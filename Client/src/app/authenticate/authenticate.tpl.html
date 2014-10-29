@@ -19,11 +19,18 @@
   </div>
   
   <form
-     novalidate
-     name="authForm"
-     class="input-group auth-form">
-
-    <div
+      novalidate
+      name="authForm"
+      class="input-group auth-form">
+     
+    <span
+       class="auth-error"
+       style="color:red; font-size:75%"       
+       ng-hide="auth.hasAccess || auth.error === '' ">
+      <i class="fa fa-warning"></i> {{auth.error}}
+    </span>
+    
+     <div
        class="auth-inputs"
        ng-hide="auth.hasAccess">
       <input
@@ -42,12 +49,6 @@
 	 required>
     </div>
     
-    <span
-       style="color:red; font-size:75%"       
-       ng-hide="auth.hasAccess">
-      {{auth.error}}
-    </span>
-
     <div
        class="auth-dropdown"
        ng-hide="auth.hasAccess || !auth.allowedThroughTime">

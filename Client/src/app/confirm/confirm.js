@@ -10,9 +10,11 @@ angular.module('babar.confirm', [
 	$scope.buy = function(){
 	    //don't have to check if actualMoney>0 for server will handle it for us
 	    if(actualMoney>0){
-		Server.perform('buy', {customer: $scope.confirm.customer, drink: $scope.confirm.drink});
-		$scope.closeThisDialog('bought');
-            }else{
+		var promise = Server.perform('buy', {customer: $scope.confirm.customer, drink: $scope.confirm.drink});
+		React.toPromise(promise, function() {
+		    $scope.closeThisDialog('bought');
+		});
+        }else{
 		$scope.closeThisDialog('forbidden');
             }
         };

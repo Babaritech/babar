@@ -27,12 +27,10 @@
 
 ## src/app/server.js
 
--  [ ] **TODO** `(line 205)`  authentication, delivers the:
--  [ ] **TODO** `(line 211)`  handle the token
--  [ ] **FIX** `(line 218)` 
--  [ ] **FIX** `(line 229)` 
--  [ ] **FIX** `(line 245)` 
--  [ ] **FIX** `(line 261)` 
+-  [ ] **FIX** `(line 171)` 
+-  [ ] **FIX** `(line 182)` 
+-  [ ] **FIX** `(line 198)` 
+-  [ ] **FIX** `(line 214)` 
 
 ## src/less/main.less
 
@@ -41,4 +39,4 @@
 
 * * *
 
-Last generated: Tue Oct 28 2014 14:29:30 by [grunt-todo](https://github.com/leny/grunt-todo).
+Last generated: Wed Oct 29 2014 18:37:59 by [grunt-todo](https://github.com/leny/grunt-todo).

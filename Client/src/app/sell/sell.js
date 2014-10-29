@@ -131,7 +131,7 @@ angular.module('babar.sell', [
         return new Focus();
     }])
 
-    .controller('SellCtrl', ['$rootScope', '$scope', '$state', '$filter', 'Server', 'StatusResolving', 'Decode', 'Focus', 'Konami', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, $filter, Server, StatusResolving, Decode, Focus, Konami, searchFilter, selectFilter, Hotkeys, ngDialog){
+    .controller('SellCtrl', ['$rootScope', '$scope', '$state', '$filter', 'Server', 'Decode', 'Focus', 'Konami', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, $filter, Server, Decode, Focus, Konami, searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
 	    console.log(Server.debug());
@@ -257,98 +257,6 @@ angular.module('babar.sell', [
 		//get the consumption history of the customer
                 Server.get('sell', this.getCurrentId(), 'customer_history')
                     .then(function(res){
-			var test = [
-                            {
-                                brand: 'Kro',
-                                name: 'pinte',
-                                time: 145634684,
-                                price: '1.8'
-                            },
-                            {
-                                brand: 'Kro',
-                                name: 'pinte',
-                                time: 145634684,
-                                price: '1.8'
-                            },
-                            {
-                                brand: 'Kro',
-                                name: 'pinte',
-                                time: 145634684,
-                                price: '1.8'
-                            },
-                            {
-                                brand: 'Kro',
-                                name: 'pinte',
-                                time: 145634684,
-                                price: '1.8'
-                            },
-                            {
-                                brand: 'Kro',
-                                name: 'pinte',
-                                time: 145634684,
-                                price: '1.8'
-                            },
-                            {
-                                brand: 'Kro',
-                                name: 'pinte',
-                                time: 145634684,
-                                price: '1.8'
-                            },
-                            {
-                                brand: 'Kro',
-                                name: 'pinte',
-                                time: 145634684,
-                                price: '1.8'
-                            },
-                            {
-                                brand: 'Kro',
-                                name: 'pinte',
-                                time: 145634684,
-                                price: '1.8'
-                            },
-                            {
-                                brand: 'Kro',
-                                name: 'pinte',
-                                time: 145634684,
-                                price: '1.8'
-                            },
-                            {
-                                brand: 'Kro',
-                                name: 'pinte',
-                                time: 145634684,
-                                price: '1.8'
-                            },
-                            {
-                                brand: 'Kro',
-                                name: 'pinte',
-                                time: 145634684,
-                                price: '1.8'
-                            },
-                            {
-                                brand: 'Kro',
-                                name: 'pinte',
-                                time: 145634684,
-                                price: '1.8'
-                            },
-                            {
-                                brand: 'Kro',
-                                name: 'pinte',
-                                time: 145634684,
-                                price: '1.8'
-                            },
-			    {
-				brand: 'Kro',
-				name: 'pinte',
-				time: 145634684,
-				price: '1.8'
-			    },
-                            {
-                                brand: 'Kro',
-                                name: 'pinte',
-                                time: 1456344684,
-                                price: '1.8'
-                            }
-			];
 			$scope.sell.customer.details.history = Decode.history(res.data);
 			//once the history is retrieve, we can get some extra info
 			$scope.sell.customer.getFavDrink();
@@ -528,7 +436,7 @@ angular.module('babar.sell', [
 	//When an user is authenticated through time, we gotta diplay it
 	this.authenticatedUser = null;
 	this.remainingTime = 0;
-	$rootScope.$on('authenticatedEvent', function(event, args){ 
+	$rootScope.$on('yAuthEvent', function(event, args){ 
 	    $scope.sell.authenticatedUser = args.login;
 	    $scope.sell.remainingTime = Math.floor(((args.endTime - (new Date()).getTime())/(1000*60)));
 	    var updateCountdown = function(){
