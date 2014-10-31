@@ -443,7 +443,9 @@ angular.module('babar.sell', [
 	this.remainingTime = 0;
 	$rootScope.$on('yAuthEvent', function(e, a){ 
 	    $scope.sell.authenticatedUser = a.login;
-	    $scope.sell.remainingTime = Math.floor(((a.endTime - (new Date()).getTime())/(1000*60)));
+	    var time = (new Date()).getTime();
+	    var remain = a.endTime-time>0?a.endTime-time:0;
+	    $scope.sell.remainingTime = Math.floor(remain/(1000*60));
 	    var updateCountdown = function(){
 		window.setTimeout(function(){
 		    $scope.sell.remainingTime--;
@@ -454,7 +456,7 @@ angular.module('babar.sell', [
 			updateCountdown();
 		    }
 		    $scope.$apply();
-                }, 60000);
+                }, 60*1000);
 	    };
 	    updateCountdown();
 	});
