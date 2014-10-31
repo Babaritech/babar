@@ -54,16 +54,9 @@ angular.module('babar.authenticate', [
 		document.getElementById('loginInput').focus();
 	    }
         };
-
-
-        //Let's set up some hotkeys !
+	
+	//Let's set up some hotkeys !
         Hotkeys.add({
-            combo: 'enter',
-            description: 'Authenticate the sale',
-            callback: $scope.confirm,
-	    allowIn: ['INPUT']
-        });
-	Hotkeys.add({
             combo: 'escape',
             description: 'Cancel the sale',
             callback: $scope.cancel,
@@ -75,4 +68,11 @@ angular.module('babar.authenticate', [
             callback: $scope.selectField,
             allowIn: ['INPUT']
         });
+	//No need to set up and enter hotkey for angular do it by itself in forms
+        // Hotkeys.add({
+        //     combo: 'enter',
+        //     description: 'Authenticate the sale',
+        //     callback: $scope.confirm,
+        //     allowIn: ['INPUT']
+        // });
     }]);

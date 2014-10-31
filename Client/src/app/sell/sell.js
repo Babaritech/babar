@@ -137,13 +137,18 @@ angular.module('babar.sell', [
 	    console.log(Server.debug());
 	};
 
+	//if someone attempts to reload the page, logout the current user
+	Server.perform({
+	    action:'logout'
+	});
+
 	//this serves the chronological filter
 	this.chronological = 'time';
 	var orderBy = $filter('orderBy');
 	
         //an easter egg
         $scope.unicorn = false;
-        $rootScope.$on('konamiEvent', function(args){
+        $rootScope.$on('konamiEvent', function(e, a){
 	    $scope.unicorn = !$scope.unicorn;
 	    window.setTimeout(function(){
 		$scope.unicorn = false;
@@ -436,9 +441,9 @@ angular.module('babar.sell', [
 	//When an user is authenticated through time, we gotta diplay it
 	this.authenticatedUser = null;
 	this.remainingTime = 0;
-	$rootScope.$on('yAuthEvent', function(event, args){ 
-	    $scope.sell.authenticatedUser = args.login;
-	    $scope.sell.remainingTime = Math.floor(((args.endTime - (new Date()).getTime())/(1000*60)));
+	$rootScope.$on('yAuthEvent', function(e, a){ 
+	    $scope.sell.authenticatedUser = a.login;
+	    $scope.sell.remainingTime = Math.floor(((a.endTime - (new Date()).getTime())/(1000*60)));
 	    var updateCountdown = function(){
 		window.setTimeout(function(){
 		    $scope.sell.remainingTime--;

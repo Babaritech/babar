@@ -2,7 +2,7 @@ angular.module('babar.confirm', [
     'babar.server',
     'cfp.hotkeys'
 ])
-    .controller('ConfirmCtrl', ['$scope', 'Server', 'hotkeys', function($scope, Server, Hotkeys){
+    .controller('ConfirmCtrl', ['$scope', 'Server', 'React', 'hotkeys', function($scope, Server, React, Hotkeys){
 	this.customer = $scope.ngDialogData[0];
 	this.drink = $scope.ngDialogData[1];
 	var actualMoney = $scope.ngDialogData[2];
@@ -10,8 +10,14 @@ angular.module('babar.confirm', [
 	$scope.buy = function(){
 	    //don't have to check if actualMoney>0 for server will handle it for us
 	    if(actualMoney>0){
-		var promise = Server.perform('buy', {customer: $scope.confirm.customer, drink: $scope.confirm.drink});
-		React.toPromise(promise, function() {
+		$scope.confirm.disableHotkeys();
+		var func = 'perform';
+		var args = {
+		    action: 'buy',
+		    data: {customer: $scope.confirm.customer, drink: $scope.confirm.drink}
+		};
+		var promise = Server.perform(args);
+		React.toPromise(promise, func, args, function() {
 		    $scope.closeThisDialog('bought');
 		});
         }else{
@@ -34,5 +40,8 @@ angular.module('babar.confirm', [
                 description: 'Cancel the sale',
                 callback: $scope.cancel
 	});
-        
+        this.disableHotkeys = function(){
+            Hotkeys.del('enter');
+            Hotkeys.del('escape');
+        };
     }]);

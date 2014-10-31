@@ -2,7 +2,7 @@ angular.module('babar.deposit', [
     'babar.server',
     'cfp.hotkeys'
 ])
-    .controller('DepositCtrl', ['$scope', 'Server', 'hotkeys', function($scope, Server, Hotkeys){
+    .controller('DepositCtrl', ['$scope', 'Server', 'React', 'hotkeys', function($scope, Server, React, Hotkeys){
 	
 	
         this.customer = $scope.ngDialogData[0];
@@ -17,11 +17,21 @@ angular.module('babar.deposit', [
 	    }else if($scope.deposit.money > 100){
 		$scope.deposit.error = "Can't deposit more than 100€ at a time.";
 	    }else{
-		Server.perform('deposit', {customer: $scope.deposit.customer, amount: $scope.deposit.money});
-		$scope.closeThisDialog('deposited');
+		$scope.deposit.disableHotkeys();
+		var func = 'perform';
+		var args = {
+                    action: 'deposit',
+                    data: {customer: $scope.deposit.customer, amount: $scope.deposit.money}
+                };
+		var promise = Server.perform(args);
+		console.log(promise);
+		React.toPromise(promise, func, args, function() {
+		    $scope.closeThisDialog('deposited');                
+                });                
 	    }
         };
 	$scope.cancel = function(){
+	    $scope.deposit.disableHotkeys();
             $scope.closeThisDialog('cancelled');
         };
 
@@ -48,4 +58,9 @@ angular.module('babar.deposit', [
 	    callback: $scope.selectField,
 	    allowIn: ['INPUT']
 	});
+	this.disableHotkeys = function(){
+            Hotkeys.del('tab');
+            Hotkeys.del('enter');
+            Hotkeys.del('escape');
+        };
     }]);

@@ -8,7 +8,7 @@ angular.module('babar.error', [
 	    };
 	    
             this.getMessage = function(){
-                switch(this.getStatus()){
+                switch(this.getStatus().toString()){
                 case '200':
                     return "ok";
                 case '403':
@@ -25,8 +25,10 @@ angular.module('babar.error', [
                     return "This content already exists on server.";
                 case '498':
                     return "This session has expired, please log in.";
+		case '405':
+		    return "Ouch! The client encountered an unexpected error. Please contact an admin.";
                 default:
-                    return "Ouch! The server encountered an unexpected error.";
+		    return "Ouch! The server encountered an unexpected error. Please contact an admin.";
                 }
             };
         };
