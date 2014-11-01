@@ -4,16 +4,10 @@
 
 ## TODO
 
-## src/app/admin/admin.js
-
--  [ ] **TODO** `(line 52)`  ('cause a bit extreme)
-
 ## src/app/admin/partials/customer.js
 
--  [ ] **TODO** `(line 24)`  ('cause a bit extreme)
--  [ ] **TODO** `(line 30)` : uncomment when ready
--  [ ] **TODO** `(line 48)`  make a post
--  [ ] **TODO** `(line 57)`  make a get
+-  [ ] **TODO** `(line 67)`  make a post
+-  [ ] **TODO** `(line 76)`  make a get
 
 ## src/app/admin/partials/drink.js
 
@@ -27,10 +21,7 @@
 
 ## src/app/server.js
 
--  [ ] **FIX** `(line 243)` 
--  [ ] **FIX** `(line 254)` 
--  [ ] **FIX** `(line 270)` 
--  [ ] **FIX** `(line 286)` 
+-  [ ] **FIX** `(line 247)` 
 
 ## src/less/main.less
 
@@ -39,4 +30,4 @@
 
 * * *
 
-Last generated: Fri Oct 31 2014 13:26:08 by [grunt-todo](https://github.com/leny/grunt-todo).
+Last generated: Sat Nov 01 2014 22:20:16 by [grunt-todo](https://github.com/leny/grunt-todo).

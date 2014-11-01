@@ -11,6 +11,7 @@ angular.module('babar.admin', [
                 return true;
             }
         };
+
 	
 	this.domains = [
 	    {
@@ -47,15 +48,7 @@ angular.module('babar.admin', [
 	    this.currentItem = null;
 	    
 	    this.currentDomain = domain.name;
-	    var response = Server.getAdminItems(domain.name);
-	    if(response.status !== 200){
-		//TODO ('cause a bit extreme)
-                $state.go('sell');
-            }else{
-		response.data.then(function(result){
-		    $scope.admin.items = result;
-		});
-	    }
+	    this.getAdminItems(domain.name);
 	};
 	
         this.items = null;
@@ -72,8 +65,61 @@ angular.module('babar.admin', [
 	    this.currentItem = item.name;
         };
 
+
+	//Dialog functions
+	
 	this.signOut = function(){
-	    Server.signOut();
+	    Server.perform({
+		action:'logout'
+	    });
 	};
-	    
+        this.getAdminItems = function(domain){
+	    var promise;
+            switch(domain){
+            case 'customer':
+                Server.get('customer')
+                    .then(function(res) { //success
+                        //add an useful 'name' attribute
+			$scope.admin.items = res.data.map(function(val, ind, arr){
+                            val.name = val.firstname + " ("+ val.nickname + ") " + val.lastname;
+                            return val;
+                        });
+                    }, function(res) { //failure
+			$state.go('error', {'status':res.status});
+		    });
+		break;
+            case 'drink':
+		Server.get('drink')
+                    .then(function(res){ //success
+                        $scope.admin.items = res.data;
+                    }, function(res) { //failure
+                        $state.go('error', {'status':res.status});
+                    });
+		break;
+            case 'user':
+		$scope.admin.items = null; //waiting for server's implementation
+		break;
+            case 'stat':
+		$scope.admin.items = null; //waiting for server's implementation
+                break;
+            default:
+		$state.go('error', {'status':405});
+		break;
+            }
+        }; 
+        this.getAdminDetails = function(domain, id){
+            switch(domain){
+            case 'customer':
+                return {status: 200, data: this.getCustomerInfo(id)};
+            case 'drink':
+                return {status: 200, data: this.getDrinkInfo(id)};
+            case 'user':
+                return {status: 200, data: this.getUserInfo(id)};
+            case 'stat':
+                return {status: 200, data: this.getStatInfo(id)};
+            default:
+                return {status: 400};
+            }
+        };
+ 
     }]);

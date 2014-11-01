@@ -253,44 +253,6 @@ angular.module('babar.server', [
 		    }, 200);
 		return deferred.promise;
 	    };
-
-
-	    //FIXME
-	    this.getAdminItems = function(domain){
-		switch(domain){
-		case 'customer':
-		    return this.get('customer');
-		case 'drink':
-		    return this.get('drink');
-		case 'user':
-		    return {status: 200, data: this.getUsers()};
-		case 'stat':
-		    return {status: 200, data: this.getStats()};
-		default:
-		    return {status: 400};
-		}
-	    };
-
-	    //FIXME
-	    this.getAdminDetails = function(domain, id){
-		switch(domain){
-		case 'customer':
-		    return {status: 200, data: this.getCustomerInfo(id)};
-		case 'drink':
-		    return {status: 200, data: this.getDrinkInfo(id)};
-		case 'user':
-		    return {status: 200, data: this.getUserInfo(id)};
-		case 'stat':
-		    return {status: 200, data: this.getStatInfo(id)};
-		default:
-		    return {status: 400};
-		}
-	    };
-
-	    //FIXME
-	    this.signOut = function(){
-		//signout
-	    };
 	    
 	};
 	return new Server();
