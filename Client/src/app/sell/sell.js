@@ -461,6 +461,7 @@ angular.module('babar.sell', [
 	    updateCountdown();
 	});
 
+	
         //This sets up some hotkeys
 	this.loadHotkeys = function(){
             Hotkeys.add({

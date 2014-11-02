@@ -24,10 +24,9 @@ angular.module('babar.deposit', [
                     data: {customer: $scope.deposit.customer, amount: $scope.deposit.money}
                 };
 		var promise = Server.perform(args);
-		console.log(promise);
 		React.toPromise(promise, func, args, function() {
 		    $scope.closeThisDialog('deposited');                
-                });                
+                });
 	    }
         };
 	$scope.cancel = function(){

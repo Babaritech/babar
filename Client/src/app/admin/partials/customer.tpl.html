@@ -2,6 +2,12 @@
    class="col-sm-12 customer">
   <div class="customer-readOnly">
     <i
+       class="fa fa-times fa-3x customer-add"
+       ng-click="admcst.del()"
+       ng-show="admcst.isWrite"
+       alt="add">
+    </i>
+    <i
        class="fa fa-lock fa-3x"
        ng-show="admcst.isReadOnly"
        ng-click="admcst.toWritingMode()"
@@ -9,24 +15,21 @@
     </i>
     <i
        class="fa fa-unlock fa-3x"
-       ng-show="!admcst.isReadOnly">
+       ng-show="!admcst.isReadOnly"
+       ng-click="admcst.cancel()"
+       alt="lock">
     </i>
     <i
        class="fa fa-plus fa-3x customer-add"
        ng-click="admcst.add()"
        alt="add">
     </i>
-    <i
-       class="fa fa-times fa-3x customer-add"
-       ng-click="admcst.del()"
-       ng-show="admcst.isWriteOnly"
-       alt="add">
-    </i>
   </div>
   
   <div class="customer-info">
     <form
-       name="form"
+       id="cstForm"
+       name="cstForm"
        class="form-horizontal"
        role="form">
       <fieldset
@@ -87,7 +90,6 @@
 	<label class="col-sm-2 control-label">Password</label>
 	<div class="col-sm-10">
           <input
-	     required
              type="password"
              class="form-control">
 	</div>

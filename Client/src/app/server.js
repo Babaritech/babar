@@ -36,9 +36,29 @@ angular.module('babar.server', [
                 }, function(promised, some) {
                     if(promised.status == 401) {// not logged, redo when logged
                         var unregister = $rootScope.$on('yAuthEvent', function(e, a) {
-			    if(func === 'perform') {
-				var newPromise = Server.perform(args);
+			    var newPromise;
+			    switch(func) {
+			    case 'perform':
+				newPromise = Server.perform(args);
+				break;
+			    case 'del':
+                                newPromise = Server.del(args.object, args.id);
+				break;
+			    case 'add':
+                                newPromise = Server.add(args.object, args.data);
+				break;
+			    case 'update':
+				newPromise = Server.update(args.object, args.data, args.id);
+				break;
+			    default:
+				newPromise = null;
+				break;
+			    }
+			    if(newPromise) {
 				recursion(newPromise, func, args, successAction);
+			    }
+			    else {
+				$state.go('error', {status:405});
 			    }
                         });
 			unregisters.push(unregister);
@@ -158,12 +178,12 @@ angular.module('babar.server', [
 	    //This regroups all sorts of gets.
 	    //id is either the id of a specific object, either 'all'
 	    //A promise is returned
-	    this.get = function(object, id, specialAction){
+	    this.get = function(object, id, action){
 		var promise = null;
 		if(id){
-		    if(specialAction){
+		    if(action){
 			promise = this.request(object, {
-			    'action': specialAction,
+			    'action': action,
 			    'id': id
 			});
 		    }else{
@@ -182,32 +202,25 @@ angular.module('babar.server', [
 
 	    //This regroups all sorts of posts
 	    //A promise is returned
-	    this.post = function(object, data, id) {
+	    this.post = function(object, data, action, id) {
 		var promise = null;
-		if(typeof id !== 'undefined') {
-		    // are we dealing with a login ?
-		    if(id === 0) {
+		if(action) {
+		    if(id) {
 			promise = this.request(object, {
-                            'action': 'login'
-                        }, data);
-		    }
-		    // are we dealing with a logout ?
-		    else if(id === -1) {
-			promise = this.request(object, {
-                            'action': 'logout'
+                            'action': action,
+			    'id': id
                         }, data);
 		    }
 		    else {
 			promise = this.request(object, {
-			    'action': 'update',
-			    'id': id
-			}, data);
+                            'action': action
+                        }, data);
 		    }
-		}
-		else {
+                }
+                else {
 		    promise = this.request(object, {
-			'action': 'new'
-		    }, data);
+                        'action': 'new'
+                    }, data);
 		}
 		return promise;
 	    };
@@ -223,7 +236,7 @@ angular.module('babar.server', [
 		    //args.data.customer addded args.data.amount € at time()
 		    return this.post('entry', Encode.entry(args.data.customer, args.data.amount, time()));
 		case 'logout':
-		    return this.post('customer', Encode.logout(Token.get()), -1);
+		    return this.post('customer', Encode.logout(Token.get()), 'logout');
 
 		default:
 		    //nothing happens
@@ -231,9 +244,24 @@ angular.module('babar.server', [
 		}
 	    };
 
+	    //A special method for update operations (causes awareness in the code)
+            this.update = function(object, data, id) {
+                return this.post(object, data, 'update', id);
+            };
+	    
+	    //A special method for add operations (causes awareness in the code)
+            this.add = function(object, data) {
+                return this.post(object, data);
+            };
+	    
+            //A special method for delete operations (causes awareness in the code)
+	    this.del = function(object, id) {
+		return this.get(object, id, 'delete');
+	    };
+
 	    //This allow one to be authentified
 	    this.authenticate = function(login, password, duration){
-		var promise = this.post('customer', Encode.login(login, password, duration), 0);
+		var promise = this.post('customer', Encode.login(login, password, duration), 'login');
 		var endTime = Encode.loginEndTime(duration);
 		promise.then(function(promised) {
 		    Token.set(promised.data.value);
@@ -242,7 +270,7 @@ angular.module('babar.server', [
                 });
                 return promise;
 	    };
-
+	    
 	    
 	    //FIXME
 	    this.getStats = function(){

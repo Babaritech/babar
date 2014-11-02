@@ -241,6 +241,10 @@
 		$params = array( array('id' => ':nickname', 'value' => $nickname) );
 
 		$custList = Customer::search($whereClause, $params);
+
+		if(!count($custList))
+			Functions::setResponse(403);
+		
 		$customer = $custList[0];
 		
 		if(Functions::hash($password) == $customer->get('password'))

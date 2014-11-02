@@ -84,6 +84,10 @@ angular.module('babar.admin', [
                             val.name = val.firstname + " ("+ val.nickname + ") " + val.lastname;
                             return val;
                         });
+			
+			// At start, highlight first item
+                        $scope.admin.changeItem($scope.admin.items[0]);
+			
                     }, function(res) { //failure
 			$state.go('error', {'status':res.status});
 		    });

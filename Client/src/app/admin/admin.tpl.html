@@ -25,7 +25,7 @@
        class="col-md-2 admin-domains">
       <div class="list-group">
         <a
-	   ui-sref="admin"
+	   ui-sref="admin.{{domain.name}}({id:1})"
            class="list-group-item {{admin.isActiveDomain(domain)}}"
            ng-repeat="domain in admin.domains"
 	   ng-click="admin.changeDomain(domain)">
