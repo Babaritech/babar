@@ -1,4 +1,4 @@
-var serverIP = '137.194.14.116';
+var serverIP = '137.194.14.108';
 
 angular.module('babar.server', [
     'babar.authenticate',
@@ -272,16 +272,6 @@ angular.module('babar.server', [
 	    };
 	    
 	    
-	    //FIXME
-	    this.getStats = function(){
-		var deferred = $q.defer();
-		window.setTimeout(
-		    function(){
-			deferred.resolve([{name: 'pipi le plus loin', id: '0'}, {name: 'caca le plus gros', id: '1'}]);
-		    }, 200);
-		return deferred.promise;
-	    };
-	    
 	};
 	return new Server();
 
@@ -339,6 +329,12 @@ angular.module('babar.server', [
 		    tokenValue: token
 		};
 	    };
+
+	    this.drink = function(drink) {
+		var nDrink = drink;
+                nDrink.name = drink.type;
+                return nDrink;
+	    };
 	    
 	};
 	return new Encode();
@@ -358,6 +354,40 @@ angular.module('babar.server', [
 		    };
 		});
 	    };
+
+
+	    this.customer = function(customer) {
+		var nCustomer = customer;
+                nCustomer.name = customer.firstname + " ("+ customer.nickname + ") " + customer.lastname;
+                return nCustomer;
+            };
+	    
+	    this.customers = function(customers) {
+		var mut = this.customer;
+		return customers.map(function(val, ind, arr){
+		    mut(val);
+                    return val;
+                });
+	    };
+
+	    this.drink = function(drink) {
+		var nDrink = drink;
+		nDrink.type = drink.name;
+                nDrink.name = drink.brand + " " + drink.type;
+                nDrink.price = parseFloat(drink.price, 10);
+                return nDrink;
+            };
+
+	    this.drinks = function(drinks) {
+		var mut = this.drink;
+		return drinks.map(function(val, ind, arr) {
+		    mut(val);
+		    return val;
+		});
+	    };
+		    
+
+            
 	};
 	return new Decode();
     }]);

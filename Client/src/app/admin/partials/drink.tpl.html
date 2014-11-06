@@ -1,24 +1,34 @@
 <div
    class="col-sm-12 drink">
   <div class="drink-readOnly">
-    <span
+    <i
+       class="fa fa-times fa-3x customer-add"
+       ng-click="admdrk.del()"
+       ng-show="admdrk.isWrite"
+       alt="delete">
+    </i>
+    <i
        class="fa fa-lock fa-3x"
        ng-show="admdrk.isReadOnly"
-       ng-click="admdrk.toWritingMode()">
-    </span>
-    <span
+       ng-click="admdrk.toWritingMode()"
+       alt="lock">
+    </i>
+    <i
        class="fa fa-unlock fa-3x"
-       ng-show="!admdrk.isReadOnly">
-    </span>
-    <span
+       ng-show="!admdrk.isReadOnly"
+       alt="unlock">
+    </i>
+    <i
        class="fa fa-plus fa-3x drink-add"
-       ng-click="admdrk.add()">
-    </span>
+       ng-click="admdrk.add()"
+       alt="add">
+    </i>
   </div>
   
   <div class="drink-info">
     <form
-       name="form"
+       id="drkForm"
+       name="drkForm"
        class="form-horizontal"
        role="form">
       <fieldset

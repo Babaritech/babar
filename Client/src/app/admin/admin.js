@@ -3,7 +3,7 @@ angular.module('babar.admin', [
     'ui.router'
 ])
 
-    .controller('AdminCtrl', ['$scope', '$state', 'Server', function($scope, $state, Server){
+    .controller('AdminCtrl', ['$scope', '$state', 'Server', 'Decode', function($scope, $state, Server, Decode){
 
 	//Re-enable tab key, 'cause 'twill be useful in forms
 	document.onkeydown = function (e) {
@@ -79,11 +79,8 @@ angular.module('babar.admin', [
             case 'customer':
                 Server.get('customer')
                     .then(function(res) { //success
-                        //add an useful 'name' attribute
-			$scope.admin.items = res.data.map(function(val, ind, arr){
-                            val.name = val.firstname + " ("+ val.nickname + ") " + val.lastname;
-                            return val;
-                        });
+			//add an useful 'name' attribute
+                        $scope.admin.items = Decode.customers(res.data);
 			
 			// At start, highlight first item
                         $scope.admin.changeItem($scope.admin.items[0]);
@@ -95,7 +92,12 @@ angular.module('babar.admin', [
             case 'drink':
 		Server.get('drink')
                     .then(function(res){ //success
-                        $scope.admin.items = res.data;
+			//add an useful 'name' attribute
+                        $scope.admin.items = Decode.drinks(res.data);
+
+			// At start, highlight first item
+                        $scope.admin.changeItem($scope.admin.items[0]);
+                        
                     }, function(res) { //failure
                         $state.go('error', {'status':res.status});
                     });
