@@ -179,20 +179,15 @@ angular.module('babar.sell', [
 	this.customers = [];
 	Server.get('customer')
 	    .then(function(res){
-		//add an useful 'name' attribute
-		$scope.sell.customers = res.data.map(function(val, ind, arr){
-		    val.name = val.firstname + " ("+ val.nickname + ") " + val.lastname;
-		    return val;
-		});
-		
+		$scope.sell.customers = Decode.customers(res.data);
 	    });
 	
         //load drinks' list
 	this.drinks = [];
         Server.get('drink')
             .then(function(res){
-                $scope.sell.drinks = res.data;
-            });
+		$scope.sell.drinks = Decode.drinks(res.data);
+	    });
 	
 	// current customer
 	this.customer = {
