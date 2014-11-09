@@ -31,7 +31,7 @@ angular.module('babar.error', [
                 case '418':
                     return "The server's saying she's a keg.";
 		case '420':
-		    return "The app didn't meet the user's expectancies.";
+		    return "The app didn't meet the user's expectations.";
                 case '498':
                     return "This session has expired, please log in.";
                 default:
