@@ -1,14 +1,11 @@
 <?php
 
-	require_once('init.php');	// Init Framework
-
-
 	/* Init constants */
 
 	define('INDEX', true);
 	define('MODEL', 'models/');	// Path to models
 	define('VIEW', 'views/');	// Path to views
-
+	require_once('init.php');
 
 	/* Load utils */
 
