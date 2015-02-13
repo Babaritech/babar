@@ -55,6 +55,9 @@
 
 		foreach($customerList as $customer)
 		{
+			if($customer->get('id')==1) // Anon Ymous
+				continue;
+			
 			$retList[] = array(
 								'id' => $customer->get('id'),
 								'firstname' => $customer->get('firstname'),
