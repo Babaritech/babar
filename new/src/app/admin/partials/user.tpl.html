@@ -1,0 +1,16 @@
+<div
+   class="col-sm-12 user">
+
+  <div
+     class="user-history">
+    <ul class="list-group">
+      <li
+	 class="list-group-item"
+	 ng-repeat="deposit in admusr.current.history | orderBy :
+	 user.chronological : true">
+	<h5>{{deposit.amount}}€</h5>
+	<h6>{{deposit.customer}}</h6>
+	<h6>{{deposit.date}}</h6>
+      </li>
+  </div>
+</div> <!--/user>

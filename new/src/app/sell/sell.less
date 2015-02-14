@@ -1,0 +1,131 @@
+//HEADER ROW
+#header {
+    position: absolute;
+    height: 10%;
+    width: 100%;
+}
+#header>div {
+    height: 100%;
+    width: 100%;
+}
+#header h2 {
+    margin-left: 50px;
+    vertical-align: center;
+    display: inline;
+    float: left;
+}
+#header img {
+    margin-top: 1%;
+    margin-left: 1%
+}
+
+.sell-toAdmin {
+    vertical-align: center;
+    margin-left: 1.4%;
+    margin-top: 1.4%;
+    color: black;
+}
+.sell-header-duration {
+    margin-top: 0.5%;
+    margin-right: 50px;
+    float: right;
+    text-align: center;
+    font-size: 125%;
+}
+
+//MAIN ROW
+#main {
+    position: absolute;
+    width: 100%;
+    margin-top: 6%;
+}
+
+//CLIENTS (col 1)
+.sell-client {
+}
+
+//CLIENTS & DRINKS & DETAILS(col 1 & 2 & 3)
+.sell {
+    height: 100%;
+    position: relative;
+}
+.custom-input {
+    width: 100%;
+}
+.custom-list {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+//DETAILS (col 3)
+.sell-details-info {
+    display: block;
+}
+.sell-details-info-image {
+    height: 200px;
+    display: inline;
+}
+.sell-details-info-text {
+    margin-top: 15%;
+    position: absolute;
+    display: inline;
+}
+.sell-details-info-text ul {
+    list-style-type: none;
+}
+.sell-details-info-text a {
+    color: black;
+}
+
+.sell-details-history h4 {
+    text-align: center;
+}
+.sell-details-history {
+    position: relative;
+    height: 60%;
+    width: 100%;
+    display: block;
+}
+
+.sell-details-stats {
+    position: relative;
+    margin-left: 5%;
+    margin-top: 10%;
+    float: left;
+}
+
+.sell-details-makeDeposit {
+    float: right;
+    position: relative;
+    margin-top: 10%;
+    margin-right: 5%;
+}
+
+/**
+* We're gonna allow scrolling bars only on big devices
+* We're gonna reduce the size of the main row on smaller screens, too
+*/
+
+@media(min-width: 992px){ //desktops
+    .custom-list {
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+
+    #main {
+        height: 80%;
+    }
+    
+}
+@media(max-width: 992px){ //tablets and phones
+    .custom-list {
+	overflow-x: hidden;
+	overflow-y: hidden;
+    }
+    
+    #main {
+        height: 40%;
+    }
+    
+}

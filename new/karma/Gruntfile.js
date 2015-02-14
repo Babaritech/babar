@@ -300,8 +300,7 @@ module.exports = function ( grunt ) {
         noarg: true,
         sub: true,
         boss: true,
-        eqnull: true,
-        smarttabs: true
+        eqnull: true
       },
       globals: {}
     },

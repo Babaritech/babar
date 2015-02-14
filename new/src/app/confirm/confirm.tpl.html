@@ -1,0 +1,17 @@
+<div class="waiting-confirm">
+  <div class="waiting-confirm-title">
+    <h2>Confirmation</h2>
+  </div>
+  <div class="waiting-confirm-text">
+    A <b>{{confirm.drink.name}}</b>
+    for <b>{{confirm.customer.nickname}}</b> ?
+  </div>
+  <div class="waiting-confirm-buttons">
+    <button
+       ng-click="buy()"
+       class="btn btn-success"><b>Submit</b></button>
+    <button
+       ng-click="cancel()"
+       class="btn btn-danger"><b>Cancel</b></button>
+  </div>
+</div> <!-- /waiting-confim -->
