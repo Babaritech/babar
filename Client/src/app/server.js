@@ -5,78 +5,26 @@ angular.module('babar.server', [
     'babar.error',
     'ngDialog'
 ])
-/**
- * This factory is VERY important, because it solves a puzzling issue.
- * In AngularJS, it's the displayed elements that make the API requests to get or post things.
- * Only in our app, some action require authentification.
- * So, display makes a request, no user is logged, a 401 is returned, the user log himself, the request is made again, and the data are returned from the server. However, display this time hasn't requested it, and noone's here to use them.
- * Thus, we need that at every 401 error, the element that made a request waits for an authentication then  retries its request.
- * This process is coded beyond thanks to events (nAuth and yAuth).
- * However, I didn't want to code everywhere the same yAuth event listener, so I centralized the handling of the promises thanks to a callback.
- * It works.
- * The only problem is that it isn't much $q-philosophical to use callbacks, promises should do the job.
+/*
+ * When a view asks for some data, there can be two cases.
+ * Either the user has the rights to do so, and the view receives it.
+ * Or he does not, and has to pass authentication. In the latter case, the view must ask again for the data once the user is legit. Only the server module doesn't know which one asked for it.
+ * Thus, whenever a 401 is fired, the server will make the authentication then retry the request and ask all the controllers to refresh the views.
  */
-    .factory('React', ['$rootScope', '$state', 'Server', function($rootScope, $state, Server) {
-	React = function() {
-	    // list and destroy yAuth listeners
-	    var unregisters = [];
-	    $rootScope.$on('yAuthEvent', function(e, a) {
-		window.setTimeout(function(){
-		    unregisters.forEach(function(val, ind, arr) {
-			val();
-		    });
-		    unregisters = [];
-		}, 1000);
-	    });
 
-	    this.toPromise = function(promise, func, args, successAction) {
-		var recursion = this.toPromise;
-		promise.then(function(promised) {// success, do the successAction
-                    successAction();
-                }, function(promised, some) {
-                    if(promised.status == 401) {// not logged, redo when logged
-                        var unregister = $rootScope.$on('yAuthEvent', function(e, a) {
-			    var newPromise;
-			    switch(func) {
-			    case 'perform':
-				newPromise = Server.perform(args);
-				break;
-			    case 'del':
-                                newPromise = Server.del(args.object, args.id);
-				break;
-			    case 'add':
-                                newPromise = Server.add(args.object, args.data);
-				break;
-			    case 'update':
-				newPromise = Server.update(args.object, args.data, args.id);
-				break;
-			    default:
-				newPromise = null;
-				break;
-			    }
-			    if(newPromise) {
-				recursion(newPromise, func, args, successAction);
-			    }
-			    else {
-				$state.go('error', {status:405});
-			    }
-                        });
-			unregisters.push(unregister);
-                    }
-                    else {// unknown state, go on error
-                        $state.go('error', {status: promised.status});
-                    }
-                });
+    .factory('ServerState', [function() {
+	State = function() {
+	    this.cstate = "IDLE";
+	    this.states = {
+		idle: "IDLE",
+		pending: "PENDING"
 	    };
-	    
-	};
-
-	return new React();
+	    this.pendingRequest = null;
+	}
     }])
 
-
-// This aim to handle the authentication token
     .factory('Token', [function() {
+	// This aim to handle the authentication token
         function Token() {
             var value = null;
             this.reset = function() {
@@ -92,56 +40,83 @@ angular.module('babar.server', [
         return new Token();
     }])
 
-    .filter('react', ['$rootScope', '$q', '$http', '$state', 'ngDialog', 'Token', function($rootScope, $q, $http, $state, ngDialog, Token){
+    .filter('react', ['ServerState', 'Token', 'ngDialog', function(ServerState, Token, ngDialog){
+	// we hereby deal with error status codes, especially authentication problems
 	return function(promise){
-	    promise.then(function(response){
-		//status is 200
-		//everything's allright, moving on
-                console.info('ok');
-                return response;
-		
-	    }, function(response){
-		switch(response.status){    
-		case 401:
-		    //fire an nAuth event which will result in a new request from the display as soon as the yAuth event is fired
-                    $rootScope.$emit('nAuthEvent', {});
-                    console.log('nAuth!');
-		    
-                    //ask for a login
-		    var dialog = ngDialog.open({
-			template: 'authenticate/authenticate.tpl.html',
-			controller: 'AuthenticateCtrl as auth',
-			data: [],
-			className: 'ngdialog-theme-plain',
-			showClose: false,
-			closeByEscape: false,
-			closeByDocument: false
+
+	    var authYourself = function() {
+		var dialog = ngDialog.open({
+                    template: 'authenticate/authenticate.tpl.html',
+                    controller: 'AuthenticateCtrl as auth',
+                    data: [],
+                    className: 'ngdialog-theme-plain',
+                    showClose: false,
+                    closeByEscape: false,
+                    closeByDocument: false
+		});
+		dialog.closePromise.then(function(promised){
+                    console.log(promised.value);
+		});
+            };
+
+	    switch(ServerState.cstate) {
+	    case "IDLE":
+		promise.then(
+		    function(response){
+			// success, so still IDLE
+			ServerState.cstate = ServerState.states.idle;
+			Server.refresh();
+                    },
+		    function(response){
+			switch(response.status){
+			case 401:
+			    // let's auth
+			    authYourself();
+			    ServerState.pendingRequest = response; //.smthg ?
+			    ServerState.cstate = ServerState.states.pending;
+			    break;
+			case 498:
+			    // session has expired, reset token and retry
+			    Token.reset();
+			    // TODO: retry(response)
+			    ServerState.cstate = ServerState.states.idle;
+                	    break;
+			default:
+			    // error
+                            $state.go("error", {'status': response.status});
+			    ServerState.cstate = ServerState.states.idle;
+                	    break;
+			}
 		    });
-		    dialog.closePromise.then(function(promised){
-			console.log(promised.value);
-		    });
-		    return response;
-		    
-		case 498:
-		    //session has expired, reset token and retry
-		    Token.reset();
-		    return response;
-		    
-		case 403:
-		    //wrong password, auth will say it, nothing more to be done here
-		    return response;
-		    
-		default:
-		    //go on the error page
-		    $state.go("error", {'status': response.status});
-		    return response;
-		    
-		}
-	    });
+		break;
+	    case "PENDING":
+		function(response){
+                    // success, so we gotta retry what we were doing
+		    // TODO: retry(ServerState.pendingrequest)
+                    ServerState.cstate = ServerState.states.idle;
+                },
+                function(response){
+                    switch(response.status){
+		    case 403:
+			// wrong password
+			// authenticate module will deal with it
+		        ServerState.cstate = ServerState.states.pending;
+			break;
+		    default:
+                        // error
+                        $state.go("error", {'status': response.status});
+                        ServerState.cstate = ServerState.states.idle;
+                        break;
+                    }
+                }
+		break;
+	    }
+            });
 	    return promise;
 	};
     }])
 
+    
     .factory('Server', ['$rootScope', '$state', '$q', '$http', 'Encode', 'Decode', 'reactFilter', 'Token', function($rootScope, $state, $q, $http, Encode, Decode, reactFilter, Token){
 
 	Server = function(){
@@ -156,6 +131,11 @@ angular.module('babar.server', [
 		return this.get('customer').then(function(promised){
 		    return this.value;
 		});
+	    };
+
+	    // this refresh all the controllers
+	    this.refresh = function() {
+		// TODO: fill it !
 	    };
 
 	    //This prepares and makes all server's requests and returns a promise
