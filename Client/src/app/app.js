@@ -16,10 +16,10 @@ angular.module( 'babar', [
 ])
 
     .config( ['$stateProvider', '$urlRouterProvider',  function myAppConfig ( $stateProvider, $urlRouterProvider ) {
-	//
-        // For any unmatched url, redirect to /
+	
+        // For any unmatched url, redirect to a 404 error
         $urlRouterProvider.otherwise("/error/404");
-        //
+        
         // Now set up the states
         $stateProvider
             .state('sell', {
@@ -28,12 +28,12 @@ angular.module( 'babar', [
 		controller: "SellCtrl",
 		controllerAs: "sell",
 		views: {
-		    "cst": {
+		    "customer": {
 			templateUrl: "sell/cst/customer.tpl.html",
 			controller: "SellCustomerCtrl",
 			controllerAs: "sellcst"
 		    },
-		    "drk": {
+		    "drink": {
                         templateUrl: "sell/drk/drink.tpl.html",
                         controller: "SellDrinkCtrl",
                         controllerAs: "selldrk"

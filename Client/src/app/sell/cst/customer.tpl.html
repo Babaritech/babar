@@ -1,0 +1,24 @@
+<div class="col-md-4 col-xs-12 sell-customer sell">
+  <div
+     class="input-group custom-input">
+    <input
+       name="customerInput"
+       id="customerInput"
+       type="text"
+       class="form-control"
+       placeholder="Search for a customer"
+       ng-model="sell.customer.keyword">
+  </div><!-- /input-group -->
+  <div class="list-group custom-list">
+    <a
+       href="#"
+       class="list-group-item {{customer.active?'active':''}}"
+       ng-repeat="customer in
+                  sell.customers
+                  | search: sell.customer.keyword
+                  | select : sell.customer.index"
+       ng-click="sell.customer.setIndex($index, true)">
+      {{customer.name}}
+    </a>
+  </div> <!-- /list -->
+</div> <!-- /sell-customer -->
