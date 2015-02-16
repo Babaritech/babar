@@ -225,6 +225,60 @@ angular.module('babar.server', [
 		return promise;
 	    };
 
+	    var server = this;
+
+	    this.list = function() {
+		var params = {
+                    'action': 'list'
+                };
+		this.customers = function() {
+		    return server.request('customer', params);
+		};
+		this.drinks = function() {
+                    return server.request('drink', params);
+		};
+		this.statuses = function() {
+                    return server.request('status', params);
+                };
+		this.stats = function() {
+		    // doesn't exist yet
+                    // promise = this.request('stat', params);
+		};
+	    };
+
+	    this.read = function() {
+ 		var params = {'action': 'info'};
+                this.customer = function(id) {
+		    params.id = id;
+                    this.info = function() {
+			return server.request('customer', params);
+                    };                
+                    this.balance = function() {
+			params.action='balance';
+                        return server.request('customer', params);
+                    };
+		};
+		this.drink = function(id) {
+		    params.id = id;
+                    return server.request('drink', params);
+		};
+	    };
+            this.del = function() {
+                this.client = function() {
+
+                };
+                this.drink = function() {
+
+                };
+            };
+	    this.create = function() {
+                this.client = function() {
+
+                };
+                this.drink = function() {
+
+                };
+            };
 	    
 	    //This aims to link client operations to server ones
 	    this.perform = function(args){

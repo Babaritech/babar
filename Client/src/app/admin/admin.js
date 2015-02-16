@@ -77,7 +77,7 @@ angular.module('babar.admin', [
 	    var promise;
             switch(domain){
             case 'customer':
-                Server.get('customer')
+                Server.list.customers()
                     .then(function(res) { //success
 			//add an useful 'name' attribute
                         $scope.admin.items = Decode.customers(res.data);
@@ -90,7 +90,7 @@ angular.module('babar.admin', [
 		    });
 		break;
             case 'drink':
-		Server.get('drink')
+		Server.list.drinks()
                     .then(function(res){ //success
 			//add an useful 'name' attribute
                         $scope.admin.items = Decode.drinks(res.data);

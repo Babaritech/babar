@@ -19,7 +19,7 @@ angular.module('babar.admin.drink', [
 	    this.isWrite = false;
         }
         else { // drink already exists
-	    Server.get('drink', $stateParams.id)
+	    Server.read.drink($stateParams.id)
                 .then(function(res) {
                     $scope.admdrk.current = Decode.drink(res.data);
                 }, function(res) {

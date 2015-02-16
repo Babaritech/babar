@@ -177,14 +177,14 @@ angular.module('babar.sell', [
         
         //load customers' list
 	this.customers = [];
-	Server.get('customer')
+	Server.list.customers()
 	    .then(function(res){
 		$scope.sell.customers = Decode.customers(res.data);
 	    });
 	
         //load drinks' list
 	this.drinks = [];
-        Server.get('drink')
+        Server.list.drinks()
             .then(function(res){
 		$scope.sell.drinks = Decode.drinks(res.data);
 	    });
