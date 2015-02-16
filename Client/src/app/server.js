@@ -254,14 +254,30 @@ angular.module('babar.server', [
 			return server.request('customer', params);
                     };                
                     this.balance = function() {
-			params.action='balance';
+			params.action = 'balance';
                         return server.request('customer', params);
                     };
+		    this.totalEntries = function() {
+			params.action = 'total_entries';
+			return server.request('customer', params);
+		    };
+		    this.history = function() {
+			params.action = 'customer_history';
+			return server.request('sell', params);
+		    };
 		};
 		this.drink = function(id) {
-		    params.id = id;
-                    return server.request('drink', params);
+		    this.info = function() {
+			params.id = id;
+			return server.request('drink', params);
+		    };
 		};
+		this.status = function(id) {
+                    this.info = function() {
+                        params.id = id;
+                        return server.request('status', params);
+                    };
+                };
 	    };
             this.del = function() {
                 this.client = function() {
@@ -278,26 +294,20 @@ angular.module('babar.server', [
                 this.drink = function() {
 
                 };
+		this.purchase = function() {
+                    //args.data.customer bought a args.data.drink at time()
+                    return this.post('sell', Encode.sell(args.data.customer, args.data.drink, time()));
+		};
+		this.deposit = function() {
+                    //args.data.customer addded args.data.amount € at time()
+                    return this.post('entry', Encode.entry(args.data.customer, args.data.amount, time()));
+		};
             };
-	    
-	    //This aims to link client operations to server ones
-	    this.perform = function(args){
-		switch(args.action){
-		case 'buy':
-		    //args.data.customer bought a args.data.drink at time()
-		    return this.post('sell', Encode.sell(args.data.customer, args.data.drink, time()));
-		case 'deposit':
-		    //args.data.customer addded args.data.amount € at time()
-		    return this.post('entry', Encode.entry(args.data.customer, args.data.amount, time()));
-		case 'logout':
-		    return this.post('customer', Encode.logout(Token.get()), 'logout');
-
-		default:
-		    //nothing happens
-		    $state.go('error', {status: 405});
-		}
+	    this.logout = function() {
+		return this.post('customer', Encode.logout(Token.get()), 'logout');
 	    };
-
+	    
+	    
 	    //A special method for update operations (causes awareness in the code)
             this.update = function(object, data, id) {
                 return this.post(object, data, 'update', id);

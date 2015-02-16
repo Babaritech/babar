@@ -138,9 +138,7 @@ angular.module('babar.sell', [
 	};
 
 	//if someone attempts to reload the page, logout the current user
-	Server.perform({
-	    action:'logout'
-	});
+  	Server.logout();
 
 	//this serves the chronological filter
 	this.chronological = 'time';
@@ -199,7 +197,7 @@ angular.module('babar.sell', [
 		return selectFilter(searchFilter($scope.sell.customers, this.keyword), this.index)[this.index].id;
 	    },
 	    getTotalSpent: function(){
-		Server.get('customer', this.details.id, 'total_entries')
+		Server.read.customer(this.details.id).totalEntries()
 		    .then(function(res){
 			$scope.sell.customer.details.totalSpent = res.data.total;
 		    });
@@ -241,21 +239,21 @@ angular.module('babar.sell', [
 	    },
 	    getBalance: function(){
 		//get the amount money a customer has
-		Server.get('customer', this.getCurrentId(), 'balance')
+		Server.read.customer(this.getCurrentId()).balance()
 		    .then(function(res){
 			$scope.sell.customer.details.money = res.data.balance;
 		    });
             },
 	    getStatus: function(){
 		//get the status from the statusId
-		Server.get('status', this.details.statusId)
+		Server.read.status(this.details.statusId).info()
 		    .then(function(res){
 			$scope.sell.customer.details.status = res.data;
 		    });
 	    },
 	    getHistory: function(){
 		//get the consumption history of the customer
-                Server.get('sell', this.getCurrentId(), 'customer_history')
+                Server.read.customer(this.getCurrentId()).history()
                     .then(function(res){
 			$scope.sell.customer.details.history = Decode.history(res.data);
 			//once the history is retrieve, we can get some extra info
@@ -265,7 +263,7 @@ angular.module('babar.sell', [
 	    },
             refresh: function(){
 		//get the customer's basic info
-		Server.get('customer', this.getCurrentId())
+		Server.read.customer(this.getCurrentId()).info()
 		    .then(function(res){
                         //gotta interpret the customer status (rank)
 			$scope.sell.customer.details = res.data;
