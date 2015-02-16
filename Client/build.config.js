@@ -56,7 +56,8 @@ module.exports = {
      * The `vendor_files.css` property holds any CSS files to be automatically
      * included in our app.
      *
-     * The `vendor_files.assets` property holds any assets to be copied along
+     * T
+     he `vendor_files.assets` property holds any assets to be copied along
      * with our app's assets. This structure is flattened, so it is not
      * recommended that you use wildcards.
      */
@@ -69,14 +70,17 @@ module.exports = {
 	    'vendor/angular-ui-utils/modules/route/route.js',
 	    'vendor/angular-hotkeys/build/hotkeys.min.js',
             'vendor/ngDialog/js/ngDialog.min.js',
-            'vendor/angular-unicorn-directive/unicorn.js'
-	],
+            'vendor/angular-unicorn-directive/unicorn.js',
+	    'vendor/angular-material/angular-material.js'
+        ],
 	css: [
             'vendor/angular-hotkeys/hotkeys.css',
 	    'vendor/ngDialog/css/ngDialog.css',
 	    'vendor/ngDialog/css/ngDialog-theme-default.css',
-	    'vendor/ngDialog/css/ngDialog-theme-plain.css'
-	],
+	    'vendor/ngDialog/css/ngDialog-theme-plain.css',
+	    'vendor/angular-material/angular-material.css',
+	    'vendor/angular-material/default-theme.css'
+        ],
 	assets: [
 	]
     },
