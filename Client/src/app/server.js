@@ -155,62 +155,10 @@ angular.module('babar.server', [
 		return reactFilter($http(config));
 	    };
 
-	    //This regroups all sorts of gets.
-	    //id is either the id of a specific object, either 'all'
-	    //A promise is returned
-	    this.get = function(object, id, action){
-		var promise = null;
-		if(id){
-		    if(action){
-			promise = this.request(object, {
-			    'action': action,
-			    'id': id
-			});
-		    }else{
-			promise = this.request(object, {
-			    'action': 'info',
-			    'id': id
-			});
-		    }
-		}else{
-		    promise = this.request(object, {
-			'action': 'list'
-		    });   
-		}
-		return promise;
-	    };
-
-	    //This regroups all sorts of posts
-	    //A promise is returned
-	    this.post = function(object, data, action, id) {
-		var promise = null;
-		if(action) {
-		    if(id) {
-			promise = this.request(object, {
-                            'action': action,
-			    'id': id
-                        }, data);
-		    }
-		    else {
-			promise = this.request(object, {
-                            'action': action
-                        }, data);
-		    }
-                }
-                else {
-		    promise = this.request(object, {
-                        'action': 'new'
-                    }, data);
-		}
-		return promise;
-	    };
-
 	    var server = this;
 
 	    this.list = function() {
-		var params = {
-                    'action': 'list'
-                };
+		var params = {'action': 'list'};
 		this.customers = function() {
 		    return server.request('customer', params);
 		};
@@ -225,9 +173,25 @@ angular.module('babar.server', [
                     // promise = this.request('stat', params);
 		};
 	    };
-
+            this.create = function() {
+                var params = {'action': 'new'};
+                this.customer = function(data) {
+                    return this.request('customer', params, data);
+                };
+                this.drink = function(data) {
+                    return this.request('drink', params, data);
+                };
+                this.purchase = function(args) {
+                    //args.data.customer bought a args.data.drink at time()
+                    return this.request('sell', params, Encode.sell(args.data.customer, args.data.drink, time()));
+                };
+                this.deposit = function(args) {
+                    //args.data.customer addded args.data.amount € at time()
+                    return this.request('entry', params, Encode.entry(args.data.customer, args.data.amount, time()));
+                };
+            };
 	    this.read = function() {
- 		var params = {'action': 'info'};
+		var params = {'action': 'info'};
                 this.customer = function(id) {
 		    params.id = id;
                     this.info = function() {
@@ -259,72 +223,48 @@ angular.module('babar.server', [
                     };
                 };
 	    };
+	    this.update = function() {
+                var params = {'action': 'update'};
+		this.client = function(data) {
+                    params.id = data.id;
+                    return this.request('customer', params, data);
+                };
+                this.drink = function(data) {
+                    params.id = data.id;
+                    return this.request('drink', params, data);
+                };
+            };
             this.del = function() {
-                this.client = function() {
-
+		var params = {'action': 'delete'};
+                this.client = function(id) {
+		    params.id = id;
+		    return this.request('customer', params);
                 };
-                this.drink = function() {
-
+                this.drink = function(id) {
+                    params.id = id;
+                    return this.request('drink', params);
                 };
             };
-	    this.create = function() {
-                this.client = function() {
-
-                };
-                this.drink = function() {
-
-                };
-		this.purchase = function() {
-                    //args.data.customer bought a args.data.drink at time()
-                    return this.post('sell', Encode.sell(args.data.customer, args.data.drink, time()));
-		};
-		this.deposit = function() {
-                    //args.data.customer addded args.data.amount € at time()
-                    return this.post('entry', Encode.entry(args.data.customer, args.data.amount, time()));
-		};
-            };
+	    // the allows one to be logged out
 	    this.logout = function() {
 		return this.post('customer', Encode.logout(Token.get()), 'logout');
 	    };
-	    
-	    
-	    //A special method for update operations (causes awareness in the code)
-            this.update = function(object, data, id) {
-                return this.post(object, data, 'update', id);
-            };
-	    
-	    //A special method for add operations (causes awareness in the code)
-            this.add = function(object, data) {
-                return this.post(object, data);
-            };
-	    
-            //A special method for delete operations (causes awareness in the code)
-	    this.del = function(object, id) {
-		return this.get(object, id, 'delete');
-	    };
-
-	    //This allow one to be authentified
+	    // this allows one to be authentified
 	    this.authenticate = function(login, password, duration){
 		var promise = this.post('customer', Encode.login(login, password, duration), 'login');
 		var endTime = Encode.loginEndTime(duration);
 		promise.then(function(promised) {
 		    Token.set(promised.data.value);
-		    $rootScope.$emit('yAuthEvent', {login: login, endTime: endTime});
-		    console.log('yAuth!');
                 });
                 return promise;
 	    };
-	    
-	    
 	};
 	return new Server();
 
     }])
 
     .factory('Encode', [function(){
-
 	Encode = function(){
-
 	    this.sell = function(customer, drink, time){
 		return {
 		    id: 0,
@@ -337,7 +277,6 @@ angular.module('babar.server', [
 		    date: time
 		};
 	    };
-
 	    this.entry = function(customer, amount, time){
 		return {
 		    id: 0,
@@ -347,7 +286,6 @@ angular.module('babar.server', [
 		    date: time
 		};
 	    };
-
 	    this.login = function(login, password, duration) {
 		var endTime = 0;
                 var count = -1;
@@ -367,28 +305,23 @@ angular.module('babar.server', [
 	    this.loginEndTime = function(duration) {
 		return duration===0?duration:(new Date()).getTime() + duration*60*1000;
 	    };
-
 	    this.logout = function(token) {
 		return {
 		    tokenValue: token
 		};
 	    };
-
 	    this.drink = function(drink) {
 		var nDrink = drink;
                 nDrink.name = drink.type;
                 return nDrink;
 	    };
-	    
 	};
 	return new Encode();
     }])
 
 
     .factory('Decode', [function(){
-
 	Decode = function(){
-	    
 	    this.history = function(history){
 		return history.map(function(val, ind, arr){
 		    return {
@@ -398,14 +331,11 @@ angular.module('babar.server', [
 		    };
 		});
 	    };
-
-
 	    this.customer = function(customer) {
 		var nCustomer = customer;
                 nCustomer.name = customer.firstname + " ("+ customer.nickname + ") " + customer.lastname;
                 return nCustomer;
             };
-	    
 	    this.customers = function(customers) {
 		var mut = this.customer;
 		return customers.map(function(val, ind, arr){
@@ -413,7 +343,6 @@ angular.module('babar.server', [
                     return val;
                 });
 	    };
-
 	    this.drink = function(drink) {
 		var nDrink = drink;
 		nDrink.type = drink.name;
@@ -421,7 +350,6 @@ angular.module('babar.server', [
                 nDrink.price = parseFloat(drink.price, 10);
                 return nDrink;
             };
-
 	    this.drinks = function(drinks) {
 		var mut = this.drink;
 		return drinks.map(function(val, ind, arr) {
@@ -429,9 +357,6 @@ angular.module('babar.server', [
 		    return val;
 		});
 	    };
-		    
-
-            
 	};
 	return new Decode();
     }]);
