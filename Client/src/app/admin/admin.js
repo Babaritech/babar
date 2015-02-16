@@ -69,9 +69,7 @@ angular.module('babar.admin', [
 	//Dialog functions
 	
 	this.signOut = function(){
-	    Server.perform({
-		action:'logout'
-	    });
+	    Server.logout();
 	};
         this.getAdminItems = function(domain){
 	    var promise;
