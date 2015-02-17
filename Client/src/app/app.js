@@ -5,8 +5,6 @@ angular.module( 'babar', [
     'ui.bootstrap',
     'unicorn-directive',
     'babar.sell',
-    'babar.sell.customer',
-    'babar.sell.drink',
     'babar.admin',
     'babar.admin.customer',
     'babar.admin.user',
@@ -26,19 +24,8 @@ angular.module( 'babar', [
                 url: "/",
                 templateUrl: "sell/sell.tpl.html",
 		controller: "SellCtrl",
-		controllerAs: "sell",
-		views: {
-		    "customer": {
-			templateUrl: "sell/cst/customer.tpl.html",
-			controller: "SellCustomerCtrl",
-			controllerAs: "sellcst"
-		    },
-		    "drink": {
-                        templateUrl: "sell/drk/drink.tpl.html",
-                        controller: "SellDrinkCtrl",
-                        controllerAs: "selldrk"
-                    }
-		}})
+		controllerAs: "sell"
+	    })
 	    .state('error', {
 		url: "/error/:status",
 		templateUrl: "error/error.tpl.html",
