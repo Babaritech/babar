@@ -9,7 +9,7 @@ angular.module('babar.sell.drk', [
             controllerAs: 'selldrk',
             controller: function($scope, $state, searchFilter, selectFilter, Focus, Server, Encode, Decode) {
 
-		//load drinks' list
+                //load drinks' list
 		this.list = [];
 		Server.list.drinks()
 		    .then(function(res){
@@ -59,5 +59,8 @@ angular.module('babar.sell.drk', [
 			$scope.selldrk.current.setIndex(0, false);
 		    }
 		};
+		
+                //setting up watches so the highlighted item will always be zero during a search
+                $scope.$watch(this.current.keyword, this.current.blockIndex);
 		
 	    }};});

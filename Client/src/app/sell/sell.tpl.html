@@ -31,76 +31,8 @@ Goal is to select a customer and file in the drink he had.
 
     <sell-customer></sell-customer>
     <sell-drink></sell-drink>
+    <sell-profile></sell-profile>
 
-    <div class="col-md-4 col-xs-12 sell-details sell">
-      <div class="sell-details-info">
-	<img class="sell-details-info-image"
-	   src="assets/king_babar.jpg"
-	   ng-click="sell.debug()"></img>
-      
-      <div class="sell-details-info-text">
-        <ul ng-hide="sell.customer.details===null">
-          <li>{{sell.customer.details.firstname}}
-            ({{sell.customer.details.nickname}})
-            {{sell.customer.details.lastname}}</li>
-          <br>
-          <li><b>{{sell.customer.details.money}}&#8364</b></li>
-        </ul>
-        <div ng-show="sell.customer.details===null">
-          Made with
-	  <a href="https://www.youtube.com/watch?v=xat1GVnl8-k"> <i class="fa fa-heart" alt="love"></i></a>
-          by
-	  <a href="https://github.com/Dryvenn">Dryvenn</a>
-	  and
-	  <a href="https://github.com/Iansus">Iansus</a>.
-	  <br>
-	  <a href="https://github.com/babar-dev/babar" style="font-size:75%">
-	    <i class="fa fa-github-square"></i> Fork me on Github !
-	  </a>
-	  <br>
-	  <a ui-sref="error({status:420})" style="font-size:50%">
-	    This is total bullshit, what can I do ?
-          </a>
-        </div>
-      </div> <!-- /text -->
-      <div
-         ng-show="unicorn"
-         style="position:relative;z-index:-10;display:inline;float:right;margin-top:4%;">
-        <unicorn></unicorn>
-      </div>
-      </div> <!-- /sell-details-info -->
-
-      <div class="sell-details-history" ng-hide="sell.customer.details===null">
-	<ul class="list-group custom-list">
-          <li
-             class="list-group-item"
-             ng-repeat="drink in sell.customer.details.history  |
-             orderBy : sell.chronological : true">
-            <h5>{{drink.name}}</h5>
-            <h6>{{drink.price}}€   |   {{sell.toDateString(drink.time)}}</h6>
-          </li>
-        </ul>
-      </div> <!-- /sell-details-history -->
-
-      <div
-	 class="sell-details-stats"
-	 ng-hide="sell.customer.details === null">
-	<b>Favourite drink : </b> {{sell.customer.details.favDrink}}<br>
-	<b>Total spent : </b>{{sell.customer.details.totalSpent}}€<br>
-      </div>
-
-      <div
-	 class="sell-details-makeDeposit"
-	 ng-hide="sell.customer.details === null">
-	<button
-	   class="btn btn-success"
-           ng-click="sell.makeDeposit()">
-	  Make a deposit
-	</button>
-      </div>
-
-   </div> <!-- /sell-details -->
-    
   </div> <!-- row -->
 </div> <!--container -->
 

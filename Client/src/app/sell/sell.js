@@ -1,6 +1,7 @@
 angular.module('babar.sell', [
     'babar.sell.cst',
     'babar.sell.drk',
+    'babar.sell.prf',
     'babar.server',
     'babar.confirm',
     'babar.deposit',
@@ -175,15 +176,11 @@ angular.module('babar.sell', [
 	    Focus.setLocation('drink');
         };
         
-	//setting up watches so the highlighted item will always be zero during a search
-        //$scope.$watch(this.customer.keyword, this.customer.blockIndex);
-        //$scope.$watch(this.drink.keyword, this.drink.blockIndex);
-
 	this.confirm = function(){
             var dialog = ngDialog.open({
                 template: 'confirm/confirm.tpl.html',
                 controller: 'ConfirmCtrl as confirm',
-                data: [$scope.sell.customer.details, $scope.sell.drink.details, $scope.sell.customer.getActualMoney()],
+                data: [$scope.sellcst.current.details, $scope.selldrk.current.details, $scope.sellcst.current.getActualMoney()],
                 className: 'ngdialog-theme-plain',
                 showClose: false,
                 closeByEscape: false,
@@ -230,7 +227,7 @@ angular.module('babar.sell', [
 
         //For we must be able to enter confirmation mode when using the mouse
         this.mouseAttempt = function(){
-            if(this.customer.details !== null && this.drink.details !== null){
+            if($scope.sellcst.current.details !== null && $scope.selldrk.current.details !== null){
                 this.confirm();
             }
         };
@@ -243,7 +240,7 @@ angular.module('babar.sell', [
             var dialog = ngDialog.open({
                 template: 'deposit/deposit.tpl.html',
                 controller: 'DepositCtrl as deposit',
-                data: [$scope.sell.customer.details],
+                data: [$scope.sellcst.current.details],
                 className: 'ngdialog-theme-plain',
                 showClose: false,
                 closeByEscape: false,

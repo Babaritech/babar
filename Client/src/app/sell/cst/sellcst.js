@@ -9,9 +9,7 @@ angular.module('babar.sell.cst', [
 	    controllerAs: 'sellcst',
             controller: function($scope, $state, searchFilter, selectFilter, Focus, Server, Encode, Decode) {
 
-		console.log($scope);
-
-		//load customers' list
+                //load customers' list
 		this.list = [];
 		Server.list.customers()
 		    .then(function(res){
@@ -136,5 +134,7 @@ angular.module('babar.sell.cst', [
 		    }
 		};
 
-
+		//setting up watches so the highlighted item will always be zero during a search
+                $scope.$watch(this.current.keyword, this.current.blockIndex);
+		
 	    }};});
