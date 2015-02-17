@@ -1,4 +1,6 @@
 angular.module('babar.sell', [
+    'babar.sell.cst',
+    'babar.sell.drk',
     'babar.server',
     'babar.confirm',
     'babar.deposit',
@@ -37,7 +39,7 @@ angular.module('babar.sell', [
     })
 
     .factory('Focus', [function(){
-	//This aim to make the navigation easier by setting up keyborad shortcuts
+	//This aim to make the navigation easier by setting up keyboard shortcuts
 	//There are three fields of interest: customer input, drink input, sell confirmation, and neither of these
 	Focus = function(){
 
@@ -134,9 +136,11 @@ angular.module('babar.sell', [
     .controller('SellCtrl', ['$rootScope', '$scope', '$state', '$filter', 'Server', 'Decode', 'Focus', 'Konami', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, $filter, Server, Decode, Focus, Konami, searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
-	    console.log(Server.debug());
+	    console.log($scope);
 	};
 
+	
+	
 	// if someone attempts to reload the page, logout the current user
 	// Server.logout();
 
@@ -174,8 +178,8 @@ angular.module('babar.sell', [
         };
         
 	//setting up watches so the highlighted item will always be zero during a search
-        $scope.$watch(this.customer.keyword, this.customer.blockIndex);
-        $scope.$watch(this.drink.keyword, this.drink.blockIndex);
+        //$scope.$watch(this.customer.keyword, this.customer.blockIndex);
+        //$scope.$watch(this.drink.keyword, this.drink.blockIndex);
 
 	this.confirm = function(){
             var dialog = ngDialog.open({
@@ -195,9 +199,9 @@ angular.module('babar.sell', [
 	
         // takes the money value and returns an appropriate color
 	this.getMoneyColor = function(){
-	    if (this.customer.details === null){
+	    //if (this.customer.details === null){
 		return '#EE999C'; //pink
-	    }else{
+	    /*}else{
 		var money = this.customer.getActualMoney();
 		//resolve appropriate color
 		if(money > 15){
@@ -212,7 +216,7 @@ angular.module('babar.sell', [
 		else{
 		    return '#E5251E'; //red
 		}
-	    }
+	    }*/
 	};
 
 	// convert a date to something readable

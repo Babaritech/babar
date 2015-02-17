@@ -7,17 +7,17 @@
        type="text"
        class="form-control"
        placeholder="Search for a customer"
-       ng-model="sell.customer.keyword">
+       ng-model="sellcst.current.keyword">
   </div><!-- /input-group -->
   <div class="list-group custom-list">
     <a
        href="#"
        class="list-group-item {{customer.active?'active':''}}"
        ng-repeat="customer in
-                  sell.customers
-                  | search: sell.customer.keyword
-                  | select : sell.customer.index"
-       ng-click="sell.customer.setIndex($index, true)">
+                  sellcst.list
+                  | search: sellcst.current.keyword
+                  | select : sellcst.current.index"
+       ng-click="sellcst.current.setIndex($index, true)">
       {{customer.name}}
     </a>
   </div> <!-- /list -->
