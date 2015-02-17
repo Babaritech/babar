@@ -1,13 +1,15 @@
 <div class="col-md-4 col-xs-12 sell-customer sell">
   <div
      class="input-group custom-input">
+    <md-input-container>
+      <label>Search for a customer</label>
     <input
        name="customerInput"
        id="customerInput"
        type="text"
        class="form-control"
-       placeholder="Search for a customer"
        ng-model="sellcst.current.keyword">
+    </md-input-container>
   </div><!-- /input-group -->
   <div class="list-group custom-list">
     <a
