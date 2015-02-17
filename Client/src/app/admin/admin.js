@@ -69,15 +69,13 @@ angular.module('babar.admin', [
 	//Dialog functions
 	
 	this.signOut = function(){
-	    Server.perform({
-		action:'logout'
-	    });
+	    Server.logout();
 	};
         this.getAdminItems = function(domain){
 	    var promise;
             switch(domain){
             case 'customer':
-                Server.get('customer')
+                Server.list.customers()
                     .then(function(res) { //success
 			//add an useful 'name' attribute
                         $scope.admin.items = Decode.customers(res.data);
@@ -90,7 +88,7 @@ angular.module('babar.admin', [
 		    });
 		break;
             case 'drink':
-		Server.get('drink')
+		Server.list.drinks()
                     .then(function(res){ //success
 			//add an useful 'name' attribute
                         $scope.admin.items = Decode.drinks(res.data);

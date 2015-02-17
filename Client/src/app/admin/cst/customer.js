@@ -20,7 +20,7 @@ angular.module('babar.admin.customer', [
 	this.updateStatusId = function() {
 	    this.current.statusId = this.status.id;
 	};
-	Server.get('status')
+	Server.list.statuses
 	    .then(function(res) {
 		res.data.forEach(function(val, ind, arr) {
 		    $scope.admcst.statuses.push(val);
@@ -34,7 +34,7 @@ angular.module('babar.admin.customer', [
 	    this.isWrite = false;
 	}
 	else{ //user already exists
-            Server.get('customer', $stateParams.id)
+            Server.read.customer(stateParams.id).info()
                 .then(function(res) {
                     $scope.admcst.current = Decode.customer(res.data);
                     
@@ -46,7 +46,7 @@ angular.module('babar.admin.customer', [
                     $scope.admcst.status = $scope.admcst.statuses[$scope.admcst.statuses.indexOf(status[0])];
 		    
 		    // get balance
-		    Server.get('customer', $scope.admcst.current.id, 'balance')
+		    Server.customer($scope.admcst.current.id).balance()
 			.then(function(res){
                             $scope.admcst.current.money = parseFloat(res.data.balance);
                         }, function(res) {

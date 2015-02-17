@@ -38,7 +38,7 @@ angular.module( 'babar', [
                         controller: "SellDrinkCtrl",
                         controllerAs: "selldrk"
                     }
-            })
+		}})
 	    .state('error', {
 		url: "/error/:status",
 		templateUrl: "error/error.tpl.html",

@@ -137,10 +137,8 @@ angular.module('babar.sell', [
 	    console.log(Server.debug());
 	};
 
-	//if someone attempts to reload the page, logout the current user
-	Server.perform({
-	    action:'logout'
-	});
+	// if someone attempts to reload the page, logout the current user
+	// Server.logout();
 
 	//this serves the chronological filter
 	this.chronological = 'time';
@@ -175,7 +173,6 @@ angular.module('babar.sell', [
 	    Focus.setLocation('drink');
         };
         
-	
 	//setting up watches so the highlighted item will always be zero during a search
         $scope.$watch(this.customer.keyword, this.customer.blockIndex);
         $scope.$watch(this.drink.keyword, this.drink.blockIndex);
@@ -378,6 +375,5 @@ angular.module('babar.sell', [
 	    Konami.on('b');
         };
 	this.loadHotkeys();
-
 	
     }]);

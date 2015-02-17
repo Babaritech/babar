@@ -3,80 +3,30 @@ var serverIP = '127.0.0.1';//'137.194.14.116';
 angular.module('babar.server', [
     'babar.authenticate',
     'babar.error',
-    'ngDialog'
+    'ngDialog',
+    'ui.router'
 ])
-/**
- * This factory is VERY important, because it solves a puzzling issue.
- * In AngularJS, it's the displayed elements that make the API requests to get or post things.
- * Only in our app, some action require authentification.
- * So, display makes a request, no user is logged, a 401 is returned, the user log himself, the request is made again, and the data are returned from the server. However, display this time hasn't requested it, and noone's here to use them.
- * Thus, we need that at every 401 error, the element that made a request waits for an authentication then  retries its request.
- * This process is coded beyond thanks to events (nAuth and yAuth).
- * However, I didn't want to code everywhere the same yAuth event listener, so I centralized the handling of the promises thanks to a callback.
- * It works.
- * The only problem is that it isn't much $q-philosophical to use callbacks, promises should do the job.
+/*
+ * When a view asks for some data, there can be two cases.
+ * Either the user has the rights to do so, and the view receives it.
+ * Or he does not, and has to pass authentication. In the latter case, the view must ask again for the data once the user is legit. Only the server module doesn't know which one asked for it.
+ * Thus, whenever a 401 is fired, the server will make the authentication then retry the request and ask all the controllers to refresh the views.
  */
-    .factory('React', ['$rootScope', '$state', 'Server', function($rootScope, $state, Server) {
-	React = function() {
-	    // list and destroy yAuth listeners
-	    var unregisters = [];
-	    $rootScope.$on('yAuthEvent', function(e, a) {
-		window.setTimeout(function(){
-		    unregisters.forEach(function(val, ind, arr) {
-			val();
-		    });
-		    unregisters = [];
-		}, 1000);
-	    });
 
-	    this.toPromise = function(promise, func, args, successAction) {
-		var recursion = this.toPromise;
-		promise.then(function(promised) {// success, do the successAction
-                    successAction();
-                }, function(promised, some) {
-                    if(promised.status == 401) {// not logged, redo when logged
-                        var unregister = $rootScope.$on('yAuthEvent', function(e, a) {
-			    var newPromise;
-			    switch(func) {
-			    case 'perform':
-				newPromise = Server.perform(args);
-				break;
-			    case 'del':
-                                newPromise = Server.del(args.object, args.id);
-				break;
-			    case 'add':
-                                newPromise = Server.add(args.object, args.data);
-				break;
-			    case 'update':
-				newPromise = Server.update(args.object, args.data, args.id);
-				break;
-			    default:
-				newPromise = null;
-				break;
-			    }
-			    if(newPromise) {
-				recursion(newPromise, func, args, successAction);
-			    }
-			    else {
-				$state.go('error', {status:405});
-			    }
-                        });
-			unregisters.push(unregister);
-                    }
-                    else {// unknown state, go on error
-                        $state.go('error', {status: promised.status});
-                    }
-                });
+    .factory('ServerState', [function() {
+	State = function() {
+	    this.cstate = "IDLE";
+	    this.states = {
+		idle: "IDLE",
+		pending: "PENDING"
 	    };
-	    
+	    this.pendingRequest = null;
 	};
-
-	return new React();
+	return new State();
     }])
 
-
-// This aim to handle the authentication token
     .factory('Token', [function() {
+	// This aim to handle the authentication token
         function Token() {
             var value = null;
             this.reset = function() {
@@ -92,58 +42,84 @@ angular.module('babar.server', [
         return new Token();
     }])
 
-    .filter('react', ['$rootScope', '$q', '$http', '$state', 'ngDialog', 'Token', function($rootScope, $q, $http, $state, ngDialog, Token){
+    .filter('react', ['ServerState', 'Token', 'ngDialog', function(ServerState, Token, ngDialog){
+	// we hereby deal with error status codes, especially authentication problems
 	return function(promise){
-	    promise.then(function(response){
-		//status is 200
-		//everything's allright, moving on
-                console.info('ok');
-                return response;
-		
-	    }, function(response){
-		switch(response.status){    
-		case 401:
-		    //fire an nAuth event which will result in a new request from the display as soon as the yAuth event is fired
-                    $rootScope.$emit('nAuthEvent', {});
-                    console.log('nAuth!');
-		    
-                    //ask for a login
-		    var dialog = ngDialog.open({
-			template: 'authenticate/authenticate.tpl.html',
-			controller: 'AuthenticateCtrl as auth',
-			data: [],
-			className: 'ngdialog-theme-plain',
-			showClose: false,
-			closeByEscape: false,
-			closeByDocument: false
+
+	    var authYourself = function() {
+		var dialog = ngDialog.open({
+                    template: 'authenticate/authenticate.tpl.html',
+                    controller: 'AuthenticateCtrl as auth',
+                    data: [],
+                    className: 'ngdialog-theme-plain',
+                    showClose: false,
+                    closeByEscape: false,
+                    closeByDocument: false
+		});
+		dialog.closePromise.then(function(promised){
+                    console.log(promised.value);
+		});
+            };
+
+	    switch(ServerState.cstate) {
+	    case "IDLE":
+		promise.then(
+		    function(response){
+			// success, so still IDLE
+			ServerState.cstate = ServerState.states.idle;
+			//Server.refresh();
+                    },
+		    function(response){
+			switch(response.status){
+			case 401:
+			    // let's auth
+			    authYourself();
+			    ServerState.pendingRequest = response; //.smthg ?
+			    ServerState.cstate = ServerState.states.pending;
+			    break;
+			case 498:
+			    // session has expired, reset token and retry
+			    Token.reset();
+			    // TODO: retry(response)
+			    ServerState.cstate = ServerState.states.idle;
+			    break;
+			default:
+			    // error
+			    $state.go("error", {'status': response.status});
+			    ServerState.cstate = ServerState.states.idle;
+			    break;
+			}
 		    });
-		    dialog.closePromise.then(function(promised){
-			console.log(promised.value);
-		    });
-		    return response;
-		    
-		case 498:
-		    //session has expired, reset token and retry
-		    Token.reset();
-		    return response;
-		    
-		case 403:
-		    //wrong password, auth will say it, nothing more to be done here
-		    return response;
-		    
-		default:
-		    //go on the error page
-		    $state.go("error", {'status': response.status});
-		    return response;
-		    
-		}
-	    });
+		break;
+	    case "PENDING":
+		promise.then(
+		    function(response){
+			// success, so we gotta retry what we were doing
+			// TODO: retry(ServerState.pendingrequest)
+			ServerState.cstate = ServerState.states.idle;
+                    },
+                    function(response){
+			switch(response.status){
+			case 403:
+			    // wrong password
+			    // authenticate module will deal with it
+		            ServerState.cstate = ServerState.states.pending;
+			    break;
+			default:
+                            // error
+                            $state.go("error", {'status': response.status});
+                            ServerState.cstate = ServerState.states.idle;
+                            break;
+			}
+                    });
+		break;
+	    }
 	    return promise;
 	};
     }])
 
+    
     .factory('Server', ['$rootScope', '$state', '$q', '$http', 'Encode', 'Decode', 'reactFilter', 'Token', function($rootScope, $state, $q, $http, Encode, Decode, reactFilter, Token){
-
 	Server = function(){
 	    
 	    //Get current time
@@ -156,6 +132,12 @@ angular.module('babar.server', [
 		return this.get('customer').then(function(promised){
 		    return this.value;
 		});
+	    };
+
+	    // this refresh all the controllers
+	    this.refresh = function() {
+		// TODO: fill it !
+		console.log($rootScope);
 	    };
 
 	    //This prepares and makes all server's requests and returns a promise
@@ -175,112 +157,122 @@ angular.module('babar.server', [
 		return reactFilter($http(config));
 	    };
 
-	    //This regroups all sorts of gets.
-	    //id is either the id of a specific object, either 'all'
-	    //A promise is returned
-	    this.get = function(object, id, action){
-		var promise = null;
-		if(id){
-		    if(action){
-			promise = this.request(object, {
-			    'action': action,
-			    'id': id
-			});
-		    }else{
-			promise = this.request(object, {
-			    'action': 'info',
-			    'id': id
-			});
-		    }
-		}else{
-		    promise = this.request(object, {
-			'action': 'list'
-		    });   
+	    var server = this;
+	    
+	    this.list = {
+		params: {'action': 'list' },
+		customers: function() {
+		    return server.request('customer', this.params);
+		},
+		drinks: function() {
+                    return server.request('drink', this.params);
+		},
+		statuses: function() {
+                    return server.request('status', this.params);
+                },
+		stats: function() {
+		    // doesn't exist yet
+                    // promise = this.request('stat', this.params);
 		}
-		return promise;
 	    };
-
-	    //This regroups all sorts of posts
-	    //A promise is returned
-	    this.post = function(object, data, action, id) {
-		var promise = null;
-		if(action) {
-		    if(id) {
-			promise = this.request(object, {
-                            'action': action,
-			    'id': id
-                        }, data);
-		    }
-		    else {
-			promise = this.request(object, {
-                            'action': action
-                        }, data);
-		    }
+            this.create = {
+                params: {'action': 'new'},
+                customer: function(data) {
+                    return request('customer', this.params, data);
+                },
+                drink: function(data) {
+                    return request('drink', this.params, data);
+                },
+                purchase: function(args) {
+                    //args.data.customer bought a args.data.drink at time()
+                    return request('sell', this.params, Encode.sell(args.data.customer, args.data.drink, time()));
+                },
+                deposit: function(args) {
+                    //args.data.customer addded args.data.amount € at time()
+                    return request('entry', this.params, Encode.entry(args.data.customer, args.data.amount, time()));
                 }
-                else {
-		    promise = this.request(object, {
-                        'action': 'new'
-                    }, data);
-		}
-		return promise;
-	    };
-
-	    
-	    //This aims to link client operations to server ones
-	    this.perform = function(args){
-		switch(args.action){
-		case 'buy':
-		    //args.data.customer bought a args.data.drink at time()
-		    return this.post('sell', Encode.sell(args.data.customer, args.data.drink, time()));
-		case 'deposit':
-		    //args.data.customer addded args.data.amount € at time()
-		    return this.post('entry', Encode.entry(args.data.customer, args.data.amount, time()));
-		case 'logout':
-		    return this.post('customer', Encode.logout(Token.get()), 'logout');
-
-		default:
-		    //nothing happens
-		    $state.go('error', {status: 405});
-		}
-	    };
-
-	    //A special method for update operations (causes awareness in the code)
-            this.update = function(object, data, id) {
-                return this.post(object, data, 'update', id);
             };
-	    
-	    //A special method for add operations (causes awareness in the code)
-            this.add = function(object, data) {
-                return this.post(object, data);
-            };
-	    
-            //A special method for delete operations (causes awareness in the code)
-	    this.del = function(object, id) {
-		return this.get(object, id, 'delete');
+	    this.read = {
+                customer: {
+		    params: {'action': 'info'},
+                    info: function(id) {
+			this.params.id = id;
+                        return server.request('customer', this.params);
+                    },
+                    balance: function(id) {
+                        this.params.id = id;
+			this.params.action = 'balance';
+			return server.request('customer', this.params);
+                    },
+		    totalEntries: function(id) {
+			this.params.id = id;
+			this.params.action = 'total_entries';
+			return server.request('customer', this.params);
+		    },
+		    history: function(id) {
+			this.params.id = id;
+			this.params.action = 'customer_history';
+			return server.request('sell', this.params);
+		    }
+		},
+		drink: {
+		    params: {'action': 'info'},         
+                    info: function(id) {
+			this.params.id = id;
+			return server.request('drink', this.params);
+		    }
+		},
+		status: {
+		    params: {'action': 'info'},         
+                    info: function(id) {
+                        this.params.id = id;
+                        return server.request('status', this.params);
+                    }
+                }
 	    };
-
-	    //This allow one to be authentified
+	    this.update = {
+                params: {'action': 'update'},
+		client: function(data) {
+                    this.params.id = data.id;
+                    return this.request('customer', this.params, data);
+                },
+                drink: function(data) {
+                    this.params.id = data.id;
+                    return this.request('drink', this.params, data);
+                }
+            };
+            this.del = {
+		params: {'action': 'delete'},
+                client: function(id) {
+		    this.params.id = id;
+		    return this.request('customer', this.params);
+                },
+                drink: function(id) {
+                    this.params.id = id;
+                    return this.request('drink', this.params);
+                }
+            };
+	    // the allows one to be logged out
+	    this.logout = function() {
+		var params = {'action': 'logout'};
+		return this.request('customer', params, Encode.logout(Token.get()));
+	    };
+	    // this allows one to be authentified
 	    this.authenticate = function(login, password, duration){
 		var promise = this.post('customer', Encode.login(login, password, duration), 'login');
 		var endTime = Encode.loginEndTime(duration);
 		promise.then(function(promised) {
 		    Token.set(promised.data.value);
-		    $rootScope.$emit('yAuthEvent', {login: login, endTime: endTime});
-		    console.log('yAuth!');
                 });
                 return promise;
 	    };
-	    
-	    
 	};
 	return new Server();
 
     }])
 
     .factory('Encode', [function(){
-
 	Encode = function(){
-
 	    this.sell = function(customer, drink, time){
 		return {
 		    id: 0,
@@ -293,7 +285,6 @@ angular.module('babar.server', [
 		    date: time
 		};
 	    };
-
 	    this.entry = function(customer, amount, time){
 		return {
 		    id: 0,
@@ -303,7 +294,6 @@ angular.module('babar.server', [
 		    date: time
 		};
 	    };
-
 	    this.login = function(login, password, duration) {
 		var endTime = 0;
                 var count = -1;
@@ -323,28 +313,23 @@ angular.module('babar.server', [
 	    this.loginEndTime = function(duration) {
 		return duration===0?duration:(new Date()).getTime() + duration*60*1000;
 	    };
-
 	    this.logout = function(token) {
 		return {
 		    tokenValue: token
 		};
 	    };
-
 	    this.drink = function(drink) {
 		var nDrink = drink;
                 nDrink.name = drink.type;
                 return nDrink;
 	    };
-	    
 	};
 	return new Encode();
     }])
 
 
     .factory('Decode', [function(){
-
 	Decode = function(){
-	    
 	    this.history = function(history){
 		return history.map(function(val, ind, arr){
 		    return {
@@ -354,14 +339,11 @@ angular.module('babar.server', [
 		    };
 		});
 	    };
-
-
 	    this.customer = function(customer) {
 		var nCustomer = customer;
                 nCustomer.name = customer.firstname + " ("+ customer.nickname + ") " + customer.lastname;
                 return nCustomer;
             };
-	    
 	    this.customers = function(customers) {
 		var mut = this.customer;
 		return customers.map(function(val, ind, arr){
@@ -369,7 +351,6 @@ angular.module('babar.server', [
                     return val;
                 });
 	    };
-
 	    this.drink = function(drink) {
 		var nDrink = drink;
 		nDrink.type = drink.name;
@@ -377,7 +358,6 @@ angular.module('babar.server', [
                 nDrink.price = parseFloat(drink.price, 10);
                 return nDrink;
             };
-
 	    this.drinks = function(drinks) {
 		var mut = this.drink;
 		return drinks.map(function(val, ind, arr) {
@@ -385,9 +365,6 @@ angular.module('babar.server', [
 		    return val;
 		});
 	    };
-		    
-
-            
 	};
 	return new Decode();
     }]);
