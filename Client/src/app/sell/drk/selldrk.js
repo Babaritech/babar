@@ -1,18 +1,19 @@
 angular.module('babar.sell.drk', [
     'babar.sell',
-    'babar.server'
+    'babar.server',
+    'ui.router'
 ])
     .directive('sellDrink', function() {
         return {
             templateUrl: 'sell/drk/selldrk.tpl.html',
             controllerAs: 'selldrk',
-            controller: function($scope, Server, Encode, Decode) {
+            controller: function($scope, $state, searchFilter, selectFilter, Focus, Server, Encode, Decode) {
 
 		//load drinks' list
 		this.list = [];
 		Server.list.drinks()
 		    .then(function(res){
-			$scope.sell.drinks = Decode.drinks(res.data);
+			$scope.selldrk.list = Decode.drinks(res.data);
 		    });
 		
 		//current drink
@@ -25,13 +26,13 @@ angular.module('babar.sell.drk', [
 		    refresh: function(){
 			this.details = selectFilter(
 			    searchFilter(
-				$scope.sell.drinks,
+				$scope.selldrk.list,
 				this.keyword),
 			    this.index)
 			[this.index];
 			this.size = selectFilter(
 			    searchFilter(
-				$scope.sell.drinks,
+				$scope.selldrk.list,
 				this.keyword),
 			    this.index).length;
 		    },
@@ -55,7 +56,7 @@ angular.module('babar.sell.drk', [
 			}
 		    },
 		    blockIndex: function(){
-			$scope.sell.drink.setIndex(0, false);
+			$scope.selldrk.current.setIndex(0, false);
 		    }
 		};
 		

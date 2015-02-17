@@ -1,20 +1,21 @@
 angular.module('babar.sell.cst', [
     'babar.sell',
-    'babar.server'
+    'babar.server',
+    'ui.router'
 ])
     .directive('sellCustomer', function() {
 	return {
 	    templateUrl: 'sell/cst/sellcst.tpl.html',
 	    controllerAs: 'sellcst',
-            controller: function($scope, Server, Encode, Decode) {
+            controller: function($scope, $state, searchFilter, selectFilter, Focus, Server, Encode, Decode) {
 
-		console.log("DEBUG");
+		console.log($scope);
 
 		//load customers' list
 		this.list = [];
 		Server.list.customers()
 		    .then(function(res){
-			$scope.sell.customers = Decode.customers(res.data);
+			$scope.sellcst.list = Decode.customers(res.data);
 		    });
 
 		// current customer
@@ -24,12 +25,12 @@ angular.module('babar.sell.cst', [
 		    size: 0,
 		    details: null,
 		    getCurrentId : function(){
-			return selectFilter(searchFilter($scope.sell.customers, this.keyword), this.index)[this.index].id;
+			return selectFilter(searchFilter($scope.sellcst.list, this.keyword), this.index)[this.index].id;
 		    },
 		    getTotalSpent: function(){
 			Server.read.customer.totalEntries(this.details.id)
 			    .then(function(res){
-				$scope.sell.customer.details.totalSpent = res.data.total;
+				$scope.sellcst.current.details.totalSpent = res.data.total;
 			    });
 		    },
 		    getFavDrink: function(){
@@ -71,24 +72,24 @@ angular.module('babar.sell.cst', [
 			//get the amount money a customer has
 			Server.read.customer.balance(this.getCurrentId())
 			    .then(function(res){
-				$scope.sell.customer.details.money = res.data.balance;
+				$scope.sellcst.current.details.money = res.data.balance;
 			    });
 		    },
 		    getStatus: function(){
 			//get the status from the statusId
 			Server.read.status.info(this.details.statusId)
 			    .then(function(res){
-				$scope.sell.customer.details.status = res.data;
+				$scope.sellcst.current.details.status = res.data;
 			    });
 		    },
 		    getHistory: function(){
 			//get the consumption history of the customer
 			Server.read.customer.history(this.getCurrentId())
 			    .then(function(res){
-				$scope.sell.customer.details.history = Decode.history(res.data);
+				$scope.sellcst.current.details.history = Decode.history(res.data);
 				//once the history is retrieve, we can get some extra info
-				$scope.sell.customer.getFavDrink();
-				$scope.sell.customer.getTotalSpent();
+				$scope.sellcst.current.getFavDrink();
+				$scope.sellcst.current.getTotalSpent();
 			    });
 		    },
 		    refresh: function(){
@@ -96,18 +97,18 @@ angular.module('babar.sell.cst', [
 			Server.read.customer.info(this.getCurrentId())
 			    .then(function(res){
 				//gotta interpret the customer status (rank)
-				$scope.sell.customer.details = res.data;
+				$scope.sellcst.current.details = res.data;
 
 				//get the customer's further info
-				$scope.sell.customer.getStatus();
-				$scope.sell.customer.getBalance();
-				$scope.sell.customer.getHistory();
+				$scope.sellcst.current.getStatus();
+				$scope.sellcst.current.getBalance();
+				$scope.sellcst.current.getHistory();
 			    });
 
 			//updata the size of the list
 			this.size = selectFilter(
 			    searchFilter(
-				$scope.sell.customers,
+				$scope.sellcst.list,
 				this.keyword),
 			    this.index).length;
 		    },
@@ -131,7 +132,7 @@ angular.module('babar.sell.cst', [
 			}
 		    },
 		    blockIndex: function(){
-			$scope.sell.customer.setIndex(0, false);
+			$scope.sellcst.current.setIndex(0, false);
 		    }
 		};
 

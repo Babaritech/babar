@@ -139,8 +139,6 @@ angular.module('babar.sell', [
 	    console.log($scope);
 	};
 
-	
-	
 	// if someone attempts to reload the page, logout the current user
 	// Server.logout();
 
@@ -169,8 +167,8 @@ angular.module('babar.sell', [
 
 	//a refresh method
 	this.refresh = function(){
-            $scope.sell.customer.refresh();
-            $scope.sell.drink.refresh();
+            $scope.sellcst.current.refresh();
+            $scope.selldrk.current.refresh();
             //Gotta reload Hotkeys' binding
             $scope.sell.loadHotkeys();
 	    //Set the focus back
@@ -199,10 +197,10 @@ angular.module('babar.sell', [
 	
         // takes the money value and returns an appropriate color
 	this.getMoneyColor = function(){
-	    //if (this.customer.details === null){
+	    if (!$scope.sellcst || $scope.sellcst.current.details === null){
 		return '#EE999C'; //pink
-	    /*}else{
-		var money = this.customer.getActualMoney();
+	    }else{
+		var money = $scope.sellcst.current.getActualMoney();
 		//resolve appropriate color
 		if(money > 15){
 		    return '#15BF25'; //green
@@ -216,7 +214,7 @@ angular.module('babar.sell', [
 		else{
 		    return '#E5251E'; //red
 		}
-	    }*/
+	    }
 	};
 
 	// convert a date to something readable
