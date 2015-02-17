@@ -1,26 +1,33 @@
 <div class="col-md-4 col-xs-12 sell-customer sell">
-  <div
-     class="input-group custom-input">
-    <md-input-container>
+  <div>
+     <md-input-container>
       <label>Search for a customer</label>
     <input
        name="customerInput"
        id="customerInput"
        type="text"
-       class="form-control"
+       class="sell-input"
        ng-model="sellcst.current.keyword">
     </md-input-container>
   </div><!-- /input-group -->
-  <div class="list-group custom-list">
-    <a
-       href="#"
-       class="list-group-item {{customer.active?'active':''}}"
-       ng-repeat="customer in
-                  sellcst.list
-                  | search: sellcst.current.keyword
-                  | select : sellcst.current.index"
+  <md-list>
+    <md-item
+      ng-repeat="customer in
+      sellcst.list
+      | search: sellcst.current.keyword
+      | select : sellcst.current.index"
        ng-click="sellcst.current.setIndex($index, true)">
-      {{customer.name}}
-    </a>
+      <md-item-content 
+         class="item-font {{customer.active?'active':'unactive'}}">
+        <div class="md-tile-left">
+	  <img src="assets/king_babar.jpg" class="face" alt="King Babar">
+	</div>
+	<div class="md-tile-content">
+	  <h3><strong>{{customer.nickname}}</strong></h3>
+	  <h4>{{customer.firstname}} {{customer.lastname}}</h4>
+	</div>
+      </md-item-content>
+    </md-item>
+  </md-list>
   </div> <!-- /list -->
 </div> <!-- /sell-customer -->
