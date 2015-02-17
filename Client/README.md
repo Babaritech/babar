@@ -1,4 +1,4 @@
-# Welcome to the Client side (we have cookies)
+# Welcome to the Client side
 
 ## Installation
 - git clone git@github.com:Dryvenn/babar.git
@@ -14,6 +14,11 @@
 
 ### Launch the compiler (prod)
 - grunt
+
+## NBs
+- The client assumes nothing but often refresh its views to be in
+  accordance with the database. Thus, the app is not made to handle
+  lots of clients.
 
 
 ## Website colors

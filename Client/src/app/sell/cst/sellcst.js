@@ -11,7 +11,7 @@ angular.module('babar.sell.cst', [
 		var refresh = function() {
 		    this.current.refresh();
 		};
-		$scope.$on('refresh', function(e, a) {refresh()});
+		$scope.$on('refresh', function(e, a) {refresh();});
 
                 //load customers' list
 		this.list = [];

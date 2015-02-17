@@ -11,16 +11,14 @@ angular.module('babar.confirm', [
 	    //don't have to check if actualMoney>0 for server will handle it for us
 	    if(actualMoney>0){
 		$scope.confirm.disableHotkeys();
-		var func = 'perform';
-		var args = {
-		    action: 'buy',
-		    data: {customer: $scope.confirm.customer, drink: $scope.confirm.drink}
-		};
-		var promise = Server.perform(args);
-		React.toPromise(promise, func, args, function() {
-		    $scope.closeThisDialog('bought');
+		Server.create.purchase({
+		    customer: $scope.confirm.customer,
+		    drink: $scope.confirm.drink
+		}).then(function() {
+		    $rootScope.$emit('refresh', {'from': 'confirm', 'to': 'all'});
+                    $scope.closeThisDialog('bought');
 		});
-        }else{
+            }else{
 		$scope.closeThisDialog('forbidden');
             }
         };
@@ -31,14 +29,14 @@ angular.module('babar.confirm', [
 
 	//Let's set up some hotkeys !
         Hotkeys.add({
-                combo: 'enter',
-                description: 'Confirm the sale',
-                callback: $scope.buy
+            combo: 'enter',
+            description: 'Confirm the sale',
+            callback: $scope.buy
         });
 	Hotkeys.add({
-                combo: 'escape',
-                description: 'Cancel the sale',
-                callback: $scope.cancel
+            combo: 'escape',
+            description: 'Cancel the sale',
+            callback: $scope.cancel
 	});
         this.disableHotkeys = function(){
             Hotkeys.del('enter');

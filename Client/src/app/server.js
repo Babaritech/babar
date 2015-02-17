@@ -9,21 +9,9 @@ angular.module('babar.server', [
 /*
  * When a view asks for some data, there can be two cases.
  * Either the user has the rights to do so, and the view receives it.
- * Or he does not, and has to pass authentication. In the latter case, the view must ask again for the data once the user is legit. Only the server module doesn't know which one asked for it.
- * Thus, whenever a 401 is fired, the server will make the authentication then retry the request and ask all the controllers to refresh the views.
+ * Or he does not, and has to pass authentication.
+ * In the latter case, the user will have to make his operation again after having authentified himself.
  */
-
-    .factory('ServerState', [function() {
-	State = function() {
-	    this.cstate = "IDLE";
-	    this.states = {
-		idle: "IDLE",
-		pending: "PENDING"
-	    };
-	    this.pendingRequest = null;
-	};
-	return new State();
-    }])
 
     .factory('Token', [function() {
 	// This aim to handle the authentication token
@@ -42,83 +30,47 @@ angular.module('babar.server', [
         return new Token();
     }])
 
-    .filter('react', ['$state', 'ServerState', 'Token', 'ngDialog', function($state, ServerState, Token, ngDialog){
+    .filter('react', ['$rootScope', '$state', '$http', 'Token', 'ngDialog', function($rootScope, $state, $http, Token, ngDialog){
 	// we hereby deal with error status codes, especially authentication problems
 	return function(promise){
-
-	    var authYourself = function() {
-		var dialog = ngDialog.open({
-                    template: 'authenticate/authenticate.tpl.html',
-                    controller: 'AuthenticateCtrl as auth',
-                    data: [],
-                    className: 'ngdialog-theme-plain',
-                    showClose: false,
-                    closeByEscape: false,
-                    closeByDocument: false
-		});
-		dialog.closePromise.then(function(promised){
-                    console.log(promised.value);
-		});
-            };
-
-	    switch(ServerState.cstate) {
-	    case "IDLE":
-		promise.then(
-		    function(response){
-			// success, so still IDLE
-			ServerState.cstate = ServerState.states.idle;
-			Server.refresh();
-                    },
-		    function(response){
-			switch(response.status){
-			case 401:
-			    // let's auth
-			    authYourself();
-			    ServerState.pendingRequest = response.config;
-			    ServerState.cstate = ServerState.states.pending;
-			    break;
-			case 498:
-			    // session has expired, reset token and retry
-			    Token.reset();
-			    Server.request(response.config);
-			    ServerState.cstate = ServerState.states.idle;
-			    break;
-			default:
-			    // error
-			    $state.go("error", {'status': response.status});
-			    ServerState.cstate = ServerState.states.idle;
-			    break;
-			}
-		    });
-		break;
-	    case "PENDING":
-		promise.then(
-		    function(response){
-			// success, so we gotta retry what we were doing
-			Server.request(ServerState.pendingrequest)
-			ServerState.cstate = ServerState.states.idle;
-                    },
-                    function(response){
-			switch(response.status){
-			case 403:
-			    // wrong password
-			    // authenticate module will deal with it
-		            ServerState.cstate = ServerState.states.pending;
-			    break;
-			case 401:
-                            // let's auth
-                            authYourself();
-                            ServerState.cstate = ServerState.states.pending;
-                            break;
-                        default:
-                            // error
-                            $state.go("error", {'status': response.status});
-                            ServerState.cstate = ServerState.states.idle;
-                            break;
-			}
-                    });
-		break;
-	    }
+	    var react = this;
+	    promise.then(
+		function(response){
+		    // success, spread a signal to make everyone refresh
+		    // maybe it's not a good idea to do it here...
+                    // $rootScope.$emit('refresh', {'from': 'server', 'to': 'all'});
+                },
+		function(response){
+		    switch(response.status){
+		    case 401:
+			// let's auth
+			var dialog = ngDialog.open({
+                            template: 'authenticate/authenticate.tpl.html',
+                            controller: 'AuthenticateCtrl as auth',
+                            data: [],
+                            className: 'ngdialog-theme-plain',
+                            showClose: false,
+                            closeByEscape: false,
+                            closeByDocument: false
+                        });
+                        dialog.closePromise.then(function(promised){
+                            console.log(promised.value);
+                        });
+                        break;
+                    case 403:
+                        // wrong login/password, handled by auth module
+                        break;
+                    case 498:
+			// session has expired, reset token and retry
+			Token.reset();
+			react($http(response.config));
+			break;
+		    default:
+                        // error
+                        $state.go("error", {'status': response.status});
+                        break;
+		    }
+                });
 	    return promise;
 	};
     }])
@@ -137,12 +89,6 @@ angular.module('babar.server', [
 		return this.get('customer').then(function(promised){
 		    return this.value;
 		});
-	    };
-
-	    // this refresh all the controllers
-	    this.refresh = function() {
-		// spread a signal to make everyone refresh
-		$rootScope.$emit('refresh', {'from': 'server', 'to': 'all'});
 	    };
 
 	    //This prepares and makes all server's requests and returns a promise
@@ -188,12 +134,12 @@ angular.module('babar.server', [
                 drink: function(data) {
                     return server.request('drink', this.params, data);
                 },
-                purchase: function(args) {
-                    //args.data.customer bought a args.data.drink at time()
-                    return server.request('sell', this.params, Encode.sell(args.data.customer, args.data.drink, time()));
+                purchase: function(data) {
+                    //data.customer bought a data.drink at time()
+                    return server.request('sell', this.params, Encode.sell(data.customer, data.drink, time()));
                 },
                 deposit: function(data) {
-                    //args.data.customer addded args.data.amount € at time()
+                    //data.customer addded data.amount € at time()
                     return server.request('entry', this.params, Encode.entry(data.customer, data.amount, time()));
                 }
             };
@@ -263,10 +209,10 @@ angular.module('babar.server', [
 		return server.request('customer', params, Encode.logout(Token.get()));
 	    };
 	    // this allows one to be authentified
-	    this.authenticate = function(login, password, duration){
+	    this.authenticate = function(data){
 		var params = {'action': 'login'};
-		var promise = server.request('customer', params, Encode.login(login, password, duration));
-		var endTime = Encode.loginEndTime(duration);
+		var promise = server.request('customer', params, Encode.login(data.login, data.password, data.duration));
+		var endTime = Encode.loginEndTime(data.duration);
 		promise.then(function(promised) {
 		    Token.set(promised.data.value);
                 });

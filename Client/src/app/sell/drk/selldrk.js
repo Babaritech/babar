@@ -12,7 +12,7 @@ angular.module('babar.sell.drk', [
 		var refresh = function() {
                     this.current.refresh();
                 };
-                $scope.$on('refresh', function(e, a) {refresh()});
+                $scope.$on('refresh', function(e, a) {refresh();});
 
                 //load drinks' list
 		this.list = [];

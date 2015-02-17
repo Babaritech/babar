@@ -27,16 +27,18 @@ angular.module('babar.authenticate', [
 	$scope.confirm = function(){
 	    if($scope.authForm.$valid === true){
 		//form's well filled, ask permission
-		var promise = Server.authenticate($scope.auth.login, $scope.auth.password, $scope.auth.chosenDuration);
-		promise.then(function(promised) { //allright
+		Server.authenticate({
+		    login: $scope.auth.login,
+		    password: $scope.auth.password,
+		    duration: $scope.auth.chosenDuration
+		}).then(function(promised) {
+		    // auth allright, back to what we where at
 		    $scope.closeThisDialog('authenticated');
-		}, function(promised) { //there's an error
+		}, function(promised) {
 		    if(promised.status === 403) {
 			$scope.auth.error = "Wrong login/password combination.";
 		    }
-		    else {
-			$state.go('error', {'status': promised.status.toString()});
-		    }
+		    // else error module (called by server module)
 		});
             }
         };

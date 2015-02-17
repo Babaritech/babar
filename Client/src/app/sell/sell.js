@@ -173,7 +173,7 @@ angular.module('babar.sell', [
 	    //Set the focus back
 	    Focus.setLocation('drink');
         };
-	$scope.$on('refresh', function(e, a) {refresh()});
+	$scope.$on('refresh', function(e, a) {refresh();});
         
 	this.confirm = function(){
             var dialog = ngDialog.open({

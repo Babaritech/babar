@@ -2,7 +2,7 @@ angular.module('babar.deposit', [
     'babar.server',
     'cfp.hotkeys'
 ])
-    .controller('DepositCtrl', ['$scope', 'Server', 'hotkeys', function($scope, Server, Hotkeys){
+    .controller('DepositCtrl', ['$rootScope', '$scope', 'Server', 'hotkeys', function($rootScope, $scope, Server, Hotkeys){
 	
 	
         this.customer = $scope.ngDialogData[0];
@@ -22,7 +22,8 @@ angular.module('babar.deposit', [
 		    customer: $scope.deposit.customer,
 		    amount: $scope.deposit.money
 		}).then(function() {
-		    $scope.closeThisDialog('deposited');                
+		    $rootScope.$emit('refresh', {'from': 'deposit', 'to': 'all'});
+                    $scope.closeThisDialog('deposited');
                 });
 	    }
         };
