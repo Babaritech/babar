@@ -67,20 +67,20 @@ angular.module('babar.server', [
 		    function(response){
 			// success, so still IDLE
 			ServerState.cstate = ServerState.states.idle;
-			//Server.refresh();
+			Server.refresh();
                     },
 		    function(response){
 			switch(response.status){
 			case 401:
 			    // let's auth
 			    authYourself();
-			    ServerState.pendingRequest = response; //.smthg ?
+			    ServerState.pendingRequest = response.config;
 			    ServerState.cstate = ServerState.states.pending;
 			    break;
 			case 498:
 			    // session has expired, reset token and retry
 			    Token.reset();
-			    // TODO: retry(response)
+			    Server.request(response.config);
 			    ServerState.cstate = ServerState.states.idle;
 			    break;
 			default:
@@ -95,7 +95,7 @@ angular.module('babar.server', [
 		promise.then(
 		    function(response){
 			// success, so we gotta retry what we were doing
-			// TODO: retry(ServerState.pendingrequest)
+			Server.request(ServerState.pendingrequest)
 			ServerState.cstate = ServerState.states.idle;
                     },
                     function(response){
@@ -105,7 +105,12 @@ angular.module('babar.server', [
 			    // authenticate module will deal with it
 		            ServerState.cstate = ServerState.states.pending;
 			    break;
-			default:
+			case 401:
+                            // let's auth
+                            authYourself();
+                            ServerState.cstate = ServerState.states.pending;
+                            break;
+                        default:
                             // error
                             $state.go("error", {'status': response.status});
                             ServerState.cstate = ServerState.states.idle;
@@ -136,8 +141,8 @@ angular.module('babar.server', [
 
 	    // this refresh all the controllers
 	    this.refresh = function() {
-		// TODO: fill it !
-		console.log($rootScope);
+		// spread a signal to make everyone refresh
+		$rootScope.$emit('refresh', {'from': 'server', 'to': 'all'});
 	    };
 
 	    //This prepares and makes all server's requests and returns a promise

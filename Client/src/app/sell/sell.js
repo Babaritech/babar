@@ -166,15 +166,14 @@ angular.module('babar.sell', [
 	    }
 	};
 
-	//a refresh method
-	this.refresh = function(){
-            $scope.sellcst.current.refresh();
-            $scope.selldrk.current.refresh();
+	// a refresh method
+	var refresh = function(){
             //Gotta reload Hotkeys' binding
             $scope.sell.loadHotkeys();
 	    //Set the focus back
 	    Focus.setLocation('drink');
         };
+	$scope.$on('refresh', function(e, a) {refresh()});
         
 	this.confirm = function(){
             var dialog = ngDialog.open({
@@ -188,8 +187,8 @@ angular.module('babar.sell', [
             });
             dialog.closePromise.then(function(promised){
 		console.log(promised.value);
-                $scope.sell.refresh();
-	    });
+		$rootScope.$emit('refresh', {'from':'confirm', 'to':'all'});
+            });
         };
 	
         // takes the money value and returns an appropriate color
@@ -248,7 +247,7 @@ angular.module('babar.sell', [
             });
             dialog.closePromise.then(function(promised){
 		console.log(promised.value);
-		$scope.sell.refresh();
+		$rootScope.$emit('refresh', {'from':'deposit', 'to':'all'});
 	    });
 	};
 
@@ -336,14 +335,12 @@ angular.module('babar.sell', [
             if(Focus.forward()){ //isWaitingForConfirm
                 $scope.sell.confirm();
 	    }else{
-		$scope.sell.customer.refresh();
-		$scope.sell.drink.refresh();
-	    }
+		$rootScope.$emit('refresh', {'from':'hotkey', 'to':'sellParts'});
+            }
         };
         var hotkCancel= function(){
 	    Focus.backward();
-            $scope.sell.customer.refresh();
-            $scope.sell.drink.refresh();
+	    $rootScope.$emit('refresh', {'from':'hotkey', 'to':'sellParts'});
         };
 	var hotkUp = function(){
 	    Konami.on('up');

@@ -8,6 +8,10 @@ angular.module('babar.sell.cst', [
 	    templateUrl: 'sell/cst/sellcst.tpl.html',
 	    controllerAs: 'sellcst',
             controller: function($scope, $state, searchFilter, selectFilter, Focus, Server, Encode, Decode) {
+		var refresh = function() {
+		    this.current.refresh();
+		};
+		$scope.$on('refresh', function(e, a) {refresh()});
 
                 //load customers' list
 		this.list = [];
