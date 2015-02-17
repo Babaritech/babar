@@ -21,7 +21,7 @@ angular.module('babar.sell.cst', [
 		    keyword: "",
 		    index: 0,
 		    size: 0,
-		    details: null,
+		    details: "not null", //for test purposes
 		    getCurrentId : function(){
 			return selectFilter(searchFilter($scope.sellcst.list, this.keyword), this.index)[this.index].id;
 		    },
