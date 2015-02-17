@@ -2,7 +2,7 @@ angular.module('babar.confirm', [
     'babar.server',
     'cfp.hotkeys'
 ])
-    .controller('ConfirmCtrl', ['$scope', 'Server', 'React', 'hotkeys', function($scope, Server, React, Hotkeys){
+    .controller('ConfirmCtrl', ['$scope', 'Server', 'hotkeys', function($scope, Server, Hotkeys){
 	this.customer = $scope.ngDialogData[0];
 	this.drink = $scope.ngDialogData[1];
 	var actualMoney = $scope.ngDialogData[2];
