@@ -2,7 +2,7 @@ angular.module('babar.deposit', [
     'babar.server',
     'cfp.hotkeys'
 ])
-    .controller('DepositCtrl', ['$scope', 'Server', 'React', 'hotkeys', function($scope, Server, React, Hotkeys){
+    .controller('DepositCtrl', ['$scope', 'Server', 'hotkeys', function($scope, Server, Hotkeys){
 	
 	
         this.customer = $scope.ngDialogData[0];
@@ -18,13 +18,10 @@ angular.module('babar.deposit', [
 		$scope.deposit.error = "Can't deposit more than 100€ at a time.";
 	    }else{
 		$scope.deposit.disableHotkeys();
-		var func = 'perform';
-		var args = {
-                    action: 'deposit',
-                    data: {customer: $scope.deposit.customer, amount: $scope.deposit.money}
-                };
-		var promise = Server.perform(args);
-		React.toPromise(promise, func, args, function() {
+		Server.create.deposit({
+		    customer: $scope.deposit.customer,
+		    amount: $scope.deposit.money
+		}).then(function() {
 		    $scope.closeThisDialog('deposited');                
                 });
 	    }

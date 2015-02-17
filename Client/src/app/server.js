@@ -42,7 +42,7 @@ angular.module('babar.server', [
         return new Token();
     }])
 
-    .filter('react', ['ServerState', 'Token', 'ngDialog', function(ServerState, Token, ngDialog){
+    .filter('react', ['$state', 'ServerState', 'Token', 'ngDialog', function($state, ServerState, Token, ngDialog){
 	// we hereby deal with error status codes, especially authentication problems
 	return function(promise){
 
@@ -178,18 +178,18 @@ angular.module('babar.server', [
             this.create = {
                 params: {'action': 'new'},
                 customer: function(data) {
-                    return request('customer', this.params, data);
+                    return server.request('customer', this.params, data);
                 },
                 drink: function(data) {
-                    return request('drink', this.params, data);
+                    return server.request('drink', this.params, data);
                 },
                 purchase: function(args) {
                     //args.data.customer bought a args.data.drink at time()
-                    return request('sell', this.params, Encode.sell(args.data.customer, args.data.drink, time()));
+                    return server.request('sell', this.params, Encode.sell(args.data.customer, args.data.drink, time()));
                 },
-                deposit: function(args) {
+                deposit: function(data) {
                     //args.data.customer addded args.data.amount € at time()
-                    return request('entry', this.params, Encode.entry(args.data.customer, args.data.amount, time()));
+                    return server.request('entry', this.params, Encode.entry(data.customer, data.amount, time()));
                 }
             };
 	    this.read = {
@@ -255,11 +255,12 @@ angular.module('babar.server', [
 	    // the allows one to be logged out
 	    this.logout = function() {
 		var params = {'action': 'logout'};
-		return this.request('customer', params, Encode.logout(Token.get()));
+		return server.request('customer', params, Encode.logout(Token.get()));
 	    };
 	    // this allows one to be authentified
 	    this.authenticate = function(login, password, duration){
-		var promise = this.post('customer', Encode.login(login, password, duration), 'login');
+		var params = {'action': 'login'};
+		var promise = server.request('customer', params, Encode.login(login, password, duration));
 		var endTime = Encode.loginEndTime(duration);
 		promise.then(function(promised) {
 		    Token.set(promised.data.value);
