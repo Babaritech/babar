@@ -7,6 +7,7 @@ angular.module('babar.sell', [
     'babar.deposit',
     'babar.easter',
     'ngDialog',
+    'ngMaterial',
     'cfp.hotkeys',
     'ui.router'
 ])
