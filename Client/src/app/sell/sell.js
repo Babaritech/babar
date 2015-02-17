@@ -137,10 +137,10 @@ angular.module('babar.sell', [
 	    console.log(Server.debug());
 	};
 
-	//if someone attempts to reload the page, logout the current user
-  	Server.logout();
+	// if someone attempts to reload the page, logout the current user
+	// Server.logout();
 
-	//this serves the chronological filter
+	 //this serves the chronological filter
 	this.chronological = 'time';
 	var orderBy = $filter('orderBy');
 	
@@ -197,7 +197,7 @@ angular.module('babar.sell', [
 		return selectFilter(searchFilter($scope.sell.customers, this.keyword), this.index)[this.index].id;
 	    },
 	    getTotalSpent: function(){
-		Server.read.customer(this.details.id).totalEntries()
+		Server.read.customer.totalEntries(this.details.id)
 		    .then(function(res){
 			$scope.sell.customer.details.totalSpent = res.data.total;
 		    });
@@ -239,21 +239,21 @@ angular.module('babar.sell', [
 	    },
 	    getBalance: function(){
 		//get the amount money a customer has
-		Server.read.customer(this.getCurrentId()).balance()
+		Server.read.customer.balance(this.getCurrentId())
 		    .then(function(res){
 			$scope.sell.customer.details.money = res.data.balance;
 		    });
             },
 	    getStatus: function(){
 		//get the status from the statusId
-		Server.read.status(this.details.statusId).info()
+		Server.read.status.info(this.details.statusId)
 		    .then(function(res){
 			$scope.sell.customer.details.status = res.data;
 		    });
 	    },
 	    getHistory: function(){
 		//get the consumption history of the customer
-                Server.read.customer(this.getCurrentId()).history()
+                Server.read.customer.history(this.getCurrentId())
                     .then(function(res){
 			$scope.sell.customer.details.history = Decode.history(res.data);
 			//once the history is retrieve, we can get some extra info
@@ -263,7 +263,7 @@ angular.module('babar.sell', [
 	    },
             refresh: function(){
 		//get the customer's basic info
-		Server.read.customer(this.getCurrentId()).info()
+		Server.read.customer.info(this.getCurrentId())
 		    .then(function(res){
                         //gotta interpret the customer status (rank)
 			$scope.sell.customer.details = res.data;
