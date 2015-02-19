@@ -9,21 +9,17 @@ angular.module('babar.authenticate', [
 	this.login = "";
 	this.password = "";
 
-	//if you wanna have a simple confirmation for an already logged user, use $stateParams to set this boolean to true
-	this.hasAccess = false;
-	
 	this.error = "";
 
 	this.allowedThroughTime = true;
-	this.availableDurations = [0, 5, 15, 30, 60, 120, 240];
+	this.durations = [0, 5, 15, 30, 60, 120, 240].map(function(val, ind, arr) {
+	    return {
+		label: val == 0 ? 'Just this time' : val.toString() + ' min',
+		time: val
+	    };
+	});
 	this.chosenDuration = 0;
-	this.durationToDisplay = "Just this time";
-	this.chooseDuration = function(duration){
-	    this.chosenDuration = duration;
-	    this.durationToDisplay = duration.toString() + ' min';
-	};
-
-
+	
 	$scope.cancel = function() {
 	    console.log("login cancelled");
 	    $mdDialog.cancel();
