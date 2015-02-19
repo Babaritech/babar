@@ -1,6 +1,6 @@
 <md-dialog aria-label="Login">
   <md-content>
-    <md-toolbar class="md-accent">
+    <md-toolbar class="md-primary">
       <h2 class="md-toolbar-tools">
 	<span><strong>Authentication</strong></span>
       </h2>
@@ -27,16 +27,28 @@
              required>
 	</md-input-container>
         <md-input-container flex>
-	  <md-select
-	     ng-model="chosenDuration"
-	     placeholder="Duration"
-	     ng-show="auth.allowedThroughTime">
-            <md-option
-	       ng-value="duration.value"
-	       ng-repeat="duration in auth.durations">
-	      {{ duration.label }}
-	    </md-option>
-	  </md-select>
+	  <div layout="row" layout-fill layout-padding layout-margin
+	       layout-align="space-around center">
+	    <div flex="20" layout>
+              <span>Duration (min)</span>
+            </div>
+	    <md-slider
+	       id="duration-slider"
+               ng-model="auth.duration"
+               min="0"
+               max="120"
+	       aria-label="Duration (slider)"
+	       class="md-accent"
+               flex="70">
+            </md-slider>
+	    <div flex="10" layout>
+	      <input
+		 type="number"
+		 ng-model="auth.duration"
+		 aria-label="Duration (value)"
+		 aria-controls="duration-slider">
+	    </div>
+	  </div>
 	</md-input-container>
       </div>
       <div layout="row" layout-margin layout-fill>

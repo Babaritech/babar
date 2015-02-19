@@ -11,14 +11,7 @@ angular.module('babar.authenticate', [
 
 	this.error = "";
 
-	this.allowedThroughTime = true;
-	this.durations = [0, 5, 15, 30, 60, 120, 240].map(function(val, ind, arr) {
-	    return {
-		label: val === 0 ? 'Just this time' : val.toString() + ' min',
-		value: val
-	    };
-	});
-	this.chosenDuration = 0;
+	this.duration = 0;
  
 	$scope.cancel = function() {
 	    new Toast().display("login cancelled");
@@ -32,7 +25,7 @@ angular.module('babar.authenticate', [
 		Server.authenticate({
 		    login: $scope.auth.login,
 		    password: $scope.auth.password,
-		    duration: $scope.auth.chosenDuration
+		    duration: $scope.auth.duration
 		}).then(function(promised) {
 		    // auth allright, back to what we where at
 		    new Toast().display("login passed");
@@ -54,6 +47,7 @@ angular.module('babar.authenticate', [
 		document.getElementById('loginInput').focus();
 	    }
         };
+
 	
         hotkeys.add({
             combo: 'tab',
@@ -61,11 +55,10 @@ angular.module('babar.authenticate', [
             callback: $scope.selectField,
             allowIn: ['INPUT']
             });
-	//No need to set up and enter hotkey for angular do it by itself in forms
-        // Hotkeys.add({
-        //     combo: 'enter',
-        //     description: 'Authenticate the sale',
-        //     callback: $scope.confirm,
-        //     allowIn: ['INPUT']
-        // });
+        hotkeys.add({
+            combo: 'enter',
+            description: 'Authenticate the sale',
+            callback: $scope.confirm,
+            allowIn: ['INPUT']
+        });
     });
