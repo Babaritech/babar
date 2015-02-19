@@ -49,11 +49,7 @@ angular.module('babar.server', [
                             clickOutsideToClose: false,
                             controller: 'AuthenticateCtrl',
                             controllerAs: 'auth'
-                        }).then(function(promised) {
-			    console.log('login passed');
-			}, function(promised) {
-			    console.log('login failed');
-			});
+                        });
                         break;
                     case 403:
                         // wrong login/password, handled by auth module
