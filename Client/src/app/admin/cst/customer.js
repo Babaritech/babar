@@ -1,7 +1,7 @@
 angular.module('babar.admin.customer', [
     'babar.server'
 ])
-    .controller('AdmCustomerCtrl', ['$scope', '$state', '$stateParams', 'Server', 'Decode', 'React', function($scope, $state, $stateParams, Server, Decode, React){
+    .controller('AdmCustomerCtrl', ['$scope', '$state', '$stateParams', 'Server', 'Decode', function($scope, $state, $stateParams, Server, Decode){
 
 	$scope.debug = function(arg) {
 	    console.log(arg);
@@ -20,7 +20,7 @@ angular.module('babar.admin.customer', [
 	this.updateStatusId = function() {
 	    this.current.statusId = this.status.id;
 	};
-	Server.list.statuses
+	Server.list.statuses()
 	    .then(function(res) {
 		res.data.forEach(function(val, ind, arr) {
 		    $scope.admcst.statuses.push(val);
@@ -34,7 +34,7 @@ angular.module('babar.admin.customer', [
 	    this.isWrite = false;
 	}
 	else{ //user already exists
-            Server.read.customer(stateParams.id).info()
+            Server.read.customer.info($stateParams.id)
                 .then(function(res) {
                     $scope.admcst.current = Decode.customer(res.data);
                     

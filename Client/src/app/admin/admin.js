@@ -31,12 +31,6 @@ angular.module('babar.admin', [
                 title: "Drinks",
                 description: "Consult, modify or add drinks.",
 		faIcon: "beer"
-            },
-            {
-		name: "stat",
-                title: "Statistics",
-                description: "Get familiar with some outstanding numbers.",
-		faIcon: "line-chart"
             }
 	];
 	this.currentDomain = null;
