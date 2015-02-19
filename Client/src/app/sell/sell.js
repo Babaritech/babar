@@ -135,7 +135,8 @@ angular.module('babar.sell', [
         return new Focus();
     }])
 
-    .controller('SellCtrl', ['$rootScope', '$scope', '$state', '$filter', 'Server', 'Decode', 'Focus', 'Konami', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, $filter, Server, Decode, Focus, Konami, searchFilter, selectFilter, Hotkeys, ngDialog){
+    
+    .controller('SellCtrl', ['$rootScope', '$scope', '$state', '$filter', '$mdDialog', 'Server', 'Decode', 'Focus', 'Konami', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, $filter, $mdDialog, Server, Decode, Focus, Konami, searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
 	    console.log($scope);
@@ -175,26 +176,69 @@ angular.module('babar.sell', [
 	    Focus.setLocation('drink');
         };
 	$scope.$on('refresh', function(e, a) {refresh();});
-        
-	this.confirm = function(){
-            var dialog = ngDialog.open({
-                template: 'confirm/confirm.tpl.html',
-                controller: 'ConfirmCtrl as confirm',
-                data: [$scope.sellcst.current.details, $scope.selldrk.current.details, $scope.sellcst.current.getActualMoney()],
-                className: 'ngdialog-theme-plain',
-                showClose: false,
-                closeByEscape: false,
-                closeByDocument: false
-            });
-            dialog.closePromise.then(function(promised){
-		console.log(promised.value);
-		$rootScope.$emit('refresh', {'from':'confirm', 'to':'all'});
-            });
-        };
-	
+
+        this.confirm = function() {
+	    var customer = $scope.sellcst.current;
+	    var drink = $scope.selldrk.current;
+	    if(customer.getActualMoney() - drink.details.price > 0){
+                // customer has enough money for this purchase, ask for a confirmation
+                var confirm = $mdDialog.confirm()
+                    .title('Confirm this purchase ?')
+                    .content('{{selldrk.current.details.name}} for {{sellcst.current.details.name}}')
+                    .ariaLabel('Purchase confirmation')
+                    .ok('Confirm')
+                    .cancel('Cancel');
+                $mdDialog.show(confirm).then(function() {
+                    Server.create.purchase({
+                        customer: customer.details,
+                        drink: drink.details
+                    }).then(function() {
+                        $rootScope.$emit('refresh', {'from': 'confirm', 'to': 'all'});
+                        console.log('purchase done');
+                    }, function() {
+                        console.log("purchase forbidden");
+                    });
+                }, function() {
+                    console.log("purchase cancelled");
+                });
+            }
+            else {
+		// customer hasn't enough money for this purchase, ask if it must be credited anyway
+		var confirmOverdraft = $mdDialog.confirm()
+                    .title('Confirm this purchase AS OVERDRAFT ?')
+                    .content('{{selldrk.current.details.name}} for {{sellcst.current.details.name}}')
+                    .ariaLabel('Purchase confirmation as overdraft')
+                    .ok('Confirm (needs a login)')
+                    .cancel('Cancel');
+		$mdDialog
+                    .show(confirmOverdraft)
+                    .then(function() {
+			// user wants an overdraft, login and do it
+			Server.guiAuthenticate()
+                            .then(function() {
+				// auth successul
+				Server.create.purchase({
+                                    customer: customer.details,
+                                    drink: drink.details
+				}).then(function() {
+                                    $rootScope.$emit('refresh', {'from': 'confirm', 'to': 'all'});
+                                    console.log('purchase done');
+				}, function() {
+                                    console.log("purchase forbidden");
+				});
+                            }, function() {
+				// auth cancelled
+                            });
+                    }, function() {
+			console.log("purchase cancelled");
+                    });
+            }
+	};
+
+         
         // takes the money value and returns an appropriate color
-	this.getMoneyColor = function(){
-	    if (!$scope.sellcst || $scope.sellcst.current.details === null){
+        this.getMoneyColor = function(){
+            if (!$scope.sellcst || $scope.sellcst.current.details === null){
 		return '#EE999C'; //pink
 	    }else{
 		var money = $scope.sellcst.current.getActualMoney();

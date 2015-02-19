@@ -30,7 +30,7 @@ angular.module('babar.server', [
         return new Token();
     }])
 
-    .filter('react', ['$rootScope', '$state', '$http', 'Token', 'ngDialog', function($rootScope, $state, $http, Token, ngDialog){
+    .filter('react', ['$rootScope', '$state', '$http', '$mdDialog', 'Token', 'ngDialog', function($rootScope, $state, $http, $mdDialog, Token){
 	// we hereby deal with error status codes, especially authentication problems
 	return function(promise){
 	    var react = this;
@@ -44,18 +44,16 @@ angular.module('babar.server', [
 		    switch(response.status){
 		    case 401:
 			// let's auth
-			var dialog = ngDialog.open({
-                            template: 'authenticate/authenticate.tpl.html',
-                            controller: 'AuthenticateCtrl as auth',
-                            data: [],
-                            className: 'ngdialog-theme-plain',
-                            showClose: false,
-                            closeByEscape: false,
-                            closeByDocument: false
-                        });
-                        dialog.closePromise.then(function(promised){
-                            console.log(promised.value);
-                        });
+			$mdDialog.show({ 
+                            templateUrl: 'authenticate/authenticate.tpl.html',
+                            clickOutsideToClose: false,
+                            controller: 'AuthenticateCtrl',
+                            controllerAs: 'auth'
+                        }).then(function(promised) {
+			    console.log('login passed');
+			}, function(promised) {
+			    console.log('login failed');
+			});
                         break;
                     case 403:
                         // wrong login/password, handled by auth module
@@ -218,13 +216,21 @@ angular.module('babar.server', [
                 });
                 return promise;
 	    };
-	};
-	return new Server();
+	    this.guiAuthenticate = function() {
+		return $mdDialog.show({ 
+                    templateUrl: 'authenticate/authenticate.tpl.html',
+                    clickOutsideToClose: false,
+                    controller: 'AuthenticateCtrl',
+                    controllerAs: 'auth'
+		});
+            };
+        };
+        return new Server();
 
     }])
 
     .factory('Encode', [function(){
-	Encode = function(){
+        Encode = function(){
 	    this.sell = function(customer, drink, time){
 		return {
 		    id: 0,

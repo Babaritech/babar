@@ -1,9 +1,10 @@
 angular.module('babar.authenticate', [
     'babar.server',
     'babar.error',
+    'ngMaterial',
     'cfp.hotkeys'
 ])
-    .controller('AuthenticateCtrl', ['$scope', '$state', 'Server', 'hotkeys', function($scope, $state, Server, Hotkeys){
+    .controller('AuthenticateCtrl', function($scope, $state, $mdDialog, Server, hotkeys){
 
 	this.login = "";
 	this.password = "";
@@ -21,7 +22,12 @@ angular.module('babar.authenticate', [
 	    this.chosenDuration = duration;
 	    this.durationToDisplay = duration.toString() + ' min';
 	};
-	
+
+
+	$scope.cancel = function() {
+	    console.log("login cancelled");
+	    $mdDialog.cancel();
+	};
 	
 	//in case of confirmation
 	$scope.confirm = function(){
@@ -33,21 +39,17 @@ angular.module('babar.authenticate', [
 		    duration: $scope.auth.chosenDuration
 		}).then(function(promised) {
 		    // auth allright, back to what we where at
-		    $scope.closeThisDialog('authenticated');
+		    console.log("login passed");
+                    $mdDialog.hide();
 		}, function(promised) {
-		    if(promised.status === 403) {
+		    console.log("login failed");
+                    if(promised.status === 403) {
 			$scope.auth.error = "Wrong login/password combination.";
 		    }
 		    // else error module (called by server module)
 		});
             }
         };
-
-	//in case of cancel
-	$scope.cancel = function(){
-	    $scope.closeThisDialog('cancelled');
-        };
-
 
 	$scope.selectField = function(){
 	    if(document.getElementById('loginInput') === document.activeElement){
@@ -57,19 +59,12 @@ angular.module('babar.authenticate', [
 	    }
         };
 	
-	//Let's set up some hotkeys !
-        Hotkeys.add({
-            combo: 'escape',
-            description: 'Cancel the sale',
-            callback: $scope.cancel,
-	    allowIn: ['INPUT']
-        });
-        Hotkeys.add({
+        hotkeys.add({
             combo: 'tab',
             description: 'Select the right field',
             callback: $scope.selectField,
             allowIn: ['INPUT']
-        });
+            });
 	//No need to set up and enter hotkey for angular do it by itself in forms
         // Hotkeys.add({
         //     combo: 'enter',
@@ -77,4 +72,4 @@ angular.module('babar.authenticate', [
         //     callback: $scope.confirm,
         //     allowIn: ['INPUT']
         // });
-    }]);
+    });

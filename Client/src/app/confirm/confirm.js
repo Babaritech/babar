@@ -8,19 +8,7 @@ angular.module('babar.confirm', [
 	var actualMoney = $scope.ngDialogData[2];
 	
 	$scope.buy = function(){
-	    //don't have to check if actualMoney>0 for server will handle it for us
-	    if(actualMoney>0){
-		$scope.confirm.disableHotkeys();
-		Server.create.purchase({
-		    customer: $scope.confirm.customer,
-		    drink: $scope.confirm.drink
-		}).then(function() {
-		    $rootScope.$emit('refresh', {'from': 'confirm', 'to': 'all'});
-                    $scope.closeThisDialog('bought');
-		});
-            }else{
-		$scope.closeThisDialog('forbidden');
-            }
+	
         };
 	$scope.cancel = function(){
             $scope.closeThisDialog('cancelled');
