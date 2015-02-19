@@ -18,11 +18,16 @@
       | select : sellcst.current.index"
        ng-click="sellcst.current.setIndex($index, true)">
       <md-item-content 
-         class="item-font {{customer.active?'active':'unactive'}}">
+         class="item-font {{customer.active?'active':'unactive'}}
+         md-primary md-hue2">
         <div class="md-tile-left">
-	  <img src="assets/king_babar.jpg" class="face" alt="King Babar">
+	  <img
+	     src="assets/king_babar.jpg"
+	     class="face"
+	     alt="King Babar"
+	     style="width: 100px; height: 100px">
 	</div>
-	<div class="md-tile-content">
+	<div class="md-tile-content md-primary md-hue-2">
 	  <h3><strong>{{customer.nickname}}</strong></h3>
 	  <h4>{{customer.firstname}} {{customer.lastname}}</h4>
 	</div>
