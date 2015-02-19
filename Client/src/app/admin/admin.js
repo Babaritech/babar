@@ -17,22 +17,26 @@ angular.module('babar.admin', [
 	    {
 		name: "customer",
 		title: "Customers",
-		description: "Consult, modify or add customers."
+		description: "Consult, modify or add customers.",
+		faIcon: "male"
 	    },
 	    {
 		name: "user",
                 title: "Users",
-                description: "See who's in charge."
+                description: "See who's in charge.",
+		faIcon: "users"
             },
             {
 		name: "drink",
                 title: "Drinks",
-                description: "Consult, modify or add drinks."
+                description: "Consult, modify or add drinks.",
+		faIcon: "beer"
             },
             {
 		name: "stat",
                 title: "Statistics",
-                description: "Get familiar with some outstanding numbers."
+                description: "Get familiar with some outstanding numbers.",
+		faIcon: "line-chart"
             }
 	];
 	this.currentDomain = null;
