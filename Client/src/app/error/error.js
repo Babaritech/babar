@@ -70,6 +70,20 @@ angular.module('babar.error', [
         return new Status();
     }])
 
+    .factory('Toast', function($mdToast) {
+	return function() {
+	    this.display =  function(message) {
+		console.info(message);
+		$mdToast.show(
+		    $mdToast.simple()
+			.content(message)
+			.capsule(true)
+			.hideDelay(500)
+		);
+	    };
+	};
+    })
+
     .controller('ErrorCtrl', ['Status', function(Status){
 
 	this.status = Status.getStatus();

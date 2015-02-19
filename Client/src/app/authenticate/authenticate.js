@@ -4,7 +4,7 @@ angular.module('babar.authenticate', [
     'ngMaterial',
     'cfp.hotkeys'
 ])
-    .controller('AuthenticateCtrl', function($scope, $state, $mdDialog, Server, hotkeys){
+    .controller('AuthenticateCtrl', function($scope, $state, $mdDialog, Server, Toast, hotkeys){
 
 	this.login = "";
 	this.password = "";
@@ -14,14 +14,14 @@ angular.module('babar.authenticate', [
 	this.allowedThroughTime = true;
 	this.durations = [0, 5, 15, 30, 60, 120, 240].map(function(val, ind, arr) {
 	    return {
-		label: val == 0 ? 'Just this time' : val.toString() + ' min',
-		time: val
+		label: val === 0 ? 'Just this time' : val.toString() + ' min',
+		value: val
 	    };
 	});
 	this.chosenDuration = 0;
-	
+ 
 	$scope.cancel = function() {
-	    console.log("login cancelled");
+	    new Toast().display("login cancelled");
 	    $mdDialog.cancel();
 	};
 	
@@ -35,10 +35,10 @@ angular.module('babar.authenticate', [
 		    duration: $scope.auth.chosenDuration
 		}).then(function(promised) {
 		    // auth allright, back to what we where at
-		    console.log("login passed");
+		    new Toast().display("login passed");
                     $mdDialog.hide();
 		}, function(promised) {
-		    console.log("login failed");
+		    new Toast().display("login failed");
                     if(promised.status === 403) {
 			$scope.auth.error = "Wrong login/password combination.";
 		    }

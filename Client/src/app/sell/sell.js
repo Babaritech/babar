@@ -3,7 +3,7 @@ angular.module('babar.sell', [
     'babar.sell.drk',
     'babar.sell.prf',
     'babar.server',
-    'babar.confirm',
+    'babar.error',
     'babar.deposit',
     'babar.easter',
     'ngDialog',
@@ -136,10 +136,10 @@ angular.module('babar.sell', [
     }])
 
     
-    .controller('SellCtrl', ['$rootScope', '$scope', '$state', '$filter', '$mdDialog', 'Server', 'Decode', 'Focus', 'Konami', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, $filter, $mdDialog, Server, Decode, Focus, Konami, searchFilter, selectFilter, Hotkeys, ngDialog){
+    .controller('SellCtrl', ['$rootScope', '$scope', '$state', '$filter', '$mdDialog', 'Server', 'Decode', 'Focus', 'Konami', 'Toast', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, $filter, $mdDialog, Server, Decode, Focus, Konami, Toast,searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
-	    console.log($scope);
+	    new Toast().display($scope);
 	};
 
 	// if someone attempts to reload the page, logout the current user
@@ -194,12 +194,12 @@ angular.module('babar.sell', [
                         drink: drink.details
                     }).then(function() {
                         $rootScope.$emit('refresh', {'from': 'confirm', 'to': 'all'});
-                        console.log('purchase done');
+                        new Toast().display('purchase done');
                     }, function() {
-                        console.log("purchase forbidden");
+                        new Toast().display("purchase forbidden");
                     });
                 }, function() {
-                    console.log("purchase cancelled");
+                    new Toast().display("purchase cancelled");
                 });
             }
             else {
@@ -222,15 +222,15 @@ angular.module('babar.sell', [
                                     drink: drink.details
 				}).then(function() {
                                     $rootScope.$emit('refresh', {'from': 'confirm', 'to': 'all'});
-                                    console.log('purchase done');
+                                    new Toast().display('purchase done');
 				}, function() {
-                                    console.log("purchase forbidden");
+                                    new Toast().display("purchase forbidden");
 				});
                             }, function() {
 				// auth cancelled
                             });
                     }, function() {
-			console.log("purchase cancelled");
+			new Toast().display("purchase cancelled");
                     });
             }
 	};
@@ -291,7 +291,7 @@ angular.module('babar.sell', [
                 closeByDocument: false
             });
             dialog.closePromise.then(function(promised){
-		console.log(promised.value);
+		new Toast().display(promised.value);
 		$rootScope.$emit('refresh', {'from':'deposit', 'to':'all'});
 	    });
 	};
