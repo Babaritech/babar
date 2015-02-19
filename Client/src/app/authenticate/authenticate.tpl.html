@@ -1,4 +1,4 @@
-<md-dialog aria-label="Login">
+<md-dialog aria-label="Authentication">
   <md-content>
     <md-toolbar class="md-primary">
       <h2 class="md-toolbar-tools">
@@ -41,15 +41,19 @@
 	       class="md-accent"
                flex="70">
             </md-slider>
-	    <div flex="10" layout>
-	      <input
-		 type="number"
-		 ng-model="auth.duration"
-		 aria-label="Duration (value)"
-		 aria-controls="duration-slider">
-	    </div>
 	  </div>
-	</md-input-container>
+	  <div flex="10" layout-fill>
+	    <strong>{{auth.duration}}</strong>
+          </div>
+        </md-input-container>
+	<md-input-container flex>
+          <p
+             style="color: red;"
+             class="md-warn">
+            <i class="fa fa-warning"></i>
+            {{auth.error}}
+          </p>
+        </md-input-container>
       </div>
       <div layout="row" layout-margin layout-fill>
 	<md-button
@@ -66,14 +70,5 @@
 	</md-button>
       </div>
     </form>
-    
-    </md-content>
-  
-  <span
-         class="auth-error"
-         style="color:red; font-size:75%"       
-         ng-hide="auth.hasAccess || auth.error === '' ">
-        <i class="fa fa-warning"></i> {{auth.error}}
-      </span>
-      
+  </md-content>
 </md-dialog>
