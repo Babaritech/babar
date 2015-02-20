@@ -10,7 +10,7 @@ angular.module('babar.authenticate', [
 	this.password = "";
 
 	this.error = "test";
-
+	
 	this.duration = 0;
  
 	$scope.cancel = function() {

@@ -8,9 +8,7 @@ angular.module( 'babar', [
     'babar.admin',
     'babar.admin.customer',
     'babar.admin.user',
-    'babar.admin.drink',
-    'babar.admin.stat'
-    
+    'babar.admin.drink'
 ])
 
     .config( ['$stateProvider', '$urlRouterProvider',  function myAppConfig ( $stateProvider, $urlRouterProvider ) {

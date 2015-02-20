@@ -1,7 +1,7 @@
 <md-dialog aria-label="Authentication">
   <md-content>
-    <md-toolbar class="md-primary">
-      <h2 class="md-toolbar-tools">
+    <md-toolbar class="md-accent">
+      <h2 class="md-toolbar-tools" style="width: 500px">
 	<span><strong>Authentication</strong></span>
       </h2>
     </md-toolbar>
@@ -27,11 +27,8 @@
              required>
 	</md-input-container>
         <md-input-container flex>
-	  <div layout="row" layout-fill layout-padding layout-margin
-	       layout-align="space-around center">
-	    <div flex="20" layout>
-              <span>Duration (min)</span>
-            </div>
+	  <div layout="row" layout-fill layout-padding
+	       layout-align="space-between center">
 	    <md-slider
 	       id="duration-slider"
                ng-model="auth.duration"
@@ -39,12 +36,19 @@
                max="120"
 	       aria-label="Duration (slider)"
 	       class="md-accent"
-               flex="70">
-            </md-slider>
+	       flex="50">
+               </md-slider>
+	    <div flex="20">
+	      <input
+		 type="number"
+		 ng-model="auth.duration"
+		 style="width:50px"
+		 min="0"
+		 max="120"
+		 step="1"
+		 aria-label="Duration (input)">
+            </div>
 	  </div>
-	  <div flex="10" layout-fill>
-	    <strong>{{auth.duration}}</strong>
-          </div>
         </md-input-container>
 	<md-input-container flex>
           <p
@@ -57,7 +61,7 @@
       </div>
       <div layout="row" layout-margin layout-fill>
 	<md-button
-	   class="md-raised md-accent"
+	   class="md-raised md-primary"
            ng-click="confirm()"
 	   flex>
 	  <strong>Submit</strong>
