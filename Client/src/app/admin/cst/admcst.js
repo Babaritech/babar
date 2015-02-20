@@ -1,7 +1,7 @@
 angular.module('babar.admin.customer', [
     'babar.server'
 ])
-    .controller('AdmCustomerCtrl', ['$scope', '$state', '$stateParams', 'Server', 'Decode', function($scope, $state, $stateParams, Server, Decode){
+    .controller('AdmCustomerCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'Server', 'Decode', function($rootScope, $scope, $state, $stateParams, Server, Decode){
 
 	$scope.debug = function() {
 	    console.log($scope.admcst.current);
@@ -22,12 +22,15 @@ angular.module('babar.admin.customer', [
             });
 
 	this.refresh = function() {
+	    console.log("debug");
 	    var id = $stateParams.id;
-	    if(this.state.current === 'reading') {
+	    console.log(id);
+	    //if(this.state.current === 'reading') {
 		Server.read.customer.info(id)
 		    .then(function(promised) {
 			// set general info
 			$scope.admcst.current = Decode.customer(promised.data);
+			console.log(promised);
 			// set status
 			$scope.admcst.current.status = $scope.admcst.statuses.filter(function(val, ind, arr) {
                             return val.id == $scope.admcst.current.statusId;
@@ -38,8 +41,10 @@ angular.module('babar.admin.customer', [
 				$scope.admcst.current.money = parseFloat(promised.data.balance);
 			    });
 		    });
-	    }
+	//}
 	};
+	// register this standard refresh function
+        $rootScope.$on('refresh', function(e, a) {$scope.admcst.refresh();});
 	/*
 	this.add = function(){
 	    // Before all, update current.statusId according to the current status

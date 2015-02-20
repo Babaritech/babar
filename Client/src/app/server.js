@@ -69,7 +69,7 @@ angular.module('babar.server', [
 	};
     }])
 
-    
+
     .factory('Server', ['$rootScope', '$state', '$q', '$http', 'Encode', 'Decode', 'reactFilter', 'Token', function($rootScope, $state, $q, $http, Encode, Decode, reactFilter, Token){
 	Server = function(){
 	    
@@ -139,39 +139,51 @@ angular.module('babar.server', [
             };
 	    this.read = {
                 customer: {
-		    params: {'action': 'info'},
                     info: function(id) {
-			this.params.id = id;
-                        return server.request('customer', this.params);
+			var params= {
+			    action: 'info',
+			    id: id
+			};
+                        return server.request('customer', params);
                     },
                     balance: function(id) {
-                        this.params.id = id;
-			this.params.action = 'balance';
-			return server.request('customer', this.params);
+			var params= {
+                            action: 'balance',
+                            id: id
+                        };
+			return server.request('customer', params);
                     },
 		    totalEntries: function(id) {
-			this.params.id = id;
-			this.params.action = 'total_entries';
-			return server.request('customer', this.params);
+			var params= {
+                            action: 'total_entries',
+                            id: id
+                        };
+			return server.request('customer', params);
 		    },
 		    history: function(id) {
-			this.params.id = id;
-			this.params.action = 'customer_history';
-			return server.request('sell', this.params);
+			var params= {
+                            action: 'customer_history',
+                            id: id
+                        };
+			return server.request('sell', params);
 		    }
 		},
 		drink: {
-		    params: {'action': 'info'},         
                     info: function(id) {
-			this.params.id = id;
-			return server.request('drink', this.params);
+			var params= {
+                            action: 'info',
+                            id: id
+                        };
+			return server.request('drink', params);
 		    }
 		},
 		status: {
-		    params: {'action': 'info'},         
                     info: function(id) {
-                        this.params.id = id;
-                        return server.request('status', this.params);
+                        var params= {
+                            action: 'info',
+                            id: id
+                        };
+			return server.request('status', params);
                     }
                 }
 	    };
@@ -209,6 +221,7 @@ angular.module('babar.server', [
 		var endTime = Encode.loginEndTime(data.duration);
 		promise.then(function(promised) {
 		    Token.set(promised.data.value);
+		    $rootScope.$emit('refresh', {'from': 'auth', 'to':'all'});
                 });
                 return promise;
 	    };

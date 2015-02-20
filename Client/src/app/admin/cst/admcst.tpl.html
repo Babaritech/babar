@@ -1,4 +1,4 @@
-<form name="cstForm" id="cstForm" ng-click="debug">
+<form name="cstForm" id="cstForm" ng-click="debug()">
   <fieldset
      ng-disabled="admcst.state.current === 'reading'">
     <md-input-container>
@@ -23,17 +23,13 @@
          ng-model="admcst.current.lastname">
     </md-input-container>
     <md-input-container>
+      <!-- md-select not ready yet -->
       <label>Status</label>
-      <md-select
-	 ng-model="admcst.status">
-	<md-option
-	   ng-value="status"
-           ng-repeat="status in admcst.statuses">
-	  {{status.name}}
-	</md-option>
-      </md-select>
+      <select ng-model="admcst.current.statusId"
+	      ng-options="status.statusId as status.name for status in admcst.statuses">
+      </select>
     </md-input-container>
-    <md-input-container>,
+    <md-input-container>
       <label>Password</label>
       <!-- not required till zephir's ready -->
       <input
