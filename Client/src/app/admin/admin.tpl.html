@@ -1,79 +1,62 @@
 <!--
-This the configuration page.
-Access requires admin rights.
-Basically, manage customers, drinks, and users.
--->
+    This the configuration page.
+    Access requires admin rights.
+    Basically, manage customers, drinks, and users.
+  -->
 
 <md-content>
   <md-toolbar>
-    <h1 class="md-toolbar-tools">
-      <span><strong>Babar</strong></span>
-    </h1>
+    <a ui-sref="sell" ng-click="admin.signOut()" style="color:white">
+      <h1 class="md-toolbar-tools">
+	<span><strong>Babar</strong></span>
+      </h1>
+    </a>        
   </md-toolbar>
-  <md-sidenav md-component-id="left"
-	      class="md-sidenav-left"
-	      md-is-locked-open="true" >
-    <md-toolbar class="md-accent">
-      <h1 class="md-toolbar-tools">Config</h1>
-    </md-toolbar>
-    <md-list>
-      <md-item
-         ui-sref="admin.{{domain.name}}({id:1})"
-         class="list-group-item {{admin.isActiveDomain(domain)}}"
-         ng-repeat="domain in admin.domains"
-         ng-click="admin.changeDomain(domain)">	
-        <md-item-content>
-	  <div class="md-tile-left">
-            <i class="fa fa-{{domain.faIcon}} fa-2x"></i>
-          </div>
-	  <div class="md-tile-content">
-            <h3>{{domain.title}}</h3>
-            <p>{{domain.description}}</p>
-	  </div>
-	</md-item-content>
-      </md-item>
-    </md-list>
-  </md-sidenav>
-</md-content>
+  <div layout="row">
+    
+    <md-sidenav md-component-id="left"
+		class="md-sidenav-left"
+		md-is-locked-open="true" >
+      <md-toolbar class="md-accent">
+	<h1 class="md-toolbar-tools">Config</h1>
+      </md-toolbar>
+      <md-list>
+	<md-item
+           ui-sref="admin.{{domain.name}}({id:1})"
+           class="{{domain.name === admin.domain.current ? 'active' : ''}}"
+           ng-repeat="domain in admin.domain.list"
+           ng-click="admin.domain.change(domain)">	
+          <md-item-content>
+	    <div class="md-tile-left">
+              <i class="fa fa-{{domain.faIcon}} fa-2x"></i>
+            </div>
+	    <div class="md-tile-content">
+              <h3>{{domain.title}}</h3>
+              <p>{{domain.description}}</p>
+	    </div>
+	  </md-item-content>
+	</md-item>
+      </md-list>
+    </md-sidenav>
 
-<div class="container-fluid">
-  <div
-     class="row" id="header">
-    <div
-       class="col-md-12">
-      <h2><b>BABAR-CONFIG</b></h2>
-      <a
-	 ui-sref="sell"
-	 style="color:black">
-	<i
-	   class="fa fa-sign-out fa-3x"
-	   ng-click="admin.signOut()"></i>
-      </a>
+    <div layout="row" flex>
+      <md-content
+	 ng-show="admin.domain.current !== null"
+	 flex="30">
+	<a
+           ui-sref="admin.{{admin.domain.current}}( {id: {{item.id}} })"
+           class="{{item.name === admin.item.current ? 'active' : ''}}"
+           ng-repeat="item in admin.item.list"
+           ng-click="admin.item.change()">
+          {{item.name}}
+	</a>
+      </md-content>
+      <md-content
+	 flex="70"
+	 ng-hide="admin.item.current === null">
+	<ui-view/>
+      </md-content>
     </div>
+    
   </div>
-  
-  
-  <div
-     class="col-md-4 admin-items">
-    <div
-       ng-show="this.currentDomain!==null"
-       class="list-group">
-      <a
-	 ui-sref="admin.{{admin.currentDomain}}( {id: {{item.id}} })"
-         class="list-group-item {{admin.isActiveItem(item)}}"
-	 ng-repeat="item in admin.items"
-	 ng-click="admin.changeItem(item)">
-        {{item.name}}
-      </a>
-    </div>
-  </div><!--admin-items-->
-
-  
-  <div
-     class="col-md-6 admin-details">
-    <ui-view/>
-  </div><!--admin-details-->
-  
-  
-</div> <!--/row-->
-</div> <!--/container-->
+</md-content>

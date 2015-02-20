@@ -53,7 +53,8 @@
 	<md-input-container flex>
           <p
              style="color: red;"
-             class="md-warn">
+             class="md-warn"
+	     ng-hide="auth.error===''">
             <i class="fa fa-warning"></i>
             {{auth.error}}
           </p>

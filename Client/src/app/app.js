@@ -36,20 +36,20 @@ angular.module( 'babar', [
 		controller: "AdminCtrl",
 		controllerAs: "admin"
 	    })
-	    .state('admin.customer', {
-		url: "/customer/:id",
+	    .state('admin.customers', {
+		url: "/customers/:id",
 		templateUrl: "admin/cst/customer.tpl.html",
 		controller: "AdmCustomerCtrl",
 		controllerAs: "admcst"
 	    })
-            .state('admin.drink', {
-                url: "/drink/:id/",
+            .state('admin.drinks', {
+                url: "/drinks/:id/",
                 templateUrl: "admin/drk/drink.tpl.html",
                 controller: "AdmDrinkCtrl",
                 controllerAs: "admdrk"
             })
-            .state('admin.user', {
-                url: "/user/:id",
+            .state('admin.users', {
+                url: "/users/:id",
                 templateUrl: "admin/usr/user.tpl.html",
                 controller: "AdmUserCtrl",
                 controllerAs: "admusr"

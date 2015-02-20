@@ -9,7 +9,7 @@ angular.module('babar.authenticate', [
 	this.login = "";
 	this.password = "";
 
-	this.error = "test";
+	this.error = "";
 	
 	this.duration = 0;
  

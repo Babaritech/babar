@@ -3,7 +3,7 @@ angular.module('babar.admin', [
     'ui.router'
 ])
 
-    .controller('AdminCtrl', ['$scope', '$state', 'Server', 'Decode', function($scope, $state, Server, Decode){
+    .controller('AdminCtrl', ['$rootScope', '$scope', '$state', 'Server', 'Decode', function($rootScope, $scope, $state, Server, Decode){
 
 	//Re-enable tab key, 'cause 'twill be useful in forms
 	document.onkeydown = function (e) {
@@ -12,116 +12,53 @@ angular.module('babar.admin', [
             }
         };
 
-	
-	this.domains = [
+	this.domain = {
+	    list: [
 	    {
-		name: "customer",
+		name: "customers",
 		title: "Customers",
 		description: "Consult, modify or add customers.",
 		faIcon: "male"
 	    },
 	    {
-		name: "user",
+		name: "users",
                 title: "Users",
                 description: "See who's in charge.",
 		faIcon: "users"
             },
             {
-		name: "drink",
+		name: "drinks",
                 title: "Drinks",
                 description: "Consult, modify or add drinks.",
 		faIcon: "beer"
             }
-	];
-	this.currentDomain = null;
-	this.isActiveDomain = function(domain){
-	    if(domain.name === this.currentDomain){
-		return 'active';
-	    }else{
-		return '';
+	    ],
+	    current: null,
+	    change: function(domain) {
+                this.current = domain.name;
+            }
+	};
+
+	this.item = {
+	    list: [],
+	    current: null,
+	    change: function(item) {
+		this.current = item.name;
+		// refresh
 	    }
 	};
-	this.changeDomain = function(domain){
-	    //desactivate current item
-	    this.currentItem = null;
-	    
-	    this.currentDomain = domain.name;
-	    this.getAdminItems(domain.name);
-	};
-	
-        this.items = null;
-	
-        this.currentItem = null;
-        this.isActiveItem = function(item){
-            if(item.name === this.currentItem){
-                return 'active';
-            }else{
-                return '';
-            }
-        };
-        this.changeItem = function(item){
-	    this.currentItem = item.name;
-        };
-
-
-	//Dialog functions
 	
 	this.signOut = function(){
 	    Server.logout();
 	};
-        this.getAdminItems = function(domain){
-	    var promise;
-            switch(domain){
-            case 'customer':
-                Server.list.customers()
-                    .then(function(res) { //success
-			//add an useful 'name' attribute
-                        $scope.admin.items = Decode.customers(res.data);
-			
-			// At start, highlight first item
-                        $scope.admin.changeItem($scope.admin.items[0]);
-			
-                    }, function(res) { //failure
-			$state.go('error', {'status':res.status});
-		    });
-		break;
-            case 'drink':
-		Server.list.drinks()
-                    .then(function(res){ //success
-			//add an useful 'name' attribute
-                        $scope.admin.items = Decode.drinks(res.data);
 
-			// At start, highlight first item
-                        $scope.admin.changeItem($scope.admin.items[0]);
-                        
-                    }, function(res) { //failure
-                        $state.go('error', {'status':res.status});
-                    });
-		break;
-            case 'user':
-		$scope.admin.items = null; //waiting for server's implementation
-		break;
-            case 'stat':
-		$scope.admin.items = null; //waiting for server's implementation
-                break;
-            default:
-		$state.go('error', {'status':405});
-		break;
-            }
-        }; 
-        this.getAdminDetails = function(domain, id){
-            switch(domain){
-            case 'customer':
-                return {status: 200, data: this.getCustomerInfo(id)};
-            case 'drink':
-                return {status: 200, data: this.getDrinkInfo(id)};
-            case 'user':
-                return {status: 200, data: this.getUserInfo(id)};
-            case 'stat':
-                return {status: 200, data: this.getStatInfo(id)};
-            default:
-                return {status: 400};
-            }
-        };
- 
+	this.refresh = function(domain) {
+	    Server.list[domain.name]
+		.then(function(promised) {
+		    $scope.admin.item.list = Decode[domain.name](promised.data);
+		    $scope.admin.item.current = $scope.admin.item.list[0];
+		});
+	};
+	// register this standard refresh function
+	$rootScope.$on('refresh', function(e, a) {$scope.admin.refresh();});
     }]);

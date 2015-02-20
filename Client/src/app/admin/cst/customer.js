@@ -6,57 +6,39 @@ angular.module('babar.admin.customer', [
 	$scope.debug = function(arg) {
 	    console.log(arg);
 	};
-	
-	this.isReadOnly = true; //when reading existing customers
-	this.isWrite = false; //when updating a customer
-        this.toWritingMode = function(){
-	    this.isWrite = true;
-            this.isReadOnly = false;
-        };
+
+	this.state = {
+	    list: ['creating', 'reading', 'updating'],
+	    current: $stateParams.id === -1 ? 'creating' : 'reading',
+	};
 	
 	this.current = null;
+
+	// existing statuses in db
 	this.statuses = [];
-        this.status = null;
-	this.updateStatusId = function() {
-	    this.current.statusId = this.status.id;
-	};
 	Server.list.statuses()
-	    .then(function(res) {
-		res.data.forEach(function(val, ind, arr) {
-		    $scope.admcst.statuses.push(val);
-		});
-		$scope.admcst.status = $scope.admcst.statuses[0];
+	    .then(function(promised) {
+		$scope.admcst.statuses = promised.data;
             });
-	 
-	//init of the current customer
-	if($stateParams.id === -1){ //we're in new user mode
-	    this.isReadOnly = false;
-	    this.isWrite = false;
-	}
-	else{ //user already exists
-            Server.read.customer.info($stateParams.id)
-                .then(function(res) {
-                    $scope.admcst.current = Decode.customer(res.data);
-                    
-                    // set status
-		    var status = $scope.admcst.statuses.filter(function(val, ind, arr) {
-			return val.id == $scope.admcst.current.statusId;
-		    });
-		    //initiate to the right status (that complicated 'cause ngOptions understand references instead of values)
-                    $scope.admcst.status = $scope.admcst.statuses[$scope.admcst.statuses.indexOf(status[0])];
-		    
+
+	this.refresh = function() {
+	    var id = $stateParams.id;
+	    if(this.state.current === 'reading')
+		Server.read.customer.info(id)
+		.then(function(promised) {
+		    // set general info
+		    $scope.admcst.current = Decode.customer(promised.data);
+		    // set status
+                    $scope.admcst.current.status = $scope.admcst.statuses.filter(function(val, ind, arr) {
+                        return val.id == $scope.admcst.current.statusId;
+                    });
 		    // get balance
-		    Server.customer($scope.admcst.current.id).balance()
-			.then(function(res){
-                            $scope.admcst.current.money = parseFloat(res.data.balance);
-                        }, function(res) {
-			    $state.go('error', {'status':res.status});
+		    Server.read.customer.balance(id)
+			.then(function(promised){
+                            $scope.admcst.current.money = parseFloat(promised.data.balance);
 			});
-		    
-                }, function(res) {
-		    $state.go('error', {'status':res.status});
 		});
-        }
+	};
 	
 	this.add = function(){
 	    // Before all, update current.statusId according to the current status
