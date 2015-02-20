@@ -25,8 +25,9 @@
     <md-input-container>
       <!-- md-select not ready yet -->
       <label>Status</label>
-      <select ng-model="admcst.current.statusId"
-	      ng-options="status.statusId as status.name for status in admcst.statuses">
+      <select
+	 ng-model="admcst.current.status"
+	 ng-options="status.name for status in admcst.statuses">
       </select>
     </md-input-container>
     <md-input-container>
