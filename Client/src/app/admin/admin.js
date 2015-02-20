@@ -33,9 +33,10 @@ angular.module('babar.admin', [
 		faIcon: "beer"
             }
 	    ],
-	    current: null,
+	    current: 'customers',
 	    change: function(domain) {
                 this.current = domain.name;
+		$scope.admin.refresh();
             }
 	};
 
@@ -44,7 +45,7 @@ angular.module('babar.admin', [
 	    current: null,
 	    change: function(item) {
 		this.current = item.name;
-		// refresh
+		$state.go('admin.'+$scope.admin.domain.current, {id:item.id});
 	    }
 	};
 	
@@ -52,13 +53,16 @@ angular.module('babar.admin', [
 	    Server.logout();
 	};
 
-	this.refresh = function(domain) {
-	    Server.list[domain.name]
+	this.refresh = function() {
+	    var domain = this.domain.current;
+	    Server.list[domain]()
 		.then(function(promised) {
-		    $scope.admin.item.list = Decode[domain.name](promised.data);
-		    $scope.admin.item.current = $scope.admin.item.list[0];
+		    $scope.admin.item.list = Decode[domain](promised.data);
 		});
 	};
 	// register this standard refresh function
 	$rootScope.$on('refresh', function(e, a) {$scope.admin.refresh();});
+
+	// bring it on
+	this.refresh();
     }]);

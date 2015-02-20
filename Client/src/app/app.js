@@ -38,19 +38,19 @@ angular.module( 'babar', [
 	    })
 	    .state('admin.customers', {
 		url: "/customers/:id",
-		templateUrl: "admin/cst/customer.tpl.html",
+		templateUrl: "admin/cst/admcst.tpl.html",
 		controller: "AdmCustomerCtrl",
 		controllerAs: "admcst"
 	    })
             .state('admin.drinks', {
                 url: "/drinks/:id/",
-                templateUrl: "admin/drk/drink.tpl.html",
+                templateUrl: "admin/drk/admdrk.tpl.html",
                 controller: "AdmDrinkCtrl",
                 controllerAs: "admdrk"
             })
             .state('admin.users', {
                 url: "/users/:id",
-                templateUrl: "admin/usr/user.tpl.html",
+                templateUrl: "admin/usr/admusr.tpl.html",
                 controller: "AdmUserCtrl",
                 controllerAs: "admusr"
             });

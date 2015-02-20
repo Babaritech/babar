@@ -23,12 +23,14 @@
       <md-list>
 	<md-item
            ui-sref="admin.{{domain.name}}({id:1})"
-           class="{{domain.name === admin.domain.current ? 'active' : ''}}"
            ng-repeat="domain in admin.domain.list"
            ng-click="admin.domain.change(domain)">	
-          <md-item-content>
-	    <div class="md-tile-left">
-              <i class="fa fa-{{domain.faIcon}} fa-2x"></i>
+          <md-item-content
+	     class="{{domain.name === admin.domain.current ? 'active' : ''}}">
+            <div class="md-tile-left">
+              <i
+		 class="fa fa-{{domain.faIcon}} fa-2x"
+		 style="margin-left:20px"></i>
             </div>
 	    <div class="md-tile-content">
               <h3>{{domain.title}}</h3>
@@ -39,18 +41,26 @@
       </md-list>
     </md-sidenav>
 
-    <div layout="row" flex>
-      <md-content
-	 ng-show="admin.domain.current !== null"
-	 flex="30">
-	<a
-           ui-sref="admin.{{admin.domain.current}}( {id: {{item.id}} })"
-           class="{{item.name === admin.item.current ? 'active' : ''}}"
+    <div layout="row" flex layout-padding>
+      <md-list flex="30">
+	<md-item
            ng-repeat="item in admin.item.list"
-           ng-click="admin.item.change()">
-          {{item.name}}
-	</a>
-      </md-content>
+           ng-click="admin.item.change(item)">
+	  <md-item-content
+	     class="{{item.name === admin.item.current ? 'active' : ''}}">
+             <div class="md-tile-left">
+               <img
+                  src="assets/king_babar.jpg"
+                  class="face"
+                  alt="King Babar"
+                  style="width: 75px; height: 75px">
+             </div>
+             <div class="md-tile-content" style="margin-left:5px">
+               <h4>{{item.name}}</h4>
+             </div>
+	  </md-item-content>
+	</md-item>
+      </md-list>
       <md-content
 	 flex="70"
 	 ng-hide="admin.item.current === null">

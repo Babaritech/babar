@@ -3,15 +3,15 @@ angular.module('babar.admin.customer', [
 ])
     .controller('AdmCustomerCtrl', ['$scope', '$state', '$stateParams', 'Server', 'Decode', function($scope, $state, $stateParams, Server, Decode){
 
-	$scope.debug = function(arg) {
-	    console.log(arg);
+	$scope.debug = function() {
+	    console.log($scope.admcst.current);
 	};
 
 	this.state = {
 	    list: ['creating', 'reading', 'updating'],
-	    current: $stateParams.id === -1 ? 'creating' : 'reading',
+	    current: $stateParams.id === -1 ? 'creating' : 'reading'
 	};
-	
+	this.state.current = 'updating';
 	this.current = null;
 
 	// existing statuses in db
@@ -23,23 +23,24 @@ angular.module('babar.admin.customer', [
 
 	this.refresh = function() {
 	    var id = $stateParams.id;
-	    if(this.state.current === 'reading')
+	    if(this.state.current === 'reading') {
 		Server.read.customer.info(id)
-		.then(function(promised) {
-		    // set general info
-		    $scope.admcst.current = Decode.customer(promised.data);
-		    // set status
-                    $scope.admcst.current.status = $scope.admcst.statuses.filter(function(val, ind, arr) {
-                        return val.id == $scope.admcst.current.statusId;
-                    });
-		    // get balance
-		    Server.read.customer.balance(id)
-			.then(function(promised){
-                            $scope.admcst.current.money = parseFloat(promised.data.balance);
+		    .then(function(promised) {
+			// set general info
+			$scope.admcst.current = Decode.customer(promised.data);
+			// set status
+			$scope.admcst.current.status = $scope.admcst.statuses.filter(function(val, ind, arr) {
+                            return val.id == $scope.admcst.current.statusId;
 			});
-		});
+			// get balance
+			Server.read.customer.balance(id)
+			    .then(function(promised){
+				$scope.admcst.current.money = parseFloat(promised.data.balance);
+			    });
+		    });
+	    }
 	};
-	
+	/*
 	this.add = function(){
 	    // Before all, update current.statusId according to the current status
             this.updateStatusId();
@@ -111,5 +112,8 @@ angular.module('babar.admin.customer', [
 		$state.go('admin');
             }
 	};
+	*/
 	
+	// bring it on
+	this.refresh();
     }]);
