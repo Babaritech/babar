@@ -1,9 +1,3 @@
-<!--
-    This the configuration page.
-    Access requires admin rights.
-    Basically, manage customers, drinks, and users.
-  -->
-
 <md-content>
   <md-toolbar>
     <a ui-sref="sell" ng-click="admin.signOut()" style="color:white">
@@ -26,7 +20,7 @@
            ng-repeat="domain in admin.domain.list"
            ng-click="admin.domain.change(domain)">	
           <md-item-content
-	     class="{{domain.name === admin.domain.current ? 'active' : ''}}">
+	     class="{{domain === admin.domain.current ? 'active' : ''}}">
             <div class="md-tile-left">
               <i
 		 class="fa fa-{{domain.faIcon}} fa-2x"
