@@ -87,33 +87,8 @@ angular.module('babar.admin.customer', [
 		controllerAs: 'admcstbs',
 		locals: {customer: $scope.admcst.current},
 	        templateUrl: 'admin/cst/admcst-bottomsheet.tpl.html'        
-		});
-	    /*
-	    $mdBottomSheet.show({
-	    
-		
-		controllerAs: 'admcstbs'
-	    }).then(function(promised) {
-		new Toast().display(promised.data);
 	    });
-	    */
 	};
-	
-        /*
-	  this.del = function(){
-	  //delete current user (to be confirmed by a password)
-	  var func = 'del';
-          var args = {
-          object: 'customer',
-	  id: $scope.admcst.current.id
-          };
-	  var promise = Server.del(args.object, args.id);
-          React.toPromise(promise, func, args, function() {
-	  //refresh customers' list
-          $state.go('admin');
-	  $scope.admin.getAdminItems('customer');
-          });
-	  };
 	  
 	  this.confirm = function(){
 	  // Before all, update current.statusId according to the current status
@@ -155,17 +130,6 @@ angular.module('babar.admin.customer', [
 	  }
           };
 
-	  this.cancel = function(){
-	  this.isReadOnly = true;
-	  this.isWrite = false;
-	  $scope.admin.getAdminItems('customer');
-          if($stateParams.id === -1) {
-	  $scope.$parent.admin.currentItem = null;
-	  $state.go('admin');
-          }
-	  };
-	*/
-	
 	// bring it on
 	this.refresh();
     }])
