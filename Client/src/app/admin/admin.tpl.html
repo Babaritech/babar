@@ -43,14 +43,14 @@
 
     <div layout="row" flex layout-padding>
       <div layout="column" flex="30">
-	<md-input-container>
+        <md-input-container>
 	  <label>Search for a customer</label>
 	<input
 	   flex
 	   ng-model="admin.keyword">
 	</md-input-container>
-      <md-list flex>
-	<md-item
+	<md-list flex>
+	  <md-item
            ng-repeat="item in admin.item.list
 		      | search: admin.keyword"
 	   ng-click="admin.item.change(item)">

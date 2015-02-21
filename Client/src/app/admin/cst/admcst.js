@@ -4,15 +4,41 @@ angular.module('babar.admin.customer', [
     .controller('AdmCustomerCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'Server', 'Decode', function($rootScope, $scope, $state, $stateParams, Server, Decode){
 
 	$scope.debug = function() {
-	    console.log($scope.admcst.current);
+	    console.log($scope.admcst.state);
 	};
 
+	// FSM for the current customer
+	var states = {
+            CREATING: 'creating',
+            READING: 'reading',
+            UPDATING: 'updating'
+        };
 	this.state = {
-	    list: ['creating', 'reading', 'updating'],
-	    current: $stateParams.id === -1 ? 'creating' : 'reading'
+	    current: $stateParams.id === "-1" ? states.CREATING : states.READING,
+	    buttonChanged: function() {
+		// the effect of the button depends on the current state
+		switch(this.current){
+		case 'creating':
+		    // no effect
+		    break;
+		case 'reading':
+		    // go to update mode
+		    this.current = states.UPDATING;
+		    this.button = true;
+		    break;
+		case 'updating':
+		    // go back to read mode
+		    this.current = states.READING;
+		    this.button = false;
+		    $scope.admcst.refresh();
+		    break;
+		}
+	    },
+	    button: $stateParams.id === "-1"
 	};
-	this.state.current = 'reading';
-	this.current = null;
+
+	// the current customer
+	this.current = {};
 
 	// existing statuses in db
 	this.statuses = [];
@@ -22,9 +48,8 @@ angular.module('babar.admin.customer', [
             });
 
 	this.refresh = function() {
-	    console.log("debug");
 	    var id = $stateParams.id;
-	    console.log(id);
+	    console.log(this.state, $stateParams.id);
 	    if(this.state.current === 'reading') {
 		Server.read.customer.info(id)
 		    .then(function(promised) {

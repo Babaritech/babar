@@ -54,7 +54,11 @@ angular.module('babar.admin', [
 	    var domain = this.domain.current.name;
 	    Server.list[domain]()
 		.then(function(promised) {
-		    $scope.admin.item.list = Decode[domain](promised.data);
+		    // add a new element at the begining of the array (will be ignored by the filter)
+		    $scope.admin.item.list = [{
+			name: 'New...',
+			id: -1
+		    }].concat(Decode[domain](promised.data));
 		});
 	};
 	// register this standard refresh function

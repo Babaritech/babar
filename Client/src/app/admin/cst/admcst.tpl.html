@@ -1,73 +1,86 @@
-<form name="cstForm" id="cstForm" ng-click="debug()">
-  <fieldset
-     ng-disabled="admcst.state.current === 'reading'">
-    <md-input-container>
-      <label>First Name</label>
-      <input
-         required
-         type="text"
-         ng-model="admcst.current.firstname">
-    </md-input-container>
-    <md-input-container>
-      <label>Nick Name</label>
-      <input
-	 required
-         type="text"
-         ng-model="admcst.current.nickname">
-    </md-input-container>
-    <md-input-container>
-      <label>Last Name</label>
-      <input
-	 required
-         type="text"
-         ng-model="admcst.current.lastname">
-    </md-input-container>
-    <md-input-container>
-      <!-- md-select not ready yet -->
-      <label>Status</label>
-      <select
-	 ng-model="admcst.current.status"
-	 ng-options="status.name for status in admcst.statuses">
-      </select>
-    </md-input-container>
-    <md-input-container>
-      <label>Password</label>
-      <!-- not required till zephir's ready -->
-      <input
-         type="password"
-	 ng-model="admcst.current.password">
-    </md-input-container>
-    <md-input-container>
-      <label>Money</label>
-      <input
-	 required
-         type="number"
-	 step="any"
-         ng-model="admcst.current.money">
-    </md-input-container>
-    <md-input-container>
-      <label>Email</label>
-      <input
-	 required
-         type="email"
-         ng-model="admcst.current.email">
-    </md-input-container>
+<div layout="column">
+  <md-switch
+     ng-model="admcst.state.button"
+     ng-change="admcst.state.buttonChanged()"
+     ng-disabled="admcst.state.current === 'creating'"
+     aria-label="Update switch">
+    Change this customer (requires a login)
+  </md-switch>
+  <form name="cstForm" id="cstForm" ng-click="debug()" flex>
+    <fieldset
+       ng-disabled="admcst.state.current === 'reading'">
+      <md-input-container>
+	<label>First Name</label>
+	<input
+           required
+           type="text"
+           ng-model="admcst.current.firstname">
+      </md-input-container>
+      <md-input-container>
+	<label>Nick Name</label>
+	<input
+	   required
+           type="text"
+           ng-model="admcst.current.nickname">
+      </md-input-container>
+      <md-input-container>
+	<label>Last Name</label>
+	<input
+	   required
+           type="text"
+           ng-model="admcst.current.lastname">
+      </md-input-container>
+      <md-input-container>
+	<!-- md-select not ready yet -->
+	<label>Status</label>
+	<select
+	   ng-model="admcst.current.status"
+	   ng-options="status.name for status in admcst.statuses">
+	</select>
+      </md-input-container>
+      <md-input-container>
+	<label>Password</label>
+	<!-- not required till zephir's ready -->
+	<input
+           type="password"
+	   ng-model="admcst.current.password">
+      </md-input-container>
+      <md-input-container>
+	<label>Money</label>
+	<input
+	   required
+           type="number"
+	   step="any"
+           ng-model="admcst.current.money">
+      </md-input-container>
+      <md-input-container>
+	<label>Email</label>
+	<input
+	   required
+           type="email"
+           ng-model="admcst.current.email">
+      </md-input-container>
 
-    <div
-       class="customer-buttons"
-       ng-hide="admcst.isReadOnly">
-      <button
-	 class="btn btn-success"
-         ng-click="admcst.confirm()">
-	<b>Submit</b>
-      </button>
-      <button
-	 type="cancel"
-         class="btn btn-danger"
-	 ng-click="admcst.cancel()">
-        <b>Cancel</b>
-      </button>
-    </div>
-    
-  </fieldset>
-</form>
+      <section
+	 ng-hide="admcst.state.current === 'reading'"
+	 layout="row"
+	 layout-align="space-around center"
+	 layout-margin
+	 layout-fill>
+	<md-button
+	   flex
+	   class="md-primary md-raised"
+           ng-click="admcst.confirm()">
+	  Submit
+	</md-button>
+	<md-button
+	   flex
+           class="md-warn md-raised"
+           ng-click="admcst.cancel()">
+	  Cancel
+	</md-button>
+      </section>
+      
+    </fieldset>
+  </form>
+</div>
