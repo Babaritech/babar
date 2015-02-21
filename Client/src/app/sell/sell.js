@@ -3,6 +3,7 @@ angular.module('babar.sell', [
     'babar.sell.drk',
     'babar.sell.prf',
     'babar.server',
+    'babar.utils',
     'babar.error',
     'babar.deposit',
     'babar.easter',
@@ -11,35 +12,6 @@ angular.module('babar.sell', [
     'cfp.hotkeys',
     'ui.router'
 ])
-    .filter('search', function(){
-	return function(input, keyword){
-	    return input.filter(function(ival, ind, arr){
-		// test if keyword is included in the name
-		//return val.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
-
-		//test if all the letters of the keyword are included in the name
-		//choose the above if this is too slow
-		return keyword.split('').every(function(kval, ind, arr){
-		    return ival.name.toLowerCase().indexOf(kval.toLowerCase()) > -1;
-		});
-	    });
-	};
-    })
-
-    .filter('select', function(){
-	//update each item 'active' value for item highlighting
-	return function(input, index){
-	    return input.map(function(val, ind, arr){
-		if(ind === index){
-		    val.active = true;
-		}else{
-		    val.active = false;
-		}
-		return val;
-	    });
-	};
-    })
-
     .factory('Focus', [function(){
 	//This aim to make the navigation easier by setting up keyboard shortcuts
 	//There are three fields of interest: customer input, drink input, sell confirmation, and neither of these
@@ -135,7 +107,7 @@ angular.module('babar.sell', [
         return new Focus();
     }])
 
-    
+
     .controller('SellCtrl', ['$rootScope', '$scope', '$state', '$filter', '$mdDialog', 'Server', 'Decode', 'Focus', 'Konami', 'Toast', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, $filter, $mdDialog, Server, Decode, Focus, Konami, Toast,searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
@@ -227,7 +199,7 @@ angular.module('babar.sell', [
             }
 	};
 
-         
+        
         // takes the money value and returns an appropriate color
         this.getMoneyColor = function(){
             if (!$scope.sellcst || $scope.sellcst.current.details === null){
