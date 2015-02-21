@@ -189,7 +189,7 @@ angular.module('babar.server', [
 	    };
 	    this.update = {
                 params: {'action': 'update'},
-		client: function(data) {
+		customer: function(data) {
                     this.params.id = data.id;
                     return this.request('customer', this.params, data);
                 },
@@ -200,7 +200,7 @@ angular.module('babar.server', [
             };
             this.del = {
 		params: {'action': 'delete'},
-                client: function(id) {
+                customer: function(id) {
 		    this.params.id = id;
 		    return this.request('customer', this.params);
                 },

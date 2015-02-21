@@ -167,17 +167,42 @@ angular.module('babar.admin.customer', [
 	// bring it on
 	this.refresh();
     }])
-    .controller('AdmCustomerBotSheetCtrl', function($scope, $mdBottomSheet) {
+    .controller('AdmCustomerBotSheetCtrl', function($scope, $mdBottomSheet, Server) {
 
 	var del = function() {
-            console.log('dbg');
+	    // confirm first
+	    var confirm = $mdDialog.confirm()
+                .title('Confirmation')
+                .content("Do you really want to remove {{admcst.current.name}}'s account ?")
+                .ariaLabel('Customer removal confirmation')
+                .ok('Confirm')
+                .cancel('Cancel');
+            $mdDialog.show(confirm).then(function() {
+		Server.logout();
+		Server.guiAuthenticate()
+		    .then(function() {
+			// relogged in, do the removal
+			Server.del.customer(admcst.current.id)
+			    .then(function() {
+				// success
+				new Toast().display("removal done");
+				$mdBottomSheet.hide();
+                            });
+		    }, function() {
+			new Toast().display("removal cancelled");
+			$mdBottomSheet.cancel();
+                    });
+		}, function() {
+		    new Toast().display("removal cancelled");
+		    $mdBottomSheet.cancel();
+                });
         };
 
-	this.opts = [
-	    {
-		label: 'Delete',
+        this.opts = [
+            {
+                label: 'Delete',
 		icon: 'times',
-		name: 'del'
+		action: del
 	    }
 	];
 	
