@@ -10,13 +10,13 @@ angular
 		}
 		else {
                     // test if keyword is included in the name
-                    //return val.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                    return ival.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
 
                     //test if all the letters of the keyword are included in the name
                     //choose the above if this is too slow
-                    return keyword.split('').every(function(kval, ind, arr) {
-			return ival.name.toLowerCase().indexOf(kval.toLowerCase()) > -1;
-                    });
+                    // return keyword.split('').every(function(kval, ind, arr) {
+		    // 	return ival.name.toLowerCase().indexOf(kval.toLowerCase()) > -1;
+                    // });
 		}
             });
         };
