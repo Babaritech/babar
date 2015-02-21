@@ -73,7 +73,7 @@ angular.module('babar.server', [
     .factory('Server', ['$rootScope', '$state', '$q', '$http', '$mdDialog', 'Encode', 'Decode', 'reactFilter', 'Token', function($rootScope, $state, $q, $http, $mdDialog, Encode, Decode, reactFilter, Token){
 	Server = function(){
 	    
-	    //Get current time
+	    //Get current time in millis
 	    var time = function(){
 		var date = new Date();
 		return date.getTime();
@@ -212,7 +212,9 @@ angular.module('babar.server', [
 	    // the allows one to be logged out
 	    this.logout = function() {
 		var params = {'action': 'logout'};
-		return server.request('customer', params, Encode.logout(Token.get()));
+		var token = Token.get();
+		Token.reset();
+		return server.request('customer', params, Encode.logout(token));
 	    };
 	    // this allows one to be authentified
 	    this.authenticate = function(data){
@@ -255,7 +257,7 @@ angular.module('babar.server', [
 	    this.entry = function(customer, amount, time){
 		return {
 		    id: 0,
-		    debitantId: 1,
+		    debitantId: 1, // TODO
 		    customerId: customer.id,
 		    amount: amount,
 		    date: time

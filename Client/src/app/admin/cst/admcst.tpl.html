@@ -12,7 +12,7 @@
      ng-click="admcst.botsheet()"
      ></i> 
   </div>
-  <form name="cstForm" id="cstForm" ng-click="debug()" flex>
+  <form name="cstForm" id="cstForm" flex>
     <fieldset
        ng-disabled="admcst.state.current === 'reading'">
       <md-input-container>
@@ -54,7 +54,7 @@
       <md-input-container>
 	<label>Money</label>
 	<input
-	   ng-disabled="admcst.state !== 'creating'"
+	   ng-disabled="admcst.state.current !== 'creating'"
 	   required
            type="number"
 	   step="any"

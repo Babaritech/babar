@@ -55,6 +55,7 @@ angular.module('babar.admin', [
 	    Server.list[domain]()
 		.then(function(promised) {
 		    // add a new element at the begining of the array (will be ignored by the filter)
+		    console.log(domain, promised);
 		    $scope.admin.item.list = [{
 			name: 'New...',
 			id: -1
