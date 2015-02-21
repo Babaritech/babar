@@ -1,4 +1,4 @@
-var serverIP = '127.0.0.1';//'137.194.14.116';
+var serverIP = '192.168.0.10:1080';
 
 angular.module('babar.server', [
     'babar.authenticate',
@@ -87,7 +87,7 @@ angular.module('babar.server', [
 
 	    //This prepares and makes all server's requests and returns a promise
 	    this.request = function(object, params, data){
-		var url = 'http://' + serverIP + '/Babar/Server/' + object + '.php';
+		var url = 'http://' + serverIP + '/babar/Server/' + object + '.php';
 		params.token = Token.get();
 		var config = {
 		    'url': url,

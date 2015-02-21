@@ -54,6 +54,7 @@
       <md-input-container>
 	<label>Money</label>
 	<input
+	   ng-disabled="admcst.state !== 'creating'"
 	   required
            type="number"
 	   step="any"

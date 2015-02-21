@@ -89,50 +89,46 @@ angular.module('babar.admin.customer', [
 	        templateUrl: 'admin/cst/admcst-bottomsheet.tpl.html'        
 	    });
 	};
-	  
-	  this.confirm = function(){
-	  // Before all, update current.statusId according to the current status
-	  this.updateStatusId();
-	  // Confirm only if the form is untouched or touched but valid
-	  if($scope.cstForm.$valid){
-	  var func, args, promise;
-	  if($stateParams.id == -1) { // The confirmation concerns an adding
-	  //add blank fields
-	  $scope.admcst.current.id = -1;
-          $scope.admcst.current.password = 'none';
-	  // react procedure
-	  func = 'add';
-          args = {
-	  object: 'customer',
-	  data: this.current
-          };
-	  promise = Server.add(args.object, args.data);
-          React.toPromise(promise, func, args, function() {
-          $scope.admcst.isReadOnly = true;
-          $scope.admcst.isWrite = false;
-	  $scope.admin.getAdminItems('customer');
-          });
-	  }
-	  else { // The confirmation concerns an update
-	  func = 'update';
-          args = {
-          object: 'customer',
-          data: this.current,
-	  id: this.current.id
-          };
-	  promise = Server.update(args.object, args.data, args.id);
-          React.toPromise(promise, func, args, function() {
-          $scope.admcst.isReadOnly = true;
-	  $scope.admcst.isWrite = false;
-          $scope.admin.getAdminItems('customer');
-          });
-	  }
-	  }
-          };
+
+	// the cancel action, must restore the right state
+	this.cancel = function() {
+	    this.state.current = states.READING;
+            this.state.button = false;
+            $scope.admcst.refresh();
+        };
+
+	// the confirm action, depends on the state
+        this.confirm = function() {
+	    var customer = $scope.admcst.current;
+            switch(this.state.current) {
+	    case updating:
+		// set the right statusId
+		customer.statusId = $scope.admcst.filter(function(val, ind, arr) {
+		    return val.name === customer.status;
+		})[0].id;
+		// post info
+		Server.update.customer(customer);
+		break;
+	    case creating:
+                // set the right statusId
+                customer.statusId = $scope.admcst.filter(function(val, ind, arr) {
+                    return val.name === customer.status;
+                })[0].id;
+                // post info
+                Server.update.customer(customer);
+		// post balance
+		Server.create.deposit({
+		    customer: customer,
+		    amount: customer.money
+		});
+		break;
+	    }
+        };
 
 	// bring it on
 	this.refresh();
     }])
+
     .controller('AdmCustomerBotSheetCtrl', function($rootScope, $scope, $mdBottomSheet, $mdDialog, Server, Toast, customer) {
 
 	var del = function() {
@@ -159,10 +155,10 @@ angular.module('babar.admin.customer', [
 			new Toast().display("removal cancelled");
 			$mdBottomSheet.cancel();
                     });
-		}, function() {
-		    new Toast().display("removal cancelled");
-		    $mdBottomSheet.cancel();
-                });
+	    }, function() {
+		new Toast().display("removal cancelled");
+		$mdBottomSheet.cancel();
+            });
         };
 
         this.opts = [
