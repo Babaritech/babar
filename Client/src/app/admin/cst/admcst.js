@@ -1,7 +1,8 @@
 angular.module('babar.admin.customer', [
-    'babar.server'
+    'babar.server',
+    'ngMaterial'
 ])
-    .controller('AdmCustomerCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'Server', 'Decode', function($rootScope, $scope, $state, $stateParams, Server, Decode){
+    .controller('AdmCustomerCtrl', ['$rootScope', '$scope', '$state', '$stateParams', '$mdBottomSheet', 'Server', 'Decode', function($rootScope, $scope, $state, $stateParams, $mdBottomSheet, Server, Decode){
 
 	$scope.debug = function() {
 	    console.log($scope.admcst.state);
@@ -71,14 +72,19 @@ angular.module('babar.admin.customer', [
 	};
 	// register this standard refresh function
         $rootScope.$on('refresh', function(e, a) {$scope.admcst.refresh();});
-	/*
-	  this.add = function(){
-	  // Before all, update current.statusId according to the current status
-          this.updateStatusId();
-          $scope.$parent.admin.currentItem = null;
-          $state.go('admin.customer', {id:-1});
-	  };
 
+	// show a bottom sheet
+	this.botsheet = function($event) {
+	    $mdBottomSheet.show({
+		templateUrl: 'admcst-botsheet.tpl.html',
+		controller: 'AdmCustomerBotSheetCtrl',
+		controllerAs: 'admcstbs',
+		targetEvent: $event
+	    }).then(function(promised) {
+		new Toast().display(promised.data);
+	    });
+	};
+	/*
 	  this.del = function(){
 	  //delete current user (to be confirmed by a password)
 	  var func = 'del';
@@ -147,4 +153,18 @@ angular.module('babar.admin.customer', [
 	
 	// bring it on
 	this.refresh();
-    }]);
+    }])
+    .controller('AdmCustomerBotSheetCtrl', function($mdBottomSheet) {
+	this.opts = [
+	    {
+		label: 'Delete',
+		icon: 'close',
+		action: $scope.admcstbs.del
+	    }
+	];
+
+	this.del = function() {
+
+	};
+	
+    });

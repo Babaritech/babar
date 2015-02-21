@@ -1,4 +1,5 @@
 <div layout="column">
+  <div layout="row" layout-align="space-around center">
   <md-switch
      ng-model="admcst.state.button"
      ng-change="admcst.state.buttonChanged()"
@@ -6,6 +7,11 @@
      aria-label="Update switch">
     Change this customer (requires a login)
   </md-switch>
+  <i
+     class="fa fa-gear fa-2x"
+     ng-click="admcst.botsheet($event)"
+     ></i> 
+  </div>
   <form name="cstForm" id="cstForm" ng-click="debug()" flex>
     <fieldset
        ng-disabled="admcst.state.current === 'reading'">
