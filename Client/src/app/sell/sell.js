@@ -158,15 +158,7 @@ angular.module('babar.sell', [
 		$scope.$apply();
 	    }, 1000*60*5);
 	});
-	
-	//disable tab key 'cause it triggers sh*t
-	document.onkeydown = function (e) {
-            if(e.which == 9){
-                return false;
-            }else{
-		return true;
-	    }
-	};
+
 
 	// a refresh method
 	var refresh = function(){

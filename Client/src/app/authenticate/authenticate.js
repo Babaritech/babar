@@ -48,13 +48,6 @@ angular.module('babar.authenticate', [
 	    }
         };
 
-	
-        hotkeys.add({
-            combo: 'tab',
-            description: 'Select the right field',
-            callback: $scope.selectField,
-            allowIn: ['INPUT']
-            });
         hotkeys.add({
             combo: 'enter',
             description: 'Authenticate the sale',

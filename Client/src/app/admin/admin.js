@@ -4,14 +4,6 @@ angular.module('babar.admin', [
 ])
 
     .controller('AdminCtrl', ['$rootScope', '$scope', '$state', 'Server', 'Decode', function($rootScope, $scope, $state, Server, Decode){
-
-	//Re-enable tab key, 'cause 'twill be useful in forms
-	document.onkeydown = function (e) {
-            if(e.which == 9){
-                return true;
-            }
-        };
-
 	this.domain = {
 	    list: [
 	    {
