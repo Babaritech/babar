@@ -431,7 +431,7 @@ module.exports = function ( grunt ) {
 	 */
 	rsync: {
 	    options: {
-		args: ["-avz --rsh='ssh -p10022'"],
+		args: ["-avz --rsh='ssh -p22'"],
 		exclude: [".git*","*.scss","node_modules"],
 		recursive: true
 	    },
