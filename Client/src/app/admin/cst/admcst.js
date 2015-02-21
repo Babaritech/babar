@@ -73,18 +73,31 @@ angular.module('babar.admin.customer', [
 	// register this standard refresh function
         $rootScope.$on('refresh', function(e, a) {$scope.admcst.refresh();});
 
-	// show a bottom sheet
-	this.botsheet = function($event) {
+	$scope.openBottomSheet = function() {
 	    $mdBottomSheet.show({
-		templateUrl: 'admcst-botsheet.tpl.html',
+		template: '<md-bottom-sheet>Hello!</md-bottom-sheet>'
+	    });
+	};
+	
+        // show a bottom sheet
+	this.botsheet = function() {
+	    $mdBottomSheet.show({
 		controller: 'AdmCustomerBotSheetCtrl',
 		controllerAs: 'admcstbs',
-		targetEvent: $event
+	        templateUrl: 'admin/cst/admcst-bottomsheet.tpl.html'        
+		});
+	    /*
+	    $mdBottomSheet.show({
+	    
+		
+		controllerAs: 'admcstbs'
 	    }).then(function(promised) {
 		new Toast().display(promised.data);
 	    });
+	    */
 	};
-	/*
+	
+        /*
 	  this.del = function(){
 	  //delete current user (to be confirmed by a password)
 	  var func = 'del';
@@ -154,17 +167,18 @@ angular.module('babar.admin.customer', [
 	// bring it on
 	this.refresh();
     }])
-    .controller('AdmCustomerBotSheetCtrl', function($mdBottomSheet) {
+    .controller('AdmCustomerBotSheetCtrl', function($scope, $mdBottomSheet) {
+
+	var del = function() {
+            console.log('dbg');
+        };
+
 	this.opts = [
 	    {
 		label: 'Delete',
-		icon: 'close',
-		action: $scope.admcstbs.del
+		icon: 'times',
+		name: 'del'
 	    }
 	];
-
-	this.del = function() {
-
-	};
 	
     });

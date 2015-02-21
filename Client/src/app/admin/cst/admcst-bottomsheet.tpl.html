@@ -1,0 +1,18 @@
+<md-bottom-sheet class="md-grid">
+  <md-list>
+    <md-item ng-repeat="opt in admcstbs.opts">
+      <md-button class="md-grid-item-content"
+                 aria-label="{{opt.label}}"
+                 ng-click="opt.action()">
+        <div class="md-icon-container" style="margin-left: 10px">
+          <md-inline-grid-icon style="margin:auto;">
+	    <i
+	       class="fa fa-{{opt.icon}} fa-4x">
+	    </i>
+	  </md-inline-grid-icon>
+        </div>
+        <p class="md-grid-text"> {{opt.label}} </p>
+      </md-button>
+    </md-item>
+  </md-list>
+</md-bottom-sheet>
