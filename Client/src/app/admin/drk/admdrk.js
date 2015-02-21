@@ -1,99 +1,148 @@
 angular.module('babar.admin.drink', [
     'babar.server'
 ])
-    .controller('AdmDrinkCtrl', ['$scope', '$state', '$stateParams', 'Server', 'Encode', 'Decode', 'React', function($scope, $state, $stateParams, Server, Encode, Decode, React){
+    .controller('AdmDrinkCtrl', ['$rootScope', '$scope', '$state', '$stateParams', '$mdBottomSheet', 'Server', 'Encode', 'Decode', 'Toast', function($rootScope, $scope, $state, $stateParams, $mdBottomSheet, Server, Encode, Decode, Toast){
 	
-	
-	this.isReadOnly = true; //when reading existing customers
-        this.isWrite = false; //when updating a customer
-        this.toWritingMode = function(){
-            this.isWrite = true;
-            this.isReadOnly = false;
+	// FSM for the current drink
+        var states = {
+            CREATING: 'creating',
+            READING: 'reading',
+            UPDATING: 'updating'
         };
-	
-	this.current = null;
-	
-	// init of the current drink
-	if($stateParams.id === -1) { // we're in new drink mode
-	    this.isReadOnly = false;
-	    this.isWrite = false;
-        }
-        else { // drink already exists
-	    Server.read.drink($stateParams.id).info()
-                .then(function(res) {
-                    $scope.admdrk.current = Decode.drink(res.data);
-                }, function(res) {
-                    $state.go('error', {'status':res.status});
-                });
-        }
-
-	
-        this.add = function(){
-            $scope.$parent.admin.currentItem = null;
-            $state.go('admin.drink', {id:-1});
+        this.state = {
+            current: $stateParams.id === "-1" ? states.CREATING : states.READING,
+            buttonChanged: function() {
+                // the effect of the button depends on the current state
+                switch(this.current){
+                case 'creating':
+                    // no effect
+                    break;
+                case 'reading':
+                    // go to update mode
+                    this.current = states.UPDATING;
+                    this.button = true;
+                    break;
+                case 'updating':
+                    // go back to read mode
+                    this.current = states.READING;
+                    this.button = false;
+                    $scope.admdrk.refresh();
+                    break;
+                }
+            },
+            button: $stateParams.id === "-1"
         };
 
-        this.del = function(){
-            //delete current drink
-            var func = 'del';
-            var args = {
-                object: 'drink',
-                id: $scope.admdrk.current.id
-            };
-            var promise = Server.del(args.object, args.id);
-            React.toPromise(promise, func, args, function() {
-                //refresh drinks' list
-                $state.go('admin');
-                $scope.admin.getAdminItems('drink');
+        // the current drink
+        this.current = {};
+
+        this.refresh = function() {
+            var id = $stateParams.id;
+            if(this.state.current === 'reading') {
+                Server.read.drink.info(id)
+                    .then(function(promised) {
+                        // set general info
+                        $scope.admdrk.current = Decode.drink(promised.data);
+                    });
+            }
+        };
+        // register this standard refresh function
+        $rootScope.$on('refresh', function(e, a) {$scope.admdrk.refresh();});
+
+        
+        // show a bottom sheet
+        this.botsheet = function() {
+            $mdBottomSheet.show({
+                controller: 'AdmDrinkBotSheetCtrl',
+                controllerAs: 'admdrkbs',
+                locals: {drink: $scope.admdrk.current},
+                templateUrl: 'admin/drk/admdrk-bottomsheet.tpl.html'        
             });
         };
+
+        // the cancel action, must restore the right state
+        this.cancel = function(message) {
+            console.log("DEBUG");
+            $scope.admdrk.state.current = states.READING;
+            $scope.admdrk.state.button = false;
+            if(message) {
+                new Toast().display(message);
+            }
+            else {
+                new Toast().display('cancelled');
+            }
+            $rootScope.$emit('refresh', {'from':'admdrk', 'to':'all'});
+        };
+
+        // the confirm action, depends on the state
+        this.confirm = function() {
+            var drink = $scope.admdrk.current;
+            switch(this.state.current) {
+            case 'updating':
+                // post info
+                Server.update.drink(drink)
+                    .then(function() {
+                        $scope.admdrk.cancel('drink updated');
+                    });
+                break;
+            case 'creating':
+                // add a fake id
+                drink.id = -1;
+                // post info
+                Server.create.drink(drink)
+                    .then(function(promised) {
+			// retrieve the new drink's id
+                        drink.id = promised.data.id;                        
+                        $scope.admdrk.cancel('drink created');
+                        $state.go('admin.drinks', {id: drink.id});
+                    });
+                break;
+            }
+        };
+
+        // bring it on
+        this.refresh();
+    }])
+
+    .controller('AdmDrinkBotSheetCtrl', function($rootScope, $scope, $mdBottomSheet, $mdDialog, Server, Toast, drink) {
+
+        var del = function() {
+            // confirm first
+            var confirm = $mdDialog.confirm()
+                .title('Confirmation')
+                .content("Do you really want to remove the " + drink.name +" ?")
+                .ariaLabel('Drink removal confirmation')
+                .ok('Confirm')
+                .cancel('Cancel');
+            $mdDialog.show(confirm).then(function() {
+                //Server.logout();
+                Server.guiAuthenticate()
+                    .then(function() {
+                        // relogged in, do the removal
+                        Server.del.drink(drink.id)
+                            .then(function() {
+                                // success
+                                new Toast().display("removal done");
+                                $mdBottomSheet.hide();
+                                $state.go('admin');
+                                $rootScope.$emit('refresh', {'from':'delete', 'to':'all'});
+                            });
+                    }, function() {
+                        new Toast().display("removal cancelled");
+                        $mdBottomSheet.cancel();
+                    });
+            }, function() {
+                new Toast().display("removal cancelled");
+                $mdBottomSheet.cancel();
+            });
+        };
+
+        this.opts = [
+            {
+                label: 'Delete',
+                icon: 'times',
+                action: del
+            }
+        ];
         
-        this.confirm = function(){
-            // Confirm only if the form is untouched or touched but valid
-            if($scope.drkForm.$valid){
-                var func, args, promise;
-                if($stateParams.id == -1) { // This confirmation concerns an adding
-                    //add blank fields
-                    $scope.admdrk.current.id = -1;
-                    // react procedure
-                    func = 'add';
-                    args = {
-                        object: 'drink',
-                        data: Encode.drink(this.current)
-                    };
-                    promise = Server.add(args.object, args.data);
-                    React.toPromise(promise, func, args, function() {
-                        $scope.admdrk.isReadOnly = true;
-			$scope.admdrk.isWrite = false;
-                        $scope.admin.getAdminItems('drink');
-                    });
-                }
-                else { // This confirmation concerns an update
-                    func = 'update';
-                    args = {
-                        object: 'drink',
-                        data: Encode.drink(this.current),
-                        id: this.current.id
-                    };
-                    promise = Server.update(args.object, args.data, args.id);
-                    React.toPromise(promise, func, args, function() {
-                        $scope.admdrk.isReadOnly = true;
-			$scope.admdrk.isWrite = false;
-                        $scope.admin.getAdminItems('drink');
-                    });
-                }
-            }
-        };
-
-        this.cancel = function(){
-            this.isReadOnly = true;
-	    this.isWrite = false;
-            $scope.admin.getAdminItems('drink');
-            if($stateParams.id === -1) {
-                $scope.$parent.admin.currentItem = null;
-                $state.go('admin');
-            }
-        };
-
-
-    }]);
+    });

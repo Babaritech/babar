@@ -1,7 +1,8 @@
 angular.module('babar.admin.customer', [
     'babar.server',
     'babar.error',
-    'ngMaterial'
+    'ngMaterial',
+    'ui.router'
 ])
     .controller('AdmCustomerCtrl', ['$rootScope', '$scope', '$state', '$stateParams', '$mdBottomSheet', 'Server', 'Decode', 'Toast', function($rootScope, $scope, $state, $stateParams, $mdBottomSheet, Server, Decode, Toast){
 
@@ -69,12 +70,6 @@ angular.module('babar.admin.customer', [
 	// register this standard refresh function
         $rootScope.$on('refresh', function(e, a) {$scope.admcst.refresh();});
 
-	$scope.openBottomSheet = function() {
-	    $mdBottomSheet.show({
-		template: '<md-bottom-sheet>Hello!</md-bottom-sheet>'
-	    });
-	};
-	
         // show a bottom sheet
 	this.botsheet = function() {
 	    $mdBottomSheet.show({
@@ -139,7 +134,7 @@ angular.module('babar.admin.customer', [
 	this.refresh();
     }])
 
-    .controller('AdmCustomerBotSheetCtrl', function($rootScope, $scope, $mdBottomSheet, $mdDialog, Server, Toast, customer) {
+    .controller('AdmCustomerBotSheetCtrl', function($rootScope, $scope, $mdBottomSheet, $mdDialog, $state, Server, Toast, customer) {
 
 	var del = function() {
 	    // confirm first

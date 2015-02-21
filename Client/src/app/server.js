@@ -126,7 +126,7 @@ angular.module('babar.server', [
                     return server.request('customer', this.params, data);
                 },
                 drink: function(data) {
-                    return server.request('drink', this.params, data);
+                    return server.request('drink', this.params, Encode.drink(data));
                 },
                 purchase: function(data) {
                     //data.customer bought a data.drink at time()
