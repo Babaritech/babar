@@ -1,5 +1,6 @@
 angular.module('babar.admin', [
     'babar.server',
+    'babar.utils',
     'ui.router'
 ])
 
@@ -43,6 +44,7 @@ angular.module('babar.admin', [
 		$state.go('admin.'+$scope.admin.domain.current.name, {id:item.id});
 	    }
 	};
+	this.keyword = '';
 	
 	this.signOut = function(){
 	    Server.logout();

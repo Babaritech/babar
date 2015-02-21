@@ -42,12 +42,20 @@
     </md-sidenav>
 
     <div layout="row" flex layout-padding>
-      <md-list flex="30">
+      <div layout="column" flex="30">
+	<md-input-container>
+	  <label>Search for a customer</label>
+	<input
+	   flex
+	   ng-model="admin.keyword">
+	</md-input-container>
+      <md-list flex>
 	<md-item
-           ng-repeat="item in admin.item.list"
-           ng-click="admin.item.change(item)">
+           ng-repeat="item in admin.item.list
+		      | search: admin.keyword"
+	   ng-click="admin.item.change(item)">
 	  <md-item-content
-	     class="{{item.name === admin.item.current ? 'active' : ''}}">
+	     class="{{item === admin.item.current ? 'active' : ''}}">
              <div class="md-tile-left">
                <img
                   src="assets/king_babar.jpg"
@@ -61,6 +69,7 @@
 	  </md-item-content>
 	</md-item>
       </md-list>
+      </div>
       <md-content
 	 flex="70"
 	 ng-hide="admin.item.current === null">
