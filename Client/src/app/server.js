@@ -3,7 +3,7 @@ var serverIP = '127.0.0.1';//'137.194.14.116';
 angular.module('babar.server', [
     'babar.authenticate',
     'babar.error',
-    'ngDialog',
+    'ngMaterial',
     'ui.router'
 ])
 /*
@@ -70,7 +70,7 @@ angular.module('babar.server', [
     }])
 
 
-    .factory('Server', ['$rootScope', '$state', '$q', '$http', 'Encode', 'Decode', 'reactFilter', 'Token', function($rootScope, $state, $q, $http, Encode, Decode, reactFilter, Token){
+    .factory('Server', ['$rootScope', '$state', '$q', '$http', '$mdDialog', 'Encode', 'Decode', 'reactFilter', 'Token', function($rootScope, $state, $q, $http, $mdDialog, Encode, Decode, reactFilter, Token){
 	Server = function(){
 	    
 	    //Get current time
@@ -191,22 +191,22 @@ angular.module('babar.server', [
                 params: {'action': 'update'},
 		customer: function(data) {
                     this.params.id = data.id;
-                    return this.request('customer', this.params, data);
+                    return server.request('customer', this.params, data);
                 },
                 drink: function(data) {
                     this.params.id = data.id;
-                    return this.request('drink', this.params, data);
+                    return server.request('drink', this.params, data);
                 }
             };
             this.del = {
 		params: {'action': 'delete'},
                 customer: function(id) {
 		    this.params.id = id;
-		    return this.request('customer', this.params);
+		    return server.request('customer', this.params);
                 },
                 drink: function(id) {
                     this.params.id = id;
-                    return this.request('drink', this.params);
+                    return server.request('drink', this.params);
                 }
             };
 	    // the allows one to be logged out

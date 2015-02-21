@@ -107,7 +107,7 @@ angular.module('babar.sell', [
         return new Focus();
     }])
 
-
+    
     .controller('SellCtrl', ['$rootScope', '$scope', '$state', '$filter', '$mdDialog', 'Server', 'Decode', 'Focus', 'Konami', 'Toast', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, $filter, $mdDialog, Server, Decode, Focus, Konami, Toast,searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
@@ -199,7 +199,7 @@ angular.module('babar.sell', [
             }
 	};
 
-        
+         
         // takes the money value and returns an appropriate color
         this.getMoneyColor = function(){
             if (!$scope.sellcst || $scope.sellcst.current.details === null){

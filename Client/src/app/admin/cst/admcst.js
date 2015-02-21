@@ -1,5 +1,6 @@
 angular.module('babar.admin.customer', [
     'babar.server',
+    'babar.error',
     'ngMaterial'
 ])
     .controller('AdmCustomerCtrl', ['$rootScope', '$scope', '$state', '$stateParams', '$mdBottomSheet', 'Server', 'Decode', function($rootScope, $scope, $state, $stateParams, $mdBottomSheet, Server, Decode){
@@ -84,6 +85,7 @@ angular.module('babar.admin.customer', [
 	    $mdBottomSheet.show({
 		controller: 'AdmCustomerBotSheetCtrl',
 		controllerAs: 'admcstbs',
+		locals: {customer: $scope.admcst.current},
 	        templateUrl: 'admin/cst/admcst-bottomsheet.tpl.html'        
 		});
 	    /*
@@ -167,26 +169,27 @@ angular.module('babar.admin.customer', [
 	// bring it on
 	this.refresh();
     }])
-    .controller('AdmCustomerBotSheetCtrl', function($scope, $mdBottomSheet, Server) {
+    .controller('AdmCustomerBotSheetCtrl', function($rootScope, $scope, $mdBottomSheet, $mdDialog, Server, Toast, customer) {
 
 	var del = function() {
 	    // confirm first
 	    var confirm = $mdDialog.confirm()
                 .title('Confirmation')
-                .content("Do you really want to remove {{admcst.current.name}}'s account ?")
+                .content("Do you really want to remove " + customer.name +"'s account ?")
                 .ariaLabel('Customer removal confirmation')
                 .ok('Confirm')
                 .cancel('Cancel');
             $mdDialog.show(confirm).then(function() {
-		Server.logout();
+		//Server.logout();
 		Server.guiAuthenticate()
 		    .then(function() {
 			// relogged in, do the removal
-			Server.del.customer(admcst.current.id)
+			Server.del.customer(customer.id)
 			    .then(function() {
 				// success
 				new Toast().display("removal done");
 				$mdBottomSheet.hide();
+				$rootScope.$emit('refresh', {'from':'delete', 'to':'all'});
                             });
 		    }, function() {
 			new Toast().display("removal cancelled");
