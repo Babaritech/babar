@@ -252,7 +252,7 @@
 			$t = new Token();
 			$t->set('customerId', $customer->get('id'));
 			$t->set('value', Functions::randomHash());
-			$t->set('expiration', $expiration);
+			$t->set('expiration', time()+floor($expiration/1000));
 			$t->set('actionCount', $actionCount);
 
 			$t->save();

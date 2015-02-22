@@ -101,11 +101,11 @@
 				break;
 
 			case 'effectiveright':
-				$object->addField('action_id', PDO::PARAM_INT);
+				//$object->addField('action_id', PDO::PARAM_INT);
 				$object->addField('action_name');
-				$object->addField('status_id', PDO::PARAM_INT);
+				//$object->addField('status_id', PDO::PARAM_INT);
 				$object->addField('status_name');
-				$object->addField('right_id', PDO::PARAM_INT, true);
+				//$object->addField('right_id', PDO::PARAM_INT, true);
 				$object->addField('right');
 				break;
 

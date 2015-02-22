@@ -16,9 +16,12 @@
 
 	loadClass('sell');
 	loadClass('customer');
+	loadClass('status');
 	loadClass('token');
 
 	/* Load SQL Views */
+
+	loadClass('balance');	
 
 	/* <controller> */
 
@@ -50,6 +53,38 @@
 	}
 
 	function addSell()
+	{
+		$data = Functions::getJSONData();
+		$s = new Sell();
+
+		foreach($s->getFields() as $field)
+		{
+			$value = Functions::elt($data, $field['name']); 
+
+			if (is_null($value))
+				Functions::setResponse(400);
+
+			$s->set($field['name'], $value);
+		}
+
+		$c = new Customer($s->get('customerId'));
+		$st = new Status($c->get('statusId'));
+		$overdraft = $st->get('overdraft');
+		$b = new Balance($c->get('id'));
+		$balance = $b->get('balance');
+
+		if($balance < $overdraft)
+		{
+			echo 'Balance for this customer is less than his/her overdraft';
+			Functions::setResponse(400);
+		}
+
+		$s->save();
+
+		return $s;	
+	}
+
+	function addSellNegative()
 	{
 		$data = Functions::getJSONData();
 		$s = new Sell();
@@ -161,6 +196,10 @@
 
 	case 'new':
 		$data = addSell();
+		break;
+
+	case 'new-negative':
+		$data = addSellNegative();
 		break;
 
 	case 'update':
