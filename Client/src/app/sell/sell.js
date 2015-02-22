@@ -8,9 +8,7 @@ angular.module('babar.sell', [
     'babar.error',
     'babar.deposit',
     'babar.easter',
-    'ngDialog',
     'ngMaterial',
-    'cfp.hotkeys',
     'ui.router'
 ])
     .factory('Focus', [function(){
@@ -109,7 +107,7 @@ angular.module('babar.sell', [
     }])
 
     
-    .controller('SellCtrl', ['$rootScope', '$scope', '$state', '$mdDialog', 'Server', 'Decode', 'Focus', 'Konami', 'Toast', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, $mdDialog, Server, Decode, Focus, Konami, Toast,searchFilter, selectFilter, Hotkeys, ngDialog){
+    .controller('SellCtrl', function($rootScope, $scope, $state, $mdDialog, Server, Decode, Focus, Konami, Toast,searchFilter, selectFilter){
 
 	this.debug = function(arg){
 	    new Toast().display($scope);
@@ -120,8 +118,6 @@ angular.module('babar.sell', [
 	
 	// a refresh method
 	var refresh = function(){
-            //Gotta reload Hotkeys' binding
-            $scope.sell.loadHotkeys();
 	    //Set the focus back
 	    Focus.setLocation('drink');
         };
@@ -216,4 +212,4 @@ angular.module('babar.sell', [
 	    updateCountdown();
 	});
 	
-    }]);
+    });
