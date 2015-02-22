@@ -224,7 +224,6 @@ angular
 		promise.then(function(promised) {
 		    Token.set(promised.data.value);
 		    $rootScope.$emit('login', {'duration': data.duration, 'login': data.login});
-		    $rootScope.$emit('refresh', {'from': 'login', 'to':'all'});
                 });
                 return promise;
 	    };

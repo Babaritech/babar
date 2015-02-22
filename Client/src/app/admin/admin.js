@@ -67,7 +67,7 @@ angular.module('babar.admin', [
                 $scope.admin.refresh();
             }
         });
-	
+
 	// bring it on
 	this.domain.current = this.domain.list[0];
 	this.refresh();

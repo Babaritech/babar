@@ -6,7 +6,7 @@ angular.module('babar.admin.customer', [
 ])
     .controller('AdmCustomerCtrl', ['$rootScope', '$scope', '$state', '$stateParams', '$mdBottomSheet', 'Server', 'Decode', 'Toast', function($rootScope, $scope, $state, $stateParams, $mdBottomSheet, Server, Decode, Toast){
 
-	// FSM for the current customer
+        // FSM for the current customer
 	var states = {
             CREATING: 'creating',
             READING: 'reading',
@@ -150,12 +150,13 @@ angular.module('babar.admin.customer', [
             $mdDialog.show(confirm).then(function() {
 		Server.logout();
 		Server.del.customer(customer.id)
-		    .then(function() {
+		    .then(function(promised) {
 			// success
 			new Toast().display("removal done");
 			$mdBottomSheet.hide();
+			$scope.admcst.current = null;
 			$state.go('admin');
-                        $rootScope.$emit('refresh', {'from':'delete', 'to':'all'});
+			$rootScope.$emit('refresh', {'from':'delete', 'to':'all'});
                     });
 	    }, function() {
 		new Toast().display("removal cancelled");

@@ -124,7 +124,8 @@ angular.module('babar.admin.drink', [
                         // success
                         new Toast().display("removal done");
                         $mdBottomSheet.hide();
-                        $state.go('admin');
+			$scope.admdrk.current = null;
+			$state.go('admin');
                         $rootScope.$emit('refresh', {'from':'delete', 'to':'all'});
                     });
             }, function() {
