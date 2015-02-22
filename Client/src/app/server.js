@@ -131,9 +131,9 @@ angular
                     return request('sell', params, Encode.sell(data.customer, data.drink, time()));
                 },
                 deposit: function(data) {
-		    var params = {'action': 'new'};             
-                    //data.customer addded data.amount € at time()
-                    return request('entry', params, Encode.entry(data.customer, data.amount, time()));
+		    var params = {'action': 'new'};
+                    //data.user addded data.amount € to data.customer at time()
+                    return request('entry', params, Encode.entry(data.customer, data.amount, data.user, time()));
                 }
             };
 	    this.read = {
@@ -254,10 +254,10 @@ angular
 		    date: time
 		};
 	    };
-	    this.entry = function(customer, amount, time){
+	    this.entry = function(customer, amount, user, time){
 		return {
 		    id: 0,
-		    debitantId: 1, // TODO
+		    debitantId: user.id,
 		    customerId: customer.id,
 		    amount: amount,
 		    date: time

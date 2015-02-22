@@ -178,20 +178,31 @@ angular.module('babar.sell', [
 	    return dateObj.toDateString();
 	};
 
-	//For we need to know where the focus is when using the mouse
+	// For we need to know where the focus is when using the mouse
 	this.tellInputFocus = function(whichInput){
 	    Focus.setLocation(whichInput);
 	};
 
-        //For we must be able to enter confirmation mode when using the mouse
+        // For we must be able to enter confirmation mode when using the mouse
         this.mouseAttempt = function(){
             if($scope.sellcst.current.details !== null && $scope.selldrk.current.details !== null){
                 this.confirm();
             }
         };
 
-
-	//When one needs to add some money
+	// when one needs to add some money
+        this.deposit = function() {
+            $mdDialog.show({
+                templateUrl: 'deposit/deposit.tpl.html',
+                controller: 'DepositCtrl',
+                controllerAs: 'dep',
+                locals: {
+                    customer: $scope.sellcst.current,
+		    user: $scope.sell.authUser
+                }
+            });
+        };
+	
 	this.makeDeposit = function(){
 	    Focus.lose();
 	    this.disableHotkeys();
@@ -215,8 +226,7 @@ angular.module('babar.sell', [
 	this.authUser = null;
 	this.authRemTime = 0;
 	$rootScope.$on('login', function(e, a){
-	    console.log("DEBUG");
-	    $scope.sell.authUser = a.login;
+	    $scope.sell.authUser = a.user;
 	    var time = (new Date()).getTime();
 	    var remain = a.endTime-time>0?a.endTime-time:0;
 	    $scope.sell.authRemTime = Math.floor(remain/(1000*60));

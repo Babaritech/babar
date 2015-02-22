@@ -1,27 +1,31 @@
 <md-dialog aria-label="Purchase confirmation">
   <md-content>
-    <md-toolbar class="md-accent">
+    <md-toolbar class="md-accent" style="min-width:500px">
       <h2 class="md-toolbar-tools">
 	<span>Deposit</span>
       </h2>
     </md-toolbar>
     <md-input-container>
-      <b>{{dep.money}}€</b> to <b>{{dep.customer.name}}</b> ?
-      <label>Amount></label>
+      <h4>
+	<br>
+	{{dep.money}}€ to {{dep.customer.name}} ?
+	</br>
+      </h4>
+      <label>Amount</label>
       <input
          type="number"
          placeholder="0.00"
          ng-model="dep.money"
 	 step="any"
          required>
+      <p
+         style="color: red;"
+         class="md-warn"
+         ng-hide="dep.error===''">
+        <i class="fa fa-warning"></i>
+        {{dep.error}}
+      </p>        
   </md-content>
-  <p
-     style="color: red;"
-     class="md-warn"
-     ng-hide="auth.error===''">
-    <i class="fa fa-warning"></i>
-    {{dep.error}}
-  </p>
   <div class="md-actions" layout="row">
     <md-button ng-click="dep.cancel()">
       Cancel
