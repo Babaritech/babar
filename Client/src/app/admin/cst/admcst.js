@@ -148,21 +148,14 @@ angular.module('babar.admin.customer', [
                 .ok('Confirm')
                 .cancel('Cancel');
             $mdDialog.show(confirm).then(function() {
-		//Server.logout();
-		Server.guiAuthenticate()
+		Server.logout();
+		Server.del.customer(customer.id)
 		    .then(function() {
-			// relogged in, do the removal
-			Server.del.customer(customer.id)
-			    .then(function() {
-				// success
-				new Toast().display("removal done");
-				$mdBottomSheet.hide();
-				$state.go('admin');
-                                $rootScope.$emit('refresh', {'from':'delete', 'to':'all'});
-                            });
-		    }, function() {
-			new Toast().display("removal cancelled");
-			$mdBottomSheet.cancel();
+			// success
+			new Toast().display("removal done");
+			$mdBottomSheet.hide();
+			$state.go('admin');
+                        $rootScope.$emit('refresh', {'from':'delete', 'to':'all'});
                     });
 	    }, function() {
 		new Toast().display("removal cancelled");

@@ -1,5 +1,12 @@
 var serverIP = '137.194.15.203';
 
+/*
+ * When a view asks for some data, there can be two cases.
+ * Either the user has the rights to do so, and the view receives it.
+ * Or he does not, and has to pass authentication.
+ * In the latter case, the promise returned will be the new one, after authentication and automatic retry.
+ */
+
 angular
     .module('babar.server', [
 	'babar.authenticate',
@@ -7,12 +14,7 @@ angular
 	'ngMaterial',
 	'ui.router'
     ])
-/*
- * When a view asks for some data, there can be two cases.
- * Either the user has the rights to do so, and the view receives it.
- * Or he does not, and has to pass authentication.
- * In the latter case, the user will have to make his operation again after having authentified himself.
- */
+
     .factory('Token', [function() {
 	// This aim to handle the authentication token
         function Token() {
@@ -38,7 +40,9 @@ angular
 		var date = new Date();
 		return date.getTime();
 	    };
-	    
+
+	    // this makes the actual request and handles the response
+	    // for more info, read $q's doc
 	    var server = function(config) {
 		// this deals with every returning promise
 		return $http(config)
@@ -57,7 +61,6 @@ angular
                             }).then(function(promisedAuth) {
 				// login went well, now retry but with the token
 				promised.config.params.token = promisedAuth.data.value;
-				console.log(server);
 				return server(config);
                             });
 			case 403:
@@ -69,7 +72,6 @@ angular
 			    return server(promised.config);
 			default:
                             // error
-			    console.info(promised);
                             $state.go("error", {'status': promised.status});
                             break;
 			}
