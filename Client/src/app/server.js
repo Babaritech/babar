@@ -214,7 +214,9 @@ angular.module('babar.server', [
 		var params = {'action': 'logout'};
 		var token = Token.get();
 		Token.reset();
-		return server.request('customer', params, Encode.logout(token));
+		$rootScope.$emit('logout', {});
+		$rootScope.$emit('refresh', {'from': 'logout', 'to':'all'});
+                return server.request('customer', params, Encode.logout(token));
 	    };
 	    // this allows one to be authentified
 	    this.authenticate = function(data){
@@ -223,7 +225,8 @@ angular.module('babar.server', [
 		var endTime = Encode.loginEndTime(data.duration);
 		promise.then(function(promised) {
 		    Token.set(promised.data.value);
-		    $rootScope.$emit('refresh', {'from': 'auth', 'to':'all'});
+		    $rootScope.$emit('login', {'endTime': endTime, 'login': data.login});
+		    $rootScope.$emit('refresh', {'from': 'login', 'to':'all'});
                 });
                 return promise;
 	    };

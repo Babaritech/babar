@@ -144,7 +144,7 @@ angular.module('babar.sell', [
                 // customer has enough money for this purchase, ask for a confirmation
                 var confirm = $mdDialog.confirm()
                     .title('Confirm this purchase ?')
-                    .content(drink.details.name + " for " + customer.details.name)
+		    .content(drink.details.name + " for " + customer.details.name)
                     .ariaLabel('Purchase confirmation')
                     .ok('Confirm')
                     .cancel('Cancel');
@@ -166,7 +166,7 @@ angular.module('babar.sell', [
 		// customer hasn't enough money for this purchase, ask if it must be credited anyway
 		var confirmOverdraft = $mdDialog.confirm()
                     .title('Confirm this purchase AS OVERDRAFT ?')
-                    .content('{{selldrk.current.details.name}} for {{sellcst.current.details.name}}')
+		    .content(drink.details.name + " for " + customer.details.name)
                     .ariaLabel('Purchase confirmation as overdraft')
                     .ok('Confirm (needs a login)')
                     .cancel('Cancel');
@@ -256,21 +256,21 @@ angular.module('babar.sell', [
 	};
 
 	
-	//When an user is authenticated through time, we gotta diplay it
-	// TODO
-	this.authenticatedUser = null;
-	this.remainingTime = 0;
-	$rootScope.$on('yAuthEvent', function(e, a){ 
-	    $scope.sell.authenticatedUser = a.login;
+	//When an user is authenticated through time, we gotta display it
+	this.authUser = null;
+	this.authRemTime = 0;
+	$rootScope.$on('login', function(e, a){
+	    console.log("DEBUG");
+	    $scope.sell.authUser = a.login;
 	    var time = (new Date()).getTime();
 	    var remain = a.endTime-time>0?a.endTime-time:0;
-	    $scope.sell.remainingTime = Math.floor(remain/(1000*60));
+	    $scope.sell.authRemTime = Math.floor(remain/(1000*60));
 	    var updateCountdown = function(){
 		window.setTimeout(function(){
-		    $scope.sell.remainingTime--;
-		    if($scope.sell.remainingTime<0){
-			$scope.sell.authenticatedUser = null;
-			$scope.sell.remainingTime = 0;
+		    $scope.sell.authRemTime--;
+		    if($scope.sell.authRemTime<0){
+			$scope.sell.authUser = null;
+			$scope.sell.authRemTime = 0;
 		    }else{
 			updateCountdown();
 		    }
