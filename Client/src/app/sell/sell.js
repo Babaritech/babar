@@ -226,6 +226,7 @@ angular.module('babar.sell', [
 	this.authUser = null;
 	this.authRemTime = 0;
 	$rootScope.$on('login', function(e, a){
+	    console.log(e, a);
 	    $scope.sell.authUser = a.user;
 	    var time = (new Date()).getTime();
 	    var remain = a.endTime-time>0?a.endTime-time:0;
@@ -244,102 +245,5 @@ angular.module('babar.sell', [
 	    };
 	    updateCountdown();
 	});
-
-	
-        //This sets up some hotkeys
-	this.loadHotkeys = function(){
-            Hotkeys.add({
-                combo: 'enter',
-                description: 'Move to the next field',
-                callback: hotkConfirm,
-		allowIn: ['INPUT']
-            });
-            Hotkeys.add({
-                combo: 'escape',
-                description: 'Move to the previous field',
-                callback: hotkCancel,
-                allowIn: ['INPUT']
-	    });
-	    Hotkeys.add({
-                combo: 'up',
-                description: 'Move upward the selected field',
-                callback: hotkUp,
-                allowIn: ['INPUT']
-	    });
-	    Hotkeys.add({
-                combo: 'down',
-                description: 'Move downward the selected field',
-                callback: hotkDown,
-                allowIn: ['INPUT']
-	    });
-            Hotkeys.add({
-                combo: 'left',
-                callback: hotkLeft
-            });
-            Hotkeys.add({
-                combo: 'right',
-                callback: hotkRight
-            });
-            Hotkeys.add({
-                combo: 'a',
-                callback: hotkA
-            });
-            Hotkeys.add({
-                combo: 'b',
-                callback: hotkB
-            });
-	};
-
-	this.disableHotkeys = function(){
-	    Hotkeys.del('up');
-	    Hotkeys.del('down');
-	    Hotkeys.del('left');
-	    Hotkeys.del('right');
-            Hotkeys.del('a');
-	    Hotkeys.del('b');
-            Hotkeys.del('enter');
-	    Hotkeys.del('escape');
-	};
-
-        var hotkConfirm = function(){
-            if(Focus.forward()){ //isWaitingForConfirm
-                $scope.sell.confirm();
-	    }else{
-		$rootScope.$emit('refresh', {'from':'hotkey', 'to':'sellParts'});
-            }
-        };
-        var hotkCancel= function(){
-	    Focus.backward();
-	    $rootScope.$emit('refresh', {'from':'hotkey', 'to':'sellParts'});
-        };
-	var hotkUp = function(){
-	    Konami.on('up');
-	    if(Focus.getLocation() === 'customer'){
-                $scope.sell.customer.up();
-	    }else if(Focus.getLocation() === 'drink'){
-		$scope.sell.drink.up();
-	    }
-	};
-	var hotkDown = function(){
-	    Konami.on('down');
-	    if(Focus.getLocation() === 'customer'){
-                $scope.sell.customer.down();
-            }else if(Focus.getLocation() === 'drink'){
-                $scope.sell.drink.down();
-            }  
-	};
-	var hotkLeft = function(){
-	    Konami.on('left');
-	};
-	var hotkRight = function(){
-	    Konami.on('right');
-        };
-	var hotkA = function(){
-	    Konami.on('a');
-        };
-	var hotkB = function(){
-	    Konami.on('b');
-        };
-	this.loadHotkeys();
 	
     }]);
