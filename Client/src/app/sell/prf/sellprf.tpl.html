@@ -1,34 +1,50 @@
-<div class="col-md-4 col-xs-12 sell-details sell">
-  <div class="sell-details-info">
-    <img class="sell-details-info-image"
-	 src="assets/king_babar.jpg"
-	 ng-click="sell.debug()"></img>
+<div layout="column">
+  <!-- When noone's selected and some info is displayed -->
+  <div
+     layout="row"
+     layout-align="center center"
+     ng-show="false">
+    <img
+       src="assets/king_babar.jpg"
+       style="height: 250px;">
+    <md-content
+       class="md-padding dev-info"
+       style="color:black; font-size:125%">
+       Made with
+       <a href="https://www.youtube.com/watch?v=xat1GVnl8-k"> <i class="fa fa-heart" alt="love"></i></a>
+       by
+       <a href="https://github.com/Dryvenn">Dryvenn</a>
+       and
+       <a href="https://github.com/Iansus">Iansus</a>.
+       <br>
+       <a href="https://github.com/Babaritech/babar" style="font-size:75%">
+         <i class="fa fa-github"></i> Fork me on Github !
+       </a>
+       <br>
+       <a ui-sref="error({status:420})" style="font-size:50%">
+         This shit is fucking broken, what should I do ?
+       </a>
+    </md-content>
+  </div>
+  <!-- When one's selected and purchases are made -->
+  <div
+     layout="row"
+     layout-align="center center"
+     ng-show="true">
+    <img
+       src="assets/king_babar.jpg"
+       style="height: 250px;">
+    <md-content>
+      <p>
+	{{sellcst.current.details.name}}
+	<br>
+	<b>{{sellcst.current.details.money}}&#8364</b>
+      </p>
+    </md-content>
+  </div>
+
+
     
-    <div class="sell-details-info-text">
-      <ul ng-hide="sellcst.current.details===null">
-        <li>{{sellcst.current.details.firstname}}
-          ({{sellcst.current.details.nickname}})
-          {{sellcst.current.details.lastname}}</li>
-        <br>
-        <li><b>{{sellcst.current.details.money}}&#8364</b></li>
-      </ul>
-      <div ng-show="sellcst.current.details===null">
-        Made with
-	<a href="https://www.youtube.com/watch?v=xat1GVnl8-k"> <i class="fa fa-heart" alt="love"></i></a>
-        by
-	<a href="https://github.com/Dryvenn">Dryvenn</a>
-	and
-	<a href="https://github.com/Iansus">Iansus</a>.
-	<br>
-	<a href="https://github.com/Babaritech/babar" style="font-size:75%">
-	  <i class="fa fa-github-square"></i> Fork me on Github !
-	</a>
-	<br>
-	<a ui-sref="error({status:420})" style="font-size:50%">
-	  This shit is fucking broken, man !
-        </a>
-      </div>
-    </div> <!-- /text -->
     <div
        ng-show="unicorn"
        style="position:relative;z-index:-10;display:inline;float:right;margin-top:4%;">

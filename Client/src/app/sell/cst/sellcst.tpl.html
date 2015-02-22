@@ -1,4 +1,4 @@
-<div class="col-md-4 col-xs-12 sell-customer sell">
+<div layout="column">
   <div>
      <md-input-container>
       <label>Search for a customer</label>
@@ -6,10 +6,9 @@
        name="customerInput"
        id="customerInput"
        type="text"
-       class="sell-input"
        ng-model="sellcst.current.keyword">
     </md-input-container>
-  </div><!-- /input-group -->
+  </div>
   <md-list>
     <md-item
       ng-repeat="customer in
@@ -35,5 +34,4 @@
       </md-item-content>
     </md-item>
   </md-list>
-  </div> <!-- /list -->
-</div> <!-- /sell-customer -->
+</div>

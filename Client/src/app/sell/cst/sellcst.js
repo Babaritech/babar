@@ -98,8 +98,7 @@ angular.module('babar.sell.cst', [
 			//get the customer's basic info
 			Server.read.customer.info(this.getCurrentId())
 			    .then(function(res){
-				//gotta interpret the customer status (rank)
-				$scope.sellcst.current.details = res.data;
+				$scope.sellcst.current.details = Decode.customer(res.data);
 
 				//get the customer's further info
 				$scope.sellcst.current.getStatus();

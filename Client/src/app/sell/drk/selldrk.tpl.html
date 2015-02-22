@@ -1,17 +1,13 @@
-<div class="col-md-4 col-xs-12 sell-drink sell">
-  <div
-     class="input-group custom-input">
-    <md-input-container>
-      <label>Search for an item</label>
+<div layout="column">
+  <md-input-container>
+    <label>Search for an item</label>
     <input
        name="drinkInput"
        id="drinkInput"
        type="text"
-       class="sell-input"
        ng-model="selldrk.current.keyword">
-    </md-input-container>
-  </div><!-- /input-group -->
-   <md-list>
+  </md-input-container>
+  <md-list>
     <md-item
        ng-repeat="drink in
                   selldrk.list
@@ -29,4 +25,4 @@
       </md-item-content>
     </md-item>
   </md-list>
-</div> <!-- /sell-drink -->
+</div>

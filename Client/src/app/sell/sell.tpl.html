@@ -1,39 +1,27 @@
-<!--
-This is the homepage where all the sh*t happens.
-Goal is to select a customer and file in the drink he had.
--->
-
-<div class="container-fluid">
-  
-  <div class="row hidden-xs hidden-sm" id="header">
-    <div class="col-xs-12"
-	 style="background-color:{{sell.getMoneyColor()}}">
-      <h2><b>BABAR-EXPRESS</b></h2>
+<div layout="column">
+  <md-toolbar
+     style="background-color:{{sell.getMoneyColor()}}"
+     layout="row" layout-align="space-around end"
+     flex>
+    <h1 class="md-toolbar-tools">
+      <span>Babar</span>
       <a
-	 ui-sref="admin">
-	<i
-	   class="fa fa-wrench fa-3x sell-toAdmin"
-	   alt="settings">
-	</i>
-      </a>
-      <div
-	 class="sell-header-duration"
-	 ng-show="sell.authenticatedUser !== null">
-        <span>
-	  <b>{{sell.authenticatedUser}}</b> is still logged for<br>
-	  <b style="font-size:175%">{{sell.remainingTime}} min</b>
-	</span>
-      </div>
-    </div>
-  </div> <!-- /header row-->
-  
-  <div class="row" id="main">
-
-    <sell-customer></sell-customer>
-    <sell-drink></sell-drink>
-    <sell-profile></sell-profile>
-
-  </div> <!-- row -->
-</div> <!--container -->
-
-
+         ui-sref="admin">
+        <i
+           class="fa fa-wrench sell-toAdmin"
+	   style="margin-left:10px"
+           alt="settings">
+        </i>
+      </a>    
+    </h1>
+    <span>
+      <b>{{sell.authenticatedUser}}</b> is still logged for<br>
+      <b style="font-size:175%">{{sell.remainingTime}} min</b>
+    </span>
+  </md-toolbar>
+  <div layout="row" layout-margin>
+    <sell-customer flex></sell-customer>
+    <sell-drink flex></sell-drink>
+    <sell-profile flex></sell-profile>
+  </div>
+</div>
