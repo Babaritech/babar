@@ -116,19 +116,8 @@ angular.module('babar.sell', [
 	};
 
 	// if someone attempts to reload the page, logout the current user
-	// Server.logout();
-
-        //an easter egg
-        $scope.unicorn = false;
-        $rootScope.$on('konamiEvent', function(e, a){
-	    $scope.unicorn = !$scope.unicorn;
-	    window.setTimeout(function(){
-		$scope.unicorn = false;
-		$scope.$apply();
-	    }, 1000*60*5);
-	});
-
-
+	Server.logout();
+	
 	// a refresh method
 	var refresh = function(){
             //Gotta reload Hotkeys' binding
