@@ -192,25 +192,6 @@ angular.module('babar.sell', [
             });
         };
 	
-	this.makeDeposit = function(){
-	    Focus.lose();
-	    this.disableHotkeys();
-            var dialog = ngDialog.open({
-                template: 'deposit/deposit.tpl.html',
-                controller: 'DepositCtrl as deposit',
-                data: [$scope.sellcst.current.details],
-                className: 'ngdialog-theme-plain',
-                showClose: false,
-                closeByEscape: false,
-                closeByDocument: false
-            });
-            dialog.closePromise.then(function(promised){
-		new Toast().display(promised.value);
-		$rootScope.$emit('refresh', {'from':'deposit', 'to':'all'});
-	    });
-	};
-
-	
 	//When an user is authenticated through time, we gotta display it
 	this.authUser = null;
 	this.authRemTime = 0;
