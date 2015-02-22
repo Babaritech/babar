@@ -148,7 +148,7 @@ angular.module('babar.sell', [
                 // customer has enough money for this purchase, ask for a confirmation
                 var confirm = $mdDialog.confirm()
                     .title('Confirm this purchase ?')
-                    .content('{{selldrk.current.details.name}} for {{sellcst.current.details.name}}')
+                    .content(drink.details.name + " for " + customer.details.name)
                     .ariaLabel('Purchase confirmation')
                     .ok('Confirm')
                     .cancel('Cancel');
@@ -198,8 +198,7 @@ angular.module('babar.sell', [
                     });
             }
 	};
-
-         
+ 
         // takes the money value and returns an appropriate color
         this.getMoneyColor = function(){
             if (!$scope.sellcst || $scope.sellcst.current.details === null){

@@ -250,7 +250,7 @@ angular.module('babar.server', [
 		    quantity: 1,
 		    price: drink.price,
 		    brand: drink.brand,
-		    name: drink.name,
+		    name: drink.type,
 		    date: time
 		};
 	    };
