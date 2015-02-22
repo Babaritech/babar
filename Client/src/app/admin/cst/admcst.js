@@ -68,8 +68,12 @@ angular.module('babar.admin.customer', [
 	    }
 	};
 	// register this standard refresh function
-        $rootScope.$on('refresh', function(e, a) {$scope.admcst.refresh();});
-
+        $rootScope.$on('refresh', function(e, a) {
+            if(a.to === 'all') {
+                $scope.admcst.refresh();
+            }
+        });
+	
         // show a bottom sheet
 	this.botsheet = function() {
 	    $mdBottomSheet.show({
@@ -82,7 +86,6 @@ angular.module('babar.admin.customer', [
 
 	// the cancel action, must restore the right state
 	this.cancel = function(message) {
-	    console.log("DEBUG");
 	    $scope.admcst.state.current = states.READING;
             $scope.admcst.state.button = false;
 	    if(message) {
@@ -122,8 +125,8 @@ angular.module('babar.admin.customer', [
 			    customer: customer,
 			    amount: customer.money
 			}).then(function() {
-			    $scope.admcst.cancel('customer created');
 			    $state.go('admin.customers', {id: customer.id});
+                            $scope.admcst.cancel('customer created');
                         });
 		    });
 		break;

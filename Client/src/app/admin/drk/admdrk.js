@@ -47,7 +47,11 @@ angular.module('babar.admin.drink', [
             }
         };
         // register this standard refresh function
-        $rootScope.$on('refresh', function(e, a) {$scope.admdrk.refresh();});
+        $rootScope.$on('refresh', function(e, a) {
+	    if(a.to === 'all') {
+		$scope.admdrk.refresh();
+	    }
+	});
 
         
         // show a bottom sheet
@@ -62,7 +66,6 @@ angular.module('babar.admin.drink', [
 
         // the cancel action, must restore the right state
         this.cancel = function(message) {
-            console.log("DEBUG");
             $scope.admdrk.state.current = states.READING;
             $scope.admdrk.state.button = false;
             if(message) {
@@ -71,7 +74,7 @@ angular.module('babar.admin.drink', [
             else {
                 new Toast().display('cancelled');
             }
-            $rootScope.$emit('refresh', {'from':'admdrk', 'to':'all'});
+	    $rootScope.$emit('refresh', {'from':'admdrk', 'to':'admin'});
         };
 
         // the confirm action, depends on the state
@@ -92,9 +95,9 @@ angular.module('babar.admin.drink', [
                 Server.create.drink(drink)
                     .then(function(promised) {
 			// retrieve the new drink's id
-                        drink.id = promised.data.id;                        
+                        drink.id = promised.data.id;
+			$state.go('admin.drinks', {id: drink.id});
                         $scope.admdrk.cancel('drink created');
-                        $state.go('admin.drinks', {id: drink.id});
                     });
                 break;
             }

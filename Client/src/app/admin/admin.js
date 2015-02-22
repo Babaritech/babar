@@ -55,7 +55,6 @@ angular.module('babar.admin', [
 	    Server.list[domain]()
 		.then(function(promised) {
 		    // add a new element at the begining of the array (will be ignored by the filter)
-		    console.log(domain, promised);
 		    $scope.admin.item.list = [{
 			name: 'New...',
 			id: -1
@@ -63,8 +62,12 @@ angular.module('babar.admin', [
 		});
 	};
 	// register this standard refresh function
-	$rootScope.$on('refresh', function(e, a) {$scope.admin.refresh();});
-
+        $rootScope.$on('refresh', function(e, a) {
+            if(a.to === 'all' || a.to === 'admin') {
+                $scope.admin.refresh();
+            }
+        });
+	
 	// bring it on
 	this.domain.current = this.domain.list[0];
 	this.refresh();

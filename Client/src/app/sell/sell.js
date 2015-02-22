@@ -262,6 +262,7 @@ angular.module('babar.sell', [
 
 	
 	//When an user is authenticated through time, we gotta diplay it
+	// TODO
 	this.authenticatedUser = null;
 	this.remainingTime = 0;
 	$rootScope.$on('yAuthEvent', function(e, a){ 
