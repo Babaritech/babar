@@ -310,6 +310,9 @@ angular
 	    };
 	    this.customer = function(customer) {
 		var nCustomer = customer;
+		if(customer.nickname === null || customer.nickname === "") {
+		    nCustomer.nickname = 'no swag';
+		}
                 nCustomer.name = customer.firstname + " ("+ customer.nickname + ") " + customer.lastname;
                 return nCustomer;
             };
