@@ -121,20 +121,28 @@ angular.module('babar.server', [
 		}
 	    };
             this.create = {
-                params: {'action': 'new'},
                 customer: function(data) {
-                    return server.request('customer', this.params, data);
+		    var params = {'action': 'new'};             
+                    return server.request('customer', params, data);
                 },
                 drink: function(data) {
-                    return server.request('drink', this.params, Encode.drink(data));
+		    var params = {'action': 'new'};             
+                    return server.request('drink', params, Encode.drink(data));
                 },
                 purchase: function(data) {
+		    var params = {'action': 'new'};             
                     //data.customer bought a data.drink at time()
-                    return server.request('sell', this.params, Encode.sell(data.customer, data.drink, time()));
+                    return server.request('sell', params, Encode.sell(data.customer, data.drink, time()));
+                },
+		purchase_overdraft: function(data) {
+                    var params = {'action': 'new-negative'};		
+		    //data.customer bought a data.drink at time()
+                    return server.request('sell', params, Encode.sell(data.customer, data.drink, time()));
                 },
                 deposit: function(data) {
+		    var params = {'action': 'new'};             
                     //data.customer addded data.amount € at time()
-                    return server.request('entry', this.params, Encode.entry(data.customer, data.amount, time()));
+                    return server.request('entry', params, Encode.entry(data.customer, data.amount, time()));
                 }
             };
 	    this.read = {
@@ -222,10 +230,9 @@ angular.module('babar.server', [
 	    this.authenticate = function(data){
 		var params = {'action': 'login'};
 		var promise = server.request('customer', params, Encode.login(data.login, data.password, data.duration));
-		var endTime = Encode.loginEndTime(data.duration);
 		promise.then(function(promised) {
 		    Token.set(promised.data.value);
-		    $rootScope.$emit('login', {'endTime': endTime, 'login': data.login});
+		    $rootScope.$emit('login', {'duration': data.duration, 'login': data.login});
 		    $rootScope.$emit('refresh', {'from': 'login', 'to':'all'});
                 });
                 return promise;
@@ -267,10 +274,10 @@ angular.module('babar.server', [
 		};
 	    };
 	    this.login = function(login, password, duration) {
-		var endTime = 0;
+		var time = 0;
                 var count = -1;
                 if(duration!==0) {
-		    endTime = (new Date()).getTime() + duration*60*1000;
+		    time = duration*60*1000;
                 }
                 else {
                     count = 1;
@@ -278,7 +285,7 @@ angular.module('babar.server', [
 		return {
                     nickname: login,
                     password: password,
-                    expiration: endTime,
+                    expiration: time,
                     actionCount: count
                 };
 	    };

@@ -2,6 +2,7 @@ angular.module('babar.sell', [
     'babar.sell.cst',
     'babar.sell.drk',
     'babar.sell.prf',
+    'babar.conf',
     'babar.server',
     'babar.utils',
     'babar.error',
@@ -138,61 +139,15 @@ angular.module('babar.sell', [
 	$scope.$on('refresh', function(e, a) {refresh();});
 
         this.confirm = function() {
-	    var customer = $scope.sellcst.current;
-	    var drink = $scope.selldrk.current;
-	    if(customer.getActualMoney() - drink.details.price > 0){
-                // customer has enough money for this purchase, ask for a confirmation
-                var confirm = $mdDialog.confirm()
-                    .title('Confirm this purchase ?')
-		    .content(drink.details.name + " for " + customer.details.name)
-                    .ariaLabel('Purchase confirmation')
-                    .ok('Confirm')
-                    .cancel('Cancel');
-                $mdDialog.show(confirm).then(function() {
-                    Server.create.purchase({
-                        customer: customer.details,
-                        drink: drink.details
-                    }).then(function() {
-                        $rootScope.$emit('refresh', {'from': 'confirm', 'to': 'all'});
-                        new Toast().display('purchase done');
-                    }, function() {
-                        new Toast().display("purchase forbidden");
-                    });
-                }, function() {
-                    new Toast().display("purchase cancelled");
-                });
-            }
-            else {
-		// customer hasn't enough money for this purchase, ask if it must be credited anyway
-		var confirmOverdraft = $mdDialog.confirm()
-                    .title('Confirm this purchase AS OVERDRAFT ?')
-		    .content(drink.details.name + " for " + customer.details.name)
-                    .ariaLabel('Purchase confirmation as overdraft')
-                    .ok('Confirm (needs a login)')
-                    .cancel('Cancel');
-		$mdDialog
-                    .show(confirmOverdraft)
-                    .then(function() {
-			// user wants an overdraft, login and do it
-			Server.guiAuthenticate()
-                            .then(function() {
-				// auth successul
-				Server.create.purchase({
-                                    customer: customer.details,
-                                    drink: drink.details
-				}).then(function() {
-                                    $rootScope.$emit('refresh', {'from': 'confirm', 'to': 'all'});
-                                    new Toast().display('purchase done');
-				}, function() {
-                                    new Toast().display("purchase forbidden");
-				});
-                            }, function() {
-				// auth cancelled
-                            });
-                    }, function() {
-			new Toast().display("purchase cancelled");
-                    });
-            }
+	    $mdDialog.show({
+                templateUrl: 'conf/conf.tpl.html',
+                controller: 'ConfCtrl',
+                controllerAs: 'conf',
+                locals: {
+                    customer: $scope.sellcst.current,
+                    drink: $scope.selldrk.current
+                }
+            });
 	};
  
         // takes the money value and returns an appropriate color
