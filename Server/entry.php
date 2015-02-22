@@ -50,13 +50,15 @@
 	{
 		$data = Functions::getJSONData();
 		$c = new Entry();
-
 		foreach($c->getFields() as $field)
 		{
 			$value = Functions::elt($data, $field['name']); 
 
 			if (is_null($value))
+			{
+				echo $field['name'];
 				Functions::setResponse(400);
+			}
 
 			$c->set($field['name'], $value);
 		}

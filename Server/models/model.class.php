@@ -144,7 +144,6 @@
 			$message.= $errorArray[2];
 
 			if(DEBUG) echo $message;
-
 			Functions::setResponse(500);
 		}
 

@@ -42,7 +42,6 @@
 				$whereClause = 'value=:value';
 				$params = array(array('id'=>':value', 'value'=>$token));
 				$result = Token::search($whereClause, $params);
-
 				if(!count($result))
 					Functions::setResponse(498);
 				else
@@ -61,7 +60,9 @@
 				$result = Status::search($whereClause, $params);
 
 				if(!count($result))
-					Functions::setResponse(500);
+				{
+					echo 'bite';
+				}
 
 				$status = $result[0];
 			}
