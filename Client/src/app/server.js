@@ -1,4 +1,4 @@
-var serverIP = '127.0.0.1';//'192.168.0.10:1080';
+var serverIP = '137.194.15.203';
 
 angular.module('babar.server', [
     'babar.authenticate',
