@@ -29,7 +29,7 @@ angular.module('babar.authenticate', [
 		}).then(function(promised) {
 		    // auth allright, back to what we where at
 		    new Toast().display("login passed");
-                    $mdDialog.hide();
+                    $mdDialog.hide(promised);
 		}, function(promised) {
 		    new Toast().display("login failed");
                     if(promised.status === 403) {
