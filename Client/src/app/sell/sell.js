@@ -108,7 +108,7 @@ angular.module('babar.sell', [
     }])
 
     
-    .controller('SellCtrl', ['$rootScope', '$scope', '$state', '$filter', '$mdDialog', 'Server', 'Decode', 'Focus', 'Konami', 'Toast', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, $filter, $mdDialog, Server, Decode, Focus, Konami, Toast,searchFilter, selectFilter, Hotkeys, ngDialog){
+    .controller('SellCtrl', ['$rootScope', '$scope', '$state', '$mdDialog', 'Server', 'Decode', 'Focus', 'Konami', 'Toast', 'searchFilter', 'selectFilter', 'hotkeys', 'ngDialog', function($rootScope, $scope, $state, $mdDialog, Server, Decode, Focus, Konami, Toast,searchFilter, selectFilter, Hotkeys, ngDialog){
 
 	this.debug = function(arg){
 	    new Toast().display($scope);
@@ -117,10 +117,6 @@ angular.module('babar.sell', [
 	// if someone attempts to reload the page, logout the current user
 	// Server.logout();
 
-	//this serves the chronological filter
-	this.chronological = 'time';
-	var orderBy = $filter('orderBy');
-	
         //an easter egg
         $scope.unicorn = false;
         $rootScope.$on('konamiEvent', function(e, a){

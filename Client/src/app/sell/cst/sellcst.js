@@ -7,12 +7,17 @@ angular.module('babar.sell.cst', [
 	return {
 	    templateUrl: 'sell/cst/sellcst.tpl.html',
 	    controllerAs: 'sellcst',
-            controller: function($scope, $state, searchFilter, selectFilter, Focus, Server, Encode, Decode) {
+            controller: function($scope, $state, $filter, searchFilter, selectFilter, Focus, Server, Encode, Decode) {
 		var refresh = function() {
 		    this.current.refresh();
 		};
 		$scope.$on('refresh', function(e, a) {refresh();});
 
+                //this serves the chronological filter
+                this.chronological = 'time';
+                var orderBy = $filter('orderBy');
+                
+		
                 //load customers' list
 		this.list = [];
 		Server.list.customers()
