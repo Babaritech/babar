@@ -84,17 +84,19 @@
 
 		public function set($fieldName, $value)
 		{
-			foreach($this->fields as $field)
+			/*foreach($this->fields as $field)
 			{
 				if($field['name'] == $fieldName)
 				{
 					$this->$fieldName = $value;
 					return ;
 				}
-			}
+			}*/
 
-			if(DEBUG) echo ('Fatal error : Trying to acces field '.$fieldName.' in class '.get_class($this));
-			exit;
+			$this->$fieldName = $value;
+
+			/*if(DEBUG) echo ('Fatal error : Trying to acces field '.$fieldName.' in class '.get_class($this));
+			exit;*/
 		}
 
 		protected function update()
