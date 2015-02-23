@@ -6,7 +6,7 @@
     <h1 class="md-toolbar-tools">
       <span>Babar</span>
       <a
-         ui-sref="admin">
+	 ui-sref="admin">
         <i
            class="fa fa-wrench sell-toAdmin"
 	   style="margin-left:10px"
@@ -15,8 +15,15 @@
       </a>    
     </h1>
     <p>
-      {{sell.authUser}} is still logged for
-      {{sell.authRemTime}} min
+      {{sell.authUser}} logged for
+      <timer
+	 countdown="sell.authDuration"
+	 max-time-unit="'minute'"
+	 interval="1000"
+	 finish-callback="sell.finishAuth()">
+	{{minutes}} minute{{minutesS}},
+	{{seconds}} second{{secondsS}}
+      </timer>
     </p>
   </md-toolbar>
   <div layout="row" layout-margin>

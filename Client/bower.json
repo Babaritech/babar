@@ -8,11 +8,14 @@
     "angular-bootstrap": "~0.10.0",
     "angular-ui-router": "~0.2",
     "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.4",
-    "angular-timer": "~1.1.7",
+    "angular-timer": "~1.2.0",
     "angular-unicorn-directive": "~0.0.2",
     "angular-material": "~0.7.1",
     "angular-animate": "~1.3.13",
     "angular-aria": "~1.3.13"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "resolutions": {
+    "angular-timer": "~1.2.0"
+  }
 }

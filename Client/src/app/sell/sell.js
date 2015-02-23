@@ -9,7 +9,8 @@ angular.module('babar.sell', [
     'babar.deposit',
     'babar.easter',
     'ngMaterial',
-    'ui.router'
+    'ui.router',
+    'timer'
 ])
     .factory('Focus', [function(){
 	//This aim to make the navigation easier by setting up keyboard shortcuts
@@ -109,10 +110,6 @@ angular.module('babar.sell', [
     
     .controller('SellCtrl', function($rootScope, $scope, $state, $mdDialog, Server, Decode, Focus, Konami, Toast,searchFilter, selectFilter){
 
-	this.debug = function(arg){
-	    new Toast().display($scope);
-	};
-
 	// if someone attempts to reload the page, logout the current user
 	Server.logout();
 	
@@ -187,29 +184,23 @@ angular.module('babar.sell', [
                 }
             });
         };
+
 	
 	//When an user is authenticated through time, we gotta display it
 	this.authUser = null;
-	this.authRemTime = 0;
+	this.authDuration = 600;
 	$rootScope.$on('login', function(e, a){
-	    console.log(e, a);
-	    $scope.sell.authUser = a.user;
-	    var time = (new Date()).getTime();
-	    var remain = a.endTime-time>0?a.endTime-time:0;
-	    $scope.sell.authRemTime = Math.floor(remain/(1000*60));
-	    var updateCountdown = function(){
-		window.setTimeout(function(){
-		    $scope.sell.authRemTime--;
-		    if($scope.sell.authRemTime<0){
-			$scope.sell.authUser = null;
-			$scope.sell.authRemTime = 0;
-		    }else{
-			updateCountdown();
-		    }
-		    $scope.$apply();
-                }, 60*1000);
-	    };
-	    updateCountdown();
+            //$scope.sell.authUser = a.login;
+	    $scope.sell.authDuration = 1200;///parseInt(a.duration, 10)*60;
+	    //$scope.$broadcast('timer-reset');
+            //$scope.$broadcast('timer-start');
 	});
-	
+	$rootScope.$on('logout', function(e, a){
+            //$scope.$emit('timer-reset');
+	    //$scope.sell.finishAuth();
+        });
+	this.finishAuth = function() {
+	    $scope.sell.authUser = null;
+	    $scope.sell.authDuration = 0;
+	};
     });
