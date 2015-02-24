@@ -27,17 +27,18 @@
              required>
 	</md-input-container>
         <md-input-container flex>
-	  <div layout="row" layout-fill layout-padding
+	  <label>Login duration (in min)</label>
+          <div layout="row" layout-fill layout-padding
 	       layout-align="space-between center">
 	    <md-slider
-	       id="duration-slider"
+               id="duration-slider"
                ng-model="auth.duration"
                min="0"
                max="120"
 	       aria-label="Duration (slider)"
 	       class="md-accent"
 	       flex="50">
-               </md-slider>
+            </md-slider>
 	    <div flex="20">
 	      <input
 		 type="number"
