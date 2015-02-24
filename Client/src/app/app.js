@@ -8,7 +8,8 @@ angular.module( 'babar', [
     'babar.admin',
     'babar.admin.customer',
     'babar.admin.user',
-    'babar.admin.drink'
+    'babar.admin.drink',
+    'babar.admin.setting'
 ])
 
     .config( ['$stateProvider', '$urlRouterProvider',  function myAppConfig ( $stateProvider, $urlRouterProvider ) {
@@ -53,6 +54,12 @@ angular.module( 'babar', [
                 templateUrl: "admin/usr/admusr.tpl.html",
                 controller: "AdmUserCtrl",
                 controllerAs: "admusr"
+            })
+            .state('admin.settings', {
+                url: "/settings/:id",
+                templateUrl: "admin/stg/admstg.tpl.html",
+                controller: "AdmSettingCtrl",
+                controllerAs: "admstg"
             });
     }])
 

@@ -11,6 +11,7 @@ angular
     .module('babar.server', [
 	'babar.authenticate',
 	'babar.error',
+	'babar.admin.setting',
 	'ngMaterial',
 	'ui.router'
     ])
@@ -32,7 +33,7 @@ angular
         return new Token();
     }])
 
-    .factory('Server', function($rootScope, $state, $q, $http, $mdDialog, Encode, Decode, Token){
+    .factory('Server', function($rootScope, $state, $q, $http, $mdDialog, Encode, Decode, Token, AvailableSettings){
 	Server = function(){
 	    
 	    //Get current time in millis
@@ -112,9 +113,8 @@ angular
 		    var params = {'action': 'list' };           
                     return request('status', params);
                 },
-		stats: function() {
-		    // doesn't exist yet
-                    // promise = this.request('stat', params);
+		settings: function() {
+		    return AvailableSettings.promise();
 		}
 	    };
             this.create = {
@@ -348,6 +348,9 @@ angular
 		    mut(val);
 		    return val;
 		});
+	    };
+	    this.settings = function(settings) {
+		return settings;
 	    };
 	};
 	return new Decode();

@@ -7,30 +7,38 @@ angular.module('babar.admin', [
     .controller('AdminCtrl', ['$rootScope', '$scope', '$state', 'Server', 'Decode', function($rootScope, $scope, $state, Server, Decode){
 	this.domain = {
 	    list: [
-	    {
-		name: "customers",
-		title: "Customers",
-		description: "Consult, modify or add customers.",
-		faIcon: "male",
-		controllerAs: "admcst",
-		acceptNew: true
-            },
-	    {
-		name: "users",
-                title: "Users",
-                description: "See who's in charge.",
-		faIcon: "users",
-		controllerAs: "admusr",
-		acceptNew: false
-            },
-            {
-		name: "drinks",
-                title: "Drinks",
-                description: "Consult, modify or add drinks.",
-		faIcon: "beer",
-		controllerAs: "admdrk",
-		acceptNew: true
-            }
+		{
+		    name: "customers",
+		    title: "Customers",
+		    description: "Consult, modify or add customers.",
+		    faIcon: "male",
+		    controllerAs: "admcst",
+		    acceptNew: true
+		},
+		{
+		    name: "users",
+                    title: "Users",
+                    description: "See who's in charge.",
+		    faIcon: "users",
+		    controllerAs: "admusr",
+		    acceptNew: false
+		},
+		{
+		    name: "drinks",
+                    title: "Drinks",
+                    description: "Consult, modify or add drinks.",
+		    faIcon: "beer",
+		    controllerAs: "admdrk",
+		    acceptNew: true
+		},
+		{
+		    name: "settings",
+		    title: "Settings",
+		    description: "Modify the app behaviour in this browser.",
+		    faIcon: "wrench",
+		    controllerAs: "admstg",
+		    acceptNew: false
+		}
 	    ],
 	    current: null,
 	    change: function(domain) {
