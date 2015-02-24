@@ -12,7 +12,8 @@
        ng-repeat="drink in
                   selldrk.list
                   | search: selldrk.current.keyword
-                  | select : selldrk.current.index"
+                  | select : selldrk.current.index
+		  | cut"
        ng-click="selldrk.current.setIndex($index, true)">
       <md-item-content
 	 class="{{drink.active?'active':''}}">

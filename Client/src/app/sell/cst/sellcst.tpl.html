@@ -14,7 +14,8 @@
       ng-repeat="customer in
       sellcst.list
       | search: sellcst.current.keyword
-      | select : sellcst.current.index"
+      | select: sellcst.current.index
+      | cut"
        ng-click="sellcst.current.setIndex($index, true)">
       <md-item-content 
          class="item-font {{customer.active?'active':'unactive'}}

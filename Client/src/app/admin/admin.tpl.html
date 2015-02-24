@@ -46,7 +46,8 @@
 	<md-list flex>
 	  <md-item
            ng-repeat="item in admin.item.list
-		      | search: admin.keyword"
+		      | search: admin.keyword
+		      | cut"
 	   ng-click="admin.item.change(item)">
 	  <md-item-content
 	     class="{{item === admin.item.current ? 'active' : ''}}">
