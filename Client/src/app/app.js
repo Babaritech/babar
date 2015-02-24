@@ -13,7 +13,7 @@ angular.module( 'babar', [
 
     .config( ['$stateProvider', '$urlRouterProvider',  function myAppConfig ( $stateProvider, $urlRouterProvider ) {
 	
-        // TODO: For any unmatched url, redirect to a 404 error
+        // for any unmatched url, redirect to root
         $urlRouterProvider.otherwise("/");
         
         // Now set up the states

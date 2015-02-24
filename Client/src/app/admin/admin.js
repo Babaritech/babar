@@ -12,21 +12,24 @@ angular.module('babar.admin', [
 		title: "Customers",
 		description: "Consult, modify or add customers.",
 		faIcon: "male",
-		controllerAs: "admcst"
+		controllerAs: "admcst",
+		acceptNew: true
             },
 	    {
 		name: "users",
                 title: "Users",
                 description: "See who's in charge.",
 		faIcon: "users",
-		controllerAs: "admusr"
+		controllerAs: "admusr",
+		acceptNew: false
             },
             {
 		name: "drinks",
                 title: "Drinks",
                 description: "Consult, modify or add drinks.",
 		faIcon: "beer",
-		controllerAs: "admdrk"
+		controllerAs: "admdrk",
+		acceptNew: true
             }
 	    ],
 	    current: null,
@@ -54,11 +57,11 @@ angular.module('babar.admin', [
 	    var domain = this.domain.current.name;
 	    Server.list[domain]()
 		.then(function(promised) {
-		    // add a new element at the begining of the array (will be ignored by the filter)
-		    $scope.admin.item.list = [{
-			name: 'New...',
-			id: -1
-		    }].concat(Decode[domain](promised.data));
+		    // add a new element at the begining of the array if it's appropiate (will be ignored by the filter)
+		    $scope.admin.item.list = (
+			$scope.admin.domain.current.acceptNew ?
+			    [{name: 'New...', id: -1}] : []
+		    ).concat(Decode[domain](promised.data));
 		});
 	};
 	// register this standard refresh function

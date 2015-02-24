@@ -96,19 +96,25 @@ angular
             };
 	    
 	    this.list = {
-		params: {'action': 'list' },
 		customers: function() {
-		    return request('customer', this.params);
+		    var params = {'action': 'list' };
+		    return request('customer', params);
 		},
 		drinks: function() {
-                    return request('drink', this.params);
+		    var params = {'action': 'list' };           
+                    return request('drink', params);
+		},
+		users: function() {
+		    var params = {'action': 'bar_staff' };
+		    return request('customer', params);
 		},
 		statuses: function() {
-                    return request('status', this.params);
+		    var params = {'action': 'list' };           
+                    return request('status', params);
                 },
 		stats: function() {
 		    // doesn't exist yet
-                    // promise = this.request('stat', this.params);
+                    // promise = this.request('stat', params);
 		}
 	    };
             this.create = {
@@ -322,6 +328,12 @@ angular
 		    mut(val);
                     return val;
                 });
+	    };
+	    this.user = function(user) {
+		return this.customer(user);
+	    };
+	    this.users = function(users) {
+		return this.customers(users);
 	    };
 	    this.drink = function(drink) {
 		var nDrink = drink;
