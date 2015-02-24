@@ -108,7 +108,7 @@ angular.module('babar.sell', [
     }])
 
     
-    .controller('SellCtrl', function($rootScope, $scope, $state, $mdDialog, Server, Decode, Focus, Konami, Toast,searchFilter, selectFilter){
+    .controller('SellCtrl', function($rootScope, $scope, $timeout, $state, $mdDialog, Server, Decode, Focus, Konami, Toast,searchFilter, selectFilter){
 
 	// if someone attempts to reload the page, logout the current user
 	Server.logout();
@@ -190,17 +190,21 @@ angular.module('babar.sell', [
 	this.authUser = null;
 	this.authDuration = 600;
 	$rootScope.$on('login', function(e, a){
-            //$scope.sell.authUser = a.login;
-	    $scope.sell.authDuration = 1200;///parseInt(a.duration, 10)*60;
-	    //$scope.$broadcast('timer-reset');
-            //$scope.$broadcast('timer-start');
-	});
+	    $scope.sell.authUser = a.login;
+            $scope.sell.authDuration = parseInt(a.duration, 10)*60;
+	    $timeout(function() {
+                $scope.$broadcast('timer-reset');
+		$scope.$broadcast('timer-start');
+	    }, 500);
+        });
 	$rootScope.$on('logout', function(e, a){
-            //$scope.$emit('timer-reset');
-	    //$scope.sell.finishAuth();
+	    $scope.sell.finishAuth();
+	    $timeout(function() {
+                $scope.$broadcast('timer-reset');
+            }, 500);
         });
 	this.finishAuth = function() {
 	    $scope.sell.authUser = null;
-	    $scope.sell.authDuration = 0;
+	    $scope.sell.authDuration = 1;
 	};
     });

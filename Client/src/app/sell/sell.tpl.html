@@ -1,7 +1,9 @@
 <div layout="column">
   <md-toolbar
      style="background-color:{{sell.getMoneyColor()}}"
-     layout="row" layout-align="space-around end"
+     layout="row"
+     layout-align="space-between end"
+     layout-padding
      flex>
     <h1 class="md-toolbar-tools">
       <span>Babar</span>
@@ -14,7 +16,11 @@
         </i>
       </a>    
     </h1>
-    <p>
+    <span
+       style="min-width: 500px;
+	      text-align: right;
+	      font-size: 85%;"
+       ng-hide="sell.authUser === null">
       {{sell.authUser}} logged for
       <timer
 	 countdown="sell.authDuration"
@@ -24,7 +30,7 @@
 	{{minutes}} minute{{minutesS}},
 	{{seconds}} second{{secondsS}}
       </timer>
-    </p>
+    </span>
   </md-toolbar>
   <div layout="row" layout-margin>
     <sell-customer flex></sell-customer>
