@@ -71,7 +71,10 @@ module.exports = {
 	    'vendor/angular-hotkeys/build/hotkeys.min.js',
             'vendor/ngDialog/js/ngDialog.min.js',
             'vendor/angular-unicorn-directive/unicorn.js',
-	    'vendor/angular-material/angular-material.js'
+	    'vendor/angular-material/angular-material.js',
+	    'vendor/angular-animate/angular-animate.js',
+	    'vendor/angular-aria/angular-aria.js',
+	    'vendor/angular-timer/dist/angular-timer.js'
         ],
 	css: [
             'vendor/angular-hotkeys/hotkeys.css',

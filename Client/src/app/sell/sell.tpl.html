@@ -1,39 +1,35 @@
-<!--
-This is the homepage where all the sh*t happens.
-Goal is to select a customer and file in the drink he had.
--->
-
-<div class="container-fluid">
-  
-  <div class="row hidden-xs hidden-sm" id="header">
-    <div class="col-xs-12"
-	 style="background-color:{{sell.getMoneyColor()}}">
-      <h2><b>BABAR-EXPRESS</b></h2>
-      <a
-	 ui-sref="admin">
-	<i
-	   class="fa fa-wrench fa-3x sell-toAdmin"
-	   alt="settings">
-	</i>
-      </a>
-      <div
-	 class="sell-header-duration"
-	 ng-show="sell.authenticatedUser !== null">
-        <span>
-	  <b>{{sell.authenticatedUser}}</b> is still logged for<br>
-	  <b style="font-size:175%">{{sell.remainingTime}} min</b>
-	</span>
-      </div>
-    </div>
-  </div> <!-- /header row-->
-  
-  <div class="row" id="main">
-
-    <sell-customer></sell-customer>
-    <sell-drink></sell-drink>
-    <sell-profile></sell-profile>
-
-  </div> <!-- row -->
-</div> <!--container -->
-
-
+<div layout="column">
+  <md-toolbar
+     style="background-color:{{sell.getMoneyColor()}}"
+     layout="row"
+     layout-align="space-between end"
+     layout-padding
+     flex>
+    <a
+       ui-sref="admin">
+      <h1 class="md-toolbar-tools">
+      <span>Babar</span>
+    </a>    
+    </h1>
+    <span
+       style="min-width: 500px;
+	      text-align: right;
+	      font-size: 85%;"
+       ng-hide="sell.authUser === null">
+      {{sell.authUser}} logged for
+      <timer
+	 countdown="sell.authDuration"
+	 max-time-unit="'minute'"
+	 interval="1000"
+	 finish-callback="sell.finishAuth()">
+	{{minutes}} minute{{minutesS}},
+	{{seconds}} second{{secondsS}}
+      </timer>
+    </span>
+  </md-toolbar>
+  <div layout="row" layout-margin>
+    <sell-customer flex></sell-customer>
+    <sell-drink flex></sell-drink>
+    <sell-profile flex></sell-profile>
+  </div>
+</div>

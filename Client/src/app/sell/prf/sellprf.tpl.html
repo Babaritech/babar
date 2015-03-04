@@ -1,67 +1,73 @@
-<div class="col-md-4 col-xs-12 sell-details sell">
-  <div class="sell-details-info">
-    <img class="sell-details-info-image"
-	 src="assets/king_babar.jpg"
-	 ng-click="sell.debug()"></img>
-    
-    <div class="sell-details-info-text">
-      <ul ng-hide="sellcst.current.details===null">
-        <li>{{sellcst.current.details.firstname}}
-          ({{sellcst.current.details.nickname}})
-          {{sellcst.current.details.lastname}}</li>
-        <br>
-        <li><b>{{sellcst.current.details.money}}&#8364</b></li>
-      </ul>
-      <div ng-show="sellcst.current.details===null">
-        Made with
-	<a href="https://www.youtube.com/watch?v=xat1GVnl8-k"> <i class="fa fa-heart" alt="love"></i></a>
-        by
-	<a href="https://github.com/Dryvenn">Dryvenn</a>
-	and
-	<a href="https://github.com/Iansus">Iansus</a>.
-	<br>
-	<a href="https://github.com/Babaritech/babar" style="font-size:75%">
-	  <i class="fa fa-github-square"></i> Fork me on Github !
-	</a>
-	<br>
-	<a ui-sref="error({status:420})" style="font-size:50%">
-	  This shit is fucking broken, man !
-        </a>
-      </div>
-    </div> <!-- /text -->
-    <div
-       ng-show="unicorn"
-       style="position:relative;z-index:-10;display:inline;float:right;margin-top:4%;">
-      <unicorn></unicorn>
-    </div>
-  </div> <!-- /sell-details-info -->
+<!-- When noone's selected and some info is displayed -->
+<div
+   layout="row"
+   layout-align="center center"
+   ng-show="sellcst.current.details === null">
+  <img
+     src="assets/king_babar.jpg"
+     style="height: 250px;">
+  <md-content
+     class="md-padding dev-info"
+     style="color:black; font-size:125%">
+    Made with
+    <a href="https://www.youtube.com/watch?v=xat1GVnl8-k"> <i class="fa fa-heart" alt="love"></i></a>
+    by
+    <a href="https://github.com/Dryvenn">Dryvenn</a>
+    and
+    <a href="https://github.com/Iansus">Iansus</a>.
+    <br>
+    <a href="https://github.com/Babaritech/babar" style="font-size:75%">
+      <i class="fa fa-github"></i> Fork me on Github !
+    </a>
+    <br>
+    <a ui-sref="error({status:420})" style="font-size:50%">
+      This shit is fucking broken, what should I do ?
+    </a>
+  </md-content>
+</div>
 
-  <div class="sell-details-history" ng-hide="sellcst.current.details===null">
-    <ul class="list-group custom-list">
-      <li
-         class="list-group-item"
-         ng-repeat="drink in sellcst.current.details.history  |
-		    orderBy : sell.chronological : true">
-        <h5>{{drink.name}}</h5>
-        <h6>{{drink.price}}€   |   {{sell.toDateString(drink.time)}}</h6>
-      </li>
-    </ul>
-  </div> <!-- /sell-details-history -->
-
+<!-- When one's selected and purchases are made -->
+<div layout="column"
+     ng-hide="sellcst.current.details === null">  
   <div
-     class="sell-details-stats"
-     ng-hide="sellcst.current.details === null">
-    <b>Favourite drink : </b> {{sellcst.current.details.favDrink}}<br>
-    <b>Total spent : </b>{{sellcst.current.details.totalSpent}}€<br>
+     layout="row"
+     layout-align="center center">
+    <img
+       src="assets/king_babar.jpg"
+       style="height: 250px;">
+    <md-content>
+      <p>
+	{{sellcst.current.details.name}}
+	<br>
+	<b>{{sellcst.current.details.money}}&#8364</b>
+      </p>
+    </md-content>
   </div>
   <div
-     class="sell-details-makeDeposit"
-     ng-hide="sellcst.current.details === null">
-    <button
-       class="btn btn-success"
-       ng-click="sell.makeDeposit()">
-      Make a deposit
-    </button>
+     layout="row"
+     layout-margin
+     layout-align="space-between center">
+    <md-content>
+      <b>Favourite drink: </b> {{sellcst.current.details.favDrink}}<br>
+      <b>Total deposited: </b>{{sellcst.current.details.totalSpent}}€<br>
+    </md-content>
+    <md-button
+       class="md-raised md-primary"
+       aria-label="Deposit"
+       ng-click="sell.deposit()">
+      Make a Deposit
+    </md-button>
   </div>
-
-</div> <!-- /sell-details -->
+  <md-list>
+    <md-item
+       ng-repeat="item in sellcst.current.details.history
+		  | orderBy : sell.chronological : true">    
+      <md-item-content>
+        <div class="md-tile-content">
+	  <h5>{{item.name}}</h5>
+          <h6>{{item.price}}€   |   {{sell.toDateString(item.time)}}</h6>
+	</div>
+      </md-item-content>
+    </md-item>
+  </md-list>
+</div>

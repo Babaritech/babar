@@ -7,12 +7,8 @@ angular.module('babar.sell.drk', [
         return {
             templateUrl: 'sell/drk/selldrk.tpl.html',
             controllerAs: 'selldrk',
-            controller: function($scope, $state, searchFilter, selectFilter, Focus, Server, Encode, Decode) {
-
-		var refresh = function() {
-                    this.current.refresh();
-                };
-                $scope.$on('refresh', function(e, a) {refresh();});
+            controller: function($rootScope, $scope, $state, searchFilter, selectFilter, Focus, Server, Encode, Decode) {
+		$rootScope.$on('refresh', function(e, a) {$scope.selldrk.current.refresh();});
 
                 //load drinks' list
 		this.list = [];

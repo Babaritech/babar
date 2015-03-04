@@ -9,13 +9,12 @@ angular.module( 'babar', [
     'babar.admin.customer',
     'babar.admin.user',
     'babar.admin.drink',
-    'babar.admin.stat'
-    
+    'babar.admin.setting'
 ])
 
     .config( ['$stateProvider', '$urlRouterProvider',  function myAppConfig ( $stateProvider, $urlRouterProvider ) {
 	
-        // TODO: For any unmatched url, redirect to a 404 error
+        // for any unmatched url, redirect to root
         $urlRouterProvider.otherwise("/");
         
         // Now set up the states
@@ -38,30 +37,30 @@ angular.module( 'babar', [
 		controller: "AdminCtrl",
 		controllerAs: "admin"
 	    })
-	    .state('admin.customer', {
-		url: "/customer/:id",
-		templateUrl: "admin/partials/customer.tpl.html",
+	    .state('admin.customers', {
+		url: "/customers/:id",
+		templateUrl: "admin/cst/admcst.tpl.html",
 		controller: "AdmCustomerCtrl",
 		controllerAs: "admcst"
 	    })
-            .state('admin.drink', {
-                url: "/drink/:id/",
-                templateUrl: "admin/partials/drink.tpl.html",
+            .state('admin.drinks', {
+                url: "/drinks/:id/",
+                templateUrl: "admin/drk/admdrk.tpl.html",
                 controller: "AdmDrinkCtrl",
                 controllerAs: "admdrk"
             })
-            .state('admin.user', {
-                url: "/user/:id",
-                templateUrl: "admin/partials/user.tpl.html",
+            .state('admin.users', {
+                url: "/users/:id",
+                templateUrl: "admin/usr/admusr.tpl.html",
                 controller: "AdmUserCtrl",
                 controllerAs: "admusr"
             })
-            .state('admin.stat', {
-                url: "/stat/:id",
-                templateUrl: "admin/partials/stat.tpl.html",
-                controller: "AdmStatCtrl",
-                controllerAs: "admstt"
-            });       
+            .state('admin.settings', {
+                url: "/settings/:id",
+                templateUrl: "admin/stg/admstg.tpl.html",
+                controller: "AdmSettingCtrl",
+                controllerAs: "admstg"
+            });
     }])
 
     .run( function run () {

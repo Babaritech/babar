@@ -1,129 +1,85 @@
 angular.module('babar.admin', [
     'babar.server',
+    'babar.utils',
     'ui.router'
 ])
 
-    .controller('AdminCtrl', ['$scope', '$state', 'Server', 'Decode', function($scope, $state, Server, Decode){
-
-	//Re-enable tab key, 'cause 'twill be useful in forms
-	document.onkeydown = function (e) {
-            if(e.which == 9){
-                return true;
+    .controller('AdminCtrl', ['$rootScope', '$scope', '$state', 'Server', 'Decode', function($rootScope, $scope, $state, Server, Decode){
+	this.domain = {
+	    list: [
+		{
+		    name: "customers",
+		    title: "Customers",
+		    description: "Consult, modify or add customers.",
+		    faIcon: "male",
+		    controllerAs: "admcst",
+		    acceptNew: true
+		},
+		{
+		    name: "users",
+                    title: "Users",
+                    description: "See who's in charge.",
+		    faIcon: "users",
+		    controllerAs: "admusr",
+		    acceptNew: false
+		},
+		{
+		    name: "drinks",
+                    title: "Drinks",
+                    description: "Consult, modify or add drinks.",
+		    faIcon: "beer",
+		    controllerAs: "admdrk",
+		    acceptNew: true
+		},
+		{
+		    name: "settings",
+		    title: "Settings",
+		    description: "Modify the app behaviour in this browser.",
+		    faIcon: "wrench",
+		    controllerAs: "admstg",
+		    acceptNew: false
+		}
+	    ],
+	    current: null,
+	    change: function(domain) {
+                this.current = domain;
+		$scope.admin.refresh();
             }
-        };
+	};
 
-	
-	this.domains = [
-	    {
-		name: "customer",
-		title: "Customers",
-		description: "Consult, modify or add customers."
-	    },
-	    {
-		name: "user",
-                title: "Users",
-                description: "See who's in charge."
-            },
-            {
-		name: "drink",
-                title: "Drinks",
-                description: "Consult, modify or add drinks."
-            },
-            {
-		name: "stat",
-                title: "Statistics",
-                description: "Get familiar with some outstanding numbers."
-            }
-	];
-	this.currentDomain = null;
-	this.isActiveDomain = function(domain){
-	    if(domain.name === this.currentDomain){
-		return 'active';
-	    }else{
-		return '';
+	this.item = {
+	    list: [],
+	    current: null,
+	    change: function(item) {
+		this.current = item;
+		$state.go('admin.'+$scope.admin.domain.current.name, {id:item.id});
 	    }
 	};
-	this.changeDomain = function(domain){
-	    //desactivate current item
-	    this.currentItem = null;
-	    
-	    this.currentDomain = domain.name;
-	    this.getAdminItems(domain.name);
-	};
-	
-        this.items = null;
-	
-        this.currentItem = null;
-        this.isActiveItem = function(item){
-            if(item.name === this.currentItem){
-                return 'active';
-            }else{
-                return '';
-            }
-        };
-        this.changeItem = function(item){
-	    this.currentItem = item.name;
-        };
-
-
-	//Dialog functions
+	this.keyword = '';
 	
 	this.signOut = function(){
 	    Server.logout();
 	};
-        this.getAdminItems = function(domain){
-	    var promise;
-            switch(domain){
-            case 'customer':
-                Server.list.customers()
-                    .then(function(res) { //success
-			//add an useful 'name' attribute
-                        $scope.admin.items = Decode.customers(res.data);
-			
-			// At start, highlight first item
-                        $scope.admin.changeItem($scope.admin.items[0]);
-			
-                    }, function(res) { //failure
-			$state.go('error', {'status':res.status});
-		    });
-		break;
-            case 'drink':
-		Server.list.drinks()
-                    .then(function(res){ //success
-			//add an useful 'name' attribute
-                        $scope.admin.items = Decode.drinks(res.data);
 
-			// At start, highlight first item
-                        $scope.admin.changeItem($scope.admin.items[0]);
-                        
-                    }, function(res) { //failure
-                        $state.go('error', {'status':res.status});
-                    });
-		break;
-            case 'user':
-		$scope.admin.items = null; //waiting for server's implementation
-		break;
-            case 'stat':
-		$scope.admin.items = null; //waiting for server's implementation
-                break;
-            default:
-		$state.go('error', {'status':405});
-		break;
+	this.refresh = function() {
+	    var domain = this.domain.current.name;
+	    Server.list[domain]()
+		.then(function(promised) {
+		    // add a new element at the begining of the array if it's appropiate (will be ignored by the filter)
+		    $scope.admin.item.list = (
+			$scope.admin.domain.current.acceptNew ?
+			    [{name: 'New...', id: -1}] : []
+		    ).concat(Decode[domain](promised.data));
+		});
+	};
+	// register this standard refresh function
+        $rootScope.$on('refresh', function(e, a) {
+            if(a.to === 'all' || a.to === 'admin') {
+                $scope.admin.refresh();
             }
-        }; 
-        this.getAdminDetails = function(domain, id){
-            switch(domain){
-            case 'customer':
-                return {status: 200, data: this.getCustomerInfo(id)};
-            case 'drink':
-                return {status: 200, data: this.getDrinkInfo(id)};
-            case 'user':
-                return {status: 200, data: this.getUserInfo(id)};
-            case 'stat':
-                return {status: 200, data: this.getStatInfo(id)};
-            default:
-                return {status: 400};
-            }
-        };
- 
+        });
+
+	// bring it on
+	this.domain.current = this.domain.list[0];
+	this.refresh();
     }]);

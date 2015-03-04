@@ -7,12 +7,14 @@ angular.module('babar.sell.cst', [
 	return {
 	    templateUrl: 'sell/cst/sellcst.tpl.html',
 	    controllerAs: 'sellcst',
-            controller: function($scope, $state, searchFilter, selectFilter, Focus, Server, Encode, Decode) {
-		var refresh = function() {
-		    this.current.refresh();
-		};
-		$scope.$on('refresh', function(e, a) {refresh();});
+            controller: function($rootScope, $scope, $state, $filter, searchFilter, selectFilter, Focus, Server, Encode, Decode) {
+		$rootScope.$on('refresh', function(e, a) {$scope.sellcst.current.refresh();});
 
+                //this serves the chronological filter
+                this.chronological = 'time';
+                var orderBy = $filter('orderBy');
+                
+		
                 //load customers' list
 		this.list = [];
 		Server.list.customers()
@@ -25,9 +27,15 @@ angular.module('babar.sell.cst', [
 		    keyword: "",
 		    index: 0,
 		    size: 0,
-		    details: "not null", //for test purposes
+		    details: null,
 		    getCurrentId : function(){
-			return selectFilter(searchFilter($scope.sellcst.list, this.keyword), this.index)[this.index].id;
+			var curCustomer = selectFilter(searchFilter($scope.sellcst.list, this.keyword), this.index)[this.index];
+			if(curCustomer) {
+			    return curCustomer.id;
+			}
+			else {
+			    return undefined;
+			}
 		    },
 		    getTotalSpent: function(){
 			Server.read.customer.totalEntries(this.details.id)
@@ -95,24 +103,25 @@ angular.module('babar.sell.cst', [
 			    });
 		    },
 		    refresh: function(){
+			//update the size of the list
+                        this.size = selectFilter(
+                            searchFilter(
+                                $scope.sellcst.list,
+                                this.keyword),
+                            this.index).length;                 
+
 			//get the customer's basic info
-			Server.read.customer.info(this.getCurrentId())
-			    .then(function(res){
-				//gotta interpret the customer status (rank)
-				$scope.sellcst.current.details = res.data;
+			if(this.getCurrentId()) {
+			    Server.read.customer.info(this.getCurrentId())
+				.then(function(res){
+				    $scope.sellcst.current.details = Decode.customer(res.data);
 
-				//get the customer's further info
-				$scope.sellcst.current.getStatus();
-				$scope.sellcst.current.getBalance();
-				$scope.sellcst.current.getHistory();
-			    });
-
-			//updata the size of the list
-			this.size = selectFilter(
-			    searchFilter(
-				$scope.sellcst.list,
-				this.keyword),
-			    this.index).length;
+				    //get the customer's further info
+				    $scope.sellcst.current.getStatus();
+				    $scope.sellcst.current.getBalance();
+				    $scope.sellcst.current.getHistory();
+				});
+			}
 		    },
 		    up: function(){
 			if(this.index > 0){

@@ -1,17 +1,20 @@
-var serverIP = '127.0.0.1';//'137.194.14.116';
+var serverIP = '137.194.15.203';
 
-angular.module('babar.server', [
-    'babar.authenticate',
-    'babar.error',
-    'ngDialog',
-    'ui.router'
-])
 /*
  * When a view asks for some data, there can be two cases.
  * Either the user has the rights to do so, and the view receives it.
  * Or he does not, and has to pass authentication.
- * In the latter case, the user will have to make his operation again after having authentified himself.
+ * In the latter case, the promise returned will be the new one, after authentication and automatic retry.
  */
+
+angular
+    .module('babar.server', [
+	'babar.authenticate',
+	'babar.error',
+	'babar.admin.setting',
+	'ngMaterial',
+	'ui.router'
+    ])
 
     .factory('Token', [function() {
 	// This aim to handle the authentication token
@@ -30,201 +33,221 @@ angular.module('babar.server', [
         return new Token();
     }])
 
-    .filter('react', ['$rootScope', '$state', '$http', 'Token', 'ngDialog', function($rootScope, $state, $http, Token, ngDialog){
-	// we hereby deal with error status codes, especially authentication problems
-	return function(promise){
-	    var react = this;
-	    promise.then(
-		function(response){
-		    // success, spread a signal to make everyone refresh
-		    // maybe it's not a good idea to do it here...
-                    // $rootScope.$emit('refresh', {'from': 'server', 'to': 'all'});
-                },
-		function(response){
-		    switch(response.status){
-		    case 401:
-			// let's auth
-			var dialog = ngDialog.open({
-                            template: 'authenticate/authenticate.tpl.html',
-                            controller: 'AuthenticateCtrl as auth',
-                            data: [],
-                            className: 'ngdialog-theme-plain',
-                            showClose: false,
-                            closeByEscape: false,
-                            closeByDocument: false
-                        });
-                        dialog.closePromise.then(function(promised){
-                            console.log(promised.value);
-                        });
-                        break;
-                    case 403:
-                        // wrong login/password, handled by auth module
-                        break;
-                    case 498:
-			// session has expired, reset token and retry
-			Token.reset();
-			react($http(response.config));
-			break;
-		    default:
-                        // error
-                        $state.go("error", {'status': response.status});
-                        break;
-		    }
-                });
-	    return promise;
-	};
-    }])
-
-    
-    .factory('Server', ['$rootScope', '$state', '$q', '$http', 'Encode', 'Decode', 'reactFilter', 'Token', function($rootScope, $state, $q, $http, Encode, Decode, reactFilter, Token){
+    .factory('Server', function($rootScope, $state, $q, $http, $mdDialog, Encode, Decode, Token, AvailableSettings){
 	Server = function(){
 	    
-	    //Get current time
+	    //Get current time in millis
 	    var time = function(){
 		var date = new Date();
 		return date.getTime();
 	    };
-	    
-	    this.debug = function(){
-		return this.get('customer').then(function(promised){
-		    return this.value;
-		});
+
+	    // this makes the actual request and handles the response
+	    // for more info, read $q's doc
+	    var server = function(config) {
+		// this deals with every returning promise
+		return $http(config)
+		    .then(function(promised){
+			// success
+			return promised;
+                    }, function(promised){
+			switch(promised.status){
+			case 401:
+                            // this request went south: login and retry
+                            return $mdDialog.show({ 
+				templateUrl: 'authenticate/authenticate.tpl.html',
+				clickOutsideToClose: false,
+				controller: 'AuthenticateCtrl',
+				controllerAs: 'auth'
+                            }).then(function(promisedAuth) {
+				// login went well, now retry but with the token
+				promised.config.params.token = promisedAuth.data.value;
+				return server(config);
+                            });
+			case 403:
+                            // wrong login/password, handled by auth module
+			    return promised;
+			case 498:
+                            // session has expired, reset token and retry
+                            Token.reset();
+			    return server(promised.config);
+			default:
+                            // error
+                            $state.go("error", {'status': promised.status});
+                            break;
+			}
+                    });
 	    };
 
-	    //This prepares and makes all server's requests and returns a promise
-	    this.request = function(object, params, data){
-		var url = 'http://' + serverIP + '/Babar/Server/' + object + '.php';
-		params.token = Token.get();
-		var config = {
-		    'url': url,
-		    'params':params
-		};
-		if(data){
-		    config.data = data;
-		    config.method = 'POST';
-		}else{
-		    config.method = 'GET';
-		}
-		return reactFilter($http(config));
-	    };
-
-	    var server = this;
+	    // this prepares and makes all server's requests and returns a promise
+            var request = function(object, params, data){
+                var url = 'http://' + serverIP + '/babar/Server/' + object + '.php';
+                params.token = Token.get();
+                var config = {
+                    'url': url,
+                    'params':params
+                };
+                if(data){
+                    config.data = data;
+                    config.method = 'POST';
+                }else{
+                    config.method = 'GET';
+                }
+                return server(config);
+            };
 	    
 	    this.list = {
-		params: {'action': 'list' },
 		customers: function() {
-		    return server.request('customer', this.params);
+		    var params = {'action': 'list' };
+		    return request('customer', params);
 		},
 		drinks: function() {
-                    return server.request('drink', this.params);
+		    var params = {'action': 'list' };           
+                    return request('drink', params);
+		},
+		users: function() {
+		    var params = {'action': 'bar_staff' };
+		    return request('customer', params);
 		},
 		statuses: function() {
-                    return server.request('status', this.params);
+		    var params = {'action': 'list' };           
+                    return request('status', params);
                 },
-		stats: function() {
-		    // doesn't exist yet
-                    // promise = this.request('stat', this.params);
+		settings: function() {
+		    return AvailableSettings.promise();
 		}
 	    };
             this.create = {
-                params: {'action': 'new'},
                 customer: function(data) {
-                    return server.request('customer', this.params, data);
+		    var params = {'action': 'new'};             
+                    return request('customer', params, data);
                 },
                 drink: function(data) {
-                    return server.request('drink', this.params, data);
+		    var params = {'action': 'new'};             
+                    return request('drink', params, Encode.drink(data));
                 },
                 purchase: function(data) {
+		    var params = {'action': 'new'};             
                     //data.customer bought a data.drink at time()
-                    return server.request('sell', this.params, Encode.sell(data.customer, data.drink, time()));
+                    return request('sell', params, Encode.sell(data.customer, data.drink, time()));
+                },
+		purchase_overdraft: function(data) {
+                    var params = {'action': 'new-negative'};		
+		    //data.customer bought a data.drink at time()
+                    return request('sell', params, Encode.sell(data.customer, data.drink, time()));
                 },
                 deposit: function(data) {
-                    //data.customer addded data.amount € at time()
-                    return server.request('entry', this.params, Encode.entry(data.customer, data.amount, time()));
+		    var params = {'action': 'new'};
+                    //data.user addded data.amount € to data.customer at time()
+                    return request('entry', params, Encode.entry(data.customer, data.amount, data.user, time()));
                 }
             };
 	    this.read = {
                 customer: {
-		    params: {'action': 'info'},
                     info: function(id) {
-			this.params.id = id;
-                        return server.request('customer', this.params);
+			var params= {
+			    action: 'info',
+			    id: id
+			};
+                        return request('customer', params);
                     },
                     balance: function(id) {
-                        this.params.id = id;
-			this.params.action = 'balance';
-			return server.request('customer', this.params);
+			var params= {
+                            action: 'balance',
+                            id: id
+                        };
+			return request('customer', params);
                     },
 		    totalEntries: function(id) {
-			this.params.id = id;
-			this.params.action = 'total_entries';
-			return server.request('customer', this.params);
+			var params= {
+                            action: 'total_entries',
+                            id: id
+                        };
+			return request('customer', params);
 		    },
 		    history: function(id) {
-			this.params.id = id;
-			this.params.action = 'customer_history';
-			return server.request('sell', this.params);
+			var params= {
+                            action: 'customer_history',
+                            id: id
+                        };
+			return request('sell', params);
 		    }
 		},
 		drink: {
-		    params: {'action': 'info'},         
                     info: function(id) {
-			this.params.id = id;
-			return server.request('drink', this.params);
+			var params= {
+                            action: 'info',
+                            id: id
+                        };
+			return request('drink', params);
 		    }
 		},
 		status: {
-		    params: {'action': 'info'},         
                     info: function(id) {
-                        this.params.id = id;
-                        return server.request('status', this.params);
+                        var params= {
+                            action: 'info',
+                            id: id
+                        };
+			return request('status', params);
                     }
                 }
 	    };
 	    this.update = {
                 params: {'action': 'update'},
-		client: function(data) {
+		customer: function(data) {
                     this.params.id = data.id;
-                    return this.request('customer', this.params, data);
+                    return request('customer', this.params, data);
                 },
                 drink: function(data) {
                     this.params.id = data.id;
-                    return this.request('drink', this.params, data);
+                    return request('drink', this.params, data);
                 }
             };
             this.del = {
 		params: {'action': 'delete'},
-                client: function(id) {
+                customer: function(id) {
 		    this.params.id = id;
-		    return this.request('customer', this.params);
+		    return request('customer', this.params);
                 },
                 drink: function(id) {
                     this.params.id = id;
-                    return this.request('drink', this.params);
+                    return request('drink', this.params);
                 }
             };
 	    // the allows one to be logged out
 	    this.logout = function() {
 		var params = {'action': 'logout'};
-		return server.request('customer', params, Encode.logout(Token.get()));
+		var token = Token.get();
+		Token.reset();
+		$rootScope.$emit('logout', {});
+		$rootScope.$emit('refresh', {'from': 'logout', 'to':'all'});
+                return request('customer', params, Encode.logout(token));
 	    };
 	    // this allows one to be authentified
 	    this.authenticate = function(data){
 		var params = {'action': 'login'};
-		var promise = server.request('customer', params, Encode.login(data.login, data.password, data.duration));
-		var endTime = Encode.loginEndTime(data.duration);
+		var promise = request('customer', params, Encode.login(data.login, data.password, data.duration));
 		promise.then(function(promised) {
 		    Token.set(promised.data.value);
+		    $rootScope.$emit('login', {'duration': data.duration, 'login': data.login});
                 });
                 return promise;
 	    };
-	};
-	return new Server();
+	    this.guiAuthenticate = function() {
+		return $mdDialog.show({ 
+                    templateUrl: 'authenticate/authenticate.tpl.html',
+                    clickOutsideToClose: false,
+                    controller: 'AuthenticateCtrl',
+                    controllerAs: 'auth'
+		});
+            };
+        };
+        return new Server();
 
-    }])
+    })
 
     .factory('Encode', [function(){
-	Encode = function(){
+        Encode = function(){
 	    this.sell = function(customer, drink, time){
 		return {
 		    id: 0,
@@ -233,24 +256,24 @@ angular.module('babar.server', [
 		    quantity: 1,
 		    price: drink.price,
 		    brand: drink.brand,
-		    name: drink.name,
+		    name: drink.type,
 		    date: time
 		};
 	    };
-	    this.entry = function(customer, amount, time){
+	    this.entry = function(customer, amount, user, time){
 		return {
 		    id: 0,
-		    debitantId: 1,
+		    debitantId: user.id,
 		    customerId: customer.id,
 		    amount: amount,
 		    date: time
 		};
 	    };
 	    this.login = function(login, password, duration) {
-		var endTime = 0;
+		var time = 0;
                 var count = -1;
                 if(duration!==0) {
-		    endTime = (new Date()).getTime() + duration*60*1000;
+		    time = duration*60*1000;
                 }
                 else {
                     count = 1;
@@ -258,7 +281,7 @@ angular.module('babar.server', [
 		return {
                     nickname: login,
                     password: password,
-                    expiration: endTime,
+                    expiration: time,
                     actionCount: count
                 };
 	    };
@@ -293,6 +316,9 @@ angular.module('babar.server', [
 	    };
 	    this.customer = function(customer) {
 		var nCustomer = customer;
+		if(customer.nickname === null || customer.nickname === "") {
+		    nCustomer.nickname = 'no swag';
+		}
                 nCustomer.name = customer.firstname + " ("+ customer.nickname + ") " + customer.lastname;
                 return nCustomer;
             };
@@ -302,6 +328,12 @@ angular.module('babar.server', [
 		    mut(val);
                     return val;
                 });
+	    };
+	    this.user = function(user) {
+		return this.customer(user);
+	    };
+	    this.users = function(users) {
+		return this.customers(users);
 	    };
 	    this.drink = function(drink) {
 		var nDrink = drink;
@@ -316,6 +348,9 @@ angular.module('babar.server', [
 		    mut(val);
 		    return val;
 		});
+	    };
+	    this.settings = function(settings) {
+		return settings;
 	    };
 	};
 	return new Decode();

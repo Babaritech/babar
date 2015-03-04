@@ -1,24 +1,29 @@
-<div class="col-md-4 col-xs-12 sell-drink sell">
-  <div
-     class="input-group custom-input">
+<div layout="column">
+  <md-input-container>
+    <label>Search for an item</label>
     <input
        name="drinkInput"
        id="drinkInput"
        type="text"
-       class="form-control"
-       placeholder="Search for an item"
        ng-model="selldrk.current.keyword">
-  </div><!-- /input-group -->
-  <div class="list-group custom-list">
-    <a
-       href="#"
-       class="list-group-item {{drink.active?'active':''}}"
+  </md-input-container>
+  <md-list>
+    <md-item
        ng-repeat="drink in
                   selldrk.list
                   | search: selldrk.current.keyword
-                  | select : selldrk.current.index"
+                  | select : selldrk.current.index
+		  | cut"
        ng-click="selldrk.current.setIndex($index, true)">
-      {{drink.name}}
-    </a>
-  </div> <!-- /list -->
-</div> <!-- /sell-drink -->
+      <md-item-content
+	 class="{{drink.active?'active':''}}">
+	<div class="md-tile-content">
+	  <h3>{{drink.name}}</h3>
+	  <p>
+	    {{drink.price}} €
+	  </p>
+	</div>
+      </md-item-content>
+    </md-item>
+  </md-list>
+</div>

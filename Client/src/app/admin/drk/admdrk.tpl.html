@@ -1,0 +1,61 @@
+<div layout="column">
+  <div layout="row" layout-align="space-around center">
+    <md-switch
+       ng-model="admdrk.state.button"
+       ng-change="admdrk.state.buttonChanged()"
+       ng-disabled="admdrk.state.current === 'creating'"
+       aria-label="Update switch">
+      Change this drink (requires a login)
+    </md-switch>
+    <i
+       class="fa fa-gear fa-2x"
+       ng-click="admdrk.botsheet()"
+       ></i> 
+  </div>
+  <form name="drkForm" id="drkForm" flex>
+    <fieldset
+       ng-disabled="admdrk.state.current === 'reading'">
+      <md-input-container>
+        <label>Brand</label>
+        <input
+           required
+           type="text"
+           ng-model="admdrk.current.brand">
+      </md-input-container>
+      <md-input-container>
+        <label>Type</label>
+        <input
+           required
+           type="text"
+           ng-model="admdrk.current.type">
+      </md-input-container>
+      <md-input-container>
+        <label>Price</label>
+        <input
+           required
+	   type="number"
+           step="any"
+           ng-model="admdrk.current.price">
+      </md-input-container>
+      <section
+         ng-hide="admdrk.state.current === 'reading'"
+         layout="row"
+         layout-align="space-around center"
+         layout-margin
+         layout-fill>
+        <md-button
+           flex
+           class="md-primary md-raised"
+           ng-click="admdrk.confirm()">
+          Submit
+        </md-button>
+        <md-button
+           flex
+           class="md-warn md-raised"
+           ng-click="admdrk.cancel()">
+          Cancel
+        </md-button>
+      </section>
+    </fieldset>
+  </form>
+</div>

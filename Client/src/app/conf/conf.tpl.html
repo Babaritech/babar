@@ -1,0 +1,23 @@
+<md-dialog aria-label="Purchase confirmation">
+  <md-content>
+    <md-toolbar class="md-accent">
+      <h2 class="md-toolbar-tools">
+	<span ng-if="!conf.overdraft"> Confirm this purchase ? </span>
+	<span ng-if="conf.overdraft"> Confirm this purchase AS OVERDRAFT ? </span>
+      </h2>
+    </md-toolbar>
+    <p>
+      <br>
+      <br>
+      {{conf.message}}
+    </p>  
+  </md-content>
+  <div class="md-actions" layout="row">
+    <md-button ng-click="conf.cancel()">
+      Cancel
+    </md-button>
+    <md-button ng-click="conf.confirm()" class="md-primary">
+      Confirm  
+    </md-button>
+  </div>
+</md-dialog>

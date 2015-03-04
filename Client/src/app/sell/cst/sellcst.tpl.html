@@ -1,24 +1,38 @@
-<div class="col-md-4 col-xs-12 sell-customer sell">
-  <div
-     class="input-group custom-input">
+<div layout="column">
+  <div>
+     <md-input-container>
+      <label>Search for a customer</label>
     <input
        name="customerInput"
        id="customerInput"
        type="text"
-       class="form-control"
-       placeholder="Search for a customer"
        ng-model="sellcst.current.keyword">
-  </div><!-- /input-group -->
-  <div class="list-group custom-list">
-    <a
-       href="#"
-       class="list-group-item {{customer.active?'active':''}}"
-       ng-repeat="customer in
-                  sellcst.list
-                  | search: sellcst.current.keyword
-                  | select : sellcst.current.index"
+    </md-input-container>
+  </div>
+  <md-list>
+    <md-item
+      ng-repeat="customer in
+      sellcst.list
+      | search: sellcst.current.keyword
+      | select: sellcst.current.index
+      | cut"
        ng-click="sellcst.current.setIndex($index, true)">
-      {{customer.name}}
-    </a>
-  </div> <!-- /list -->
-</div> <!-- /sell-customer -->
+      <md-item-content 
+         class="item-font {{customer.active?'active':'unactive'}}
+         md-primary md-hue2">
+        <div class="md-tile-left">
+	  <img
+	     src="assets/king_babar.jpg"
+	     class="face"
+	     alt="King Babar"
+	     style="width: 100px; height: 100px">
+	</div>
+	<div class="md-tile-content md-primary md-hue-2"
+	     style="margin-left: 5px">
+	  <h3><strong>{{customer.nickname}}</strong></h3>
+	  <h4>{{customer.firstname}} {{customer.lastname}}</h4>
+	</div>
+      </md-item-content>
+    </md-item>
+  </md-list>
+</div>
