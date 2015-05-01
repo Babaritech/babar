@@ -1,5 +1,5 @@
 module.exports = function ( grunt ) {
-    
+
     /** 
      * Load required Grunt tasks. These are installed based on the versions listed
      * in `package.json` when you do `npm install` in this directory.
@@ -43,7 +43,7 @@ module.exports = function ( grunt ) {
 	 */
 	meta: {
 	    banner: 
-            '/**\n' +
+	    '/**\n' +
 		' * <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
 		' * <%= pkg.homepage %>\n' +
 		' *\n' +
@@ -425,7 +425,6 @@ module.exports = function ( grunt ) {
 		]
 	    }
 	},
-
 	/**
 	 * rysnc to the servers
 	 */
@@ -564,9 +563,8 @@ module.exports = function ( grunt ) {
 		    livereload: false
 		}
 	    },
-
 	    /**
-	     * When the build folder changes, fucking rsync it.
+	     * When the build folder changes, rsync it.
 	     */
 	    rsync: {
 		files: [
@@ -577,6 +575,7 @@ module.exports = function ( grunt ) {
 		    livereload: false
 		}
 	    }
+
 	}
     };
 
@@ -604,7 +603,7 @@ module.exports = function ( grunt ) {
 	'clean', 'html2js', 'jshint', 'coffeelint', 'coffee', 'less:build',
 	'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
 	'copy:build_appjs', 'copy:build_vendorjs', 'copy:build_vendorcss', 'index:build', 'karmaconfig',
-	'karma:continuous' , 'rsync:zephir'
+	'karma:continuous', 'rsync:zephir'
     ]);
 
     /**
@@ -668,7 +667,7 @@ module.exports = function ( grunt ) {
      */
     grunt.registerMultiTask( 'karmaconfig', 'Process karma config templates', function () {
 	var jsFiles = filterForJS( this.filesSrc );
-	
+
 	grunt.file.copy( 'karma/karma-unit.tpl.js', grunt.config( 'build_dir' ) + '/karma-unit.js', { 
 	    process: function ( contents, path ) {
 		return grunt.template.process( contents, {

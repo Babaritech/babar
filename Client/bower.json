@@ -1,21 +1,23 @@
 {
-  "name": "babar",
-  "version": "0.1.0",
+  "name": "ng-boilerplate",
+  "version": "0.3.2",
   "devDependencies": {
     "angular": "~1.2",
     "angular-mocks": "~1.2",
     "bootstrap": "~3.1",
     "angular-bootstrap": "~0.10.0",
     "angular-ui-router": "~0.2",
-    "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.4",
-    "angular-timer": "~1.2.0",
-    "angular-unicorn-directive": "~0.0.2",
-    "angular-material": "~0.7.1",
-    "angular-animate": "~1.3.13",
-    "angular-aria": "~1.3.13"
+    "moment": "~2.10.2",
+    "humanize-duration": "~2.6.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "angular-timer": "~1.3.1",
+    "angular-unicorn-directive": "~0.0.2",
+    "angular-material": "~0.8.3",
+    "angular-animate": "~1.3.15",
+    "angular-aria": "~1.3.15"
+  },
   "resolutions": {
-    "angular-timer": "~1.2.0"
+    "humanize-duration": "~2.4.0"
   }
 }
