@@ -164,7 +164,7 @@ angular.module('babar.sell', [
 
 	// For we must be able to enter confirmation mode when using the mouse
 	this.mouseAttempt = function(){
-		if($scope.sellcst.current.details !== null && $scope.selldrk.current.details !== null){
+		if($scope.sellcst.current.details && $scope.selldrk.current.details){
 			this.confirm();
 		}
 	};
