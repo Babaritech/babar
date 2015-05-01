@@ -56,8 +56,7 @@ module.exports = {
      * The `vendor_files.css` property holds any CSS files to be automatically
      * included in our app.
      *
-     * T
-     he `vendor_files.assets` property holds any assets to be copied along
+     * The `vendor_files.assets` property holds any assets to be copied along
      * with our app's assets. This structure is flattened, so it is not
      * recommended that you use wildcards.
      */
@@ -74,7 +73,9 @@ module.exports = {
 	    'vendor/angular-material/angular-material.js',
 	    'vendor/angular-animate/angular-animate.js',
 	    'vendor/angular-aria/angular-aria.js',
-	    'vendor/angular-timer/dist/angular-timer.js'
+	    'vendor/angular-timer/dist/angular-timer.js',
+	    'vendor/humanize-duration/humanize-duration.js',
+	    'vendor/moment/moment.js'
         ],
 	css: [
             'vendor/angular-hotkeys/hotkeys.css',
