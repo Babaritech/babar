@@ -10,14 +10,14 @@ angular.module('babar.authenticate', [
 	this.password = "";
 
 	this.error = "";
-	
+
 	this.duration = 0;
- 
+
 	$scope.cancel = function() {
 	    new Toast().display("login cancelled");
 	    $mdDialog.cancel();
 	};
-	
+
 	//in case of confirmation
 	$scope.confirm = function(){
 	    if($scope.authForm.$valid === true){
