@@ -1,4 +1,4 @@
-var serverIP = '137.194.15.203';
+var serverIP = '127.0.0.1';
 
 /*
  * When a view asks for some data, there can be two cases.
@@ -54,7 +54,7 @@ angular
 					switch(promised.status){
 						case 401:
 							// this request went south: login and retry
-							return $mdDialog.show({ 
+							return $mdDialog.show({
 								templateUrl: 'authenticate/authenticate.tpl.html',
 								clickOutsideToClose: false,
 								controller: 'AuthenticateCtrl',
@@ -102,7 +102,7 @@ angular
 				return request('customer', params);
 			},
 			drinks: function() {
-				var params = {'action': 'list' };           
+				var params = {'action': 'list' };
 				return request('drink', params);
 			},
 			users: function() {
@@ -110,7 +110,7 @@ angular
 				return request('customer', params);
 			},
 			statuses: function() {
-				var params = {'action': 'list' };           
+				var params = {'action': 'list' };
 				return request('status', params);
 			},
 			settings: function() {
@@ -119,20 +119,20 @@ angular
 		};
 		this.create = {
 			customer: function(data) {
-				var params = {'action': 'new'};             
+				var params = {'action': 'new'};
 				return request('customer', params, data);
 			},
 			drink: function(data) {
-				var params = {'action': 'new'};             
+				var params = {'action': 'new'};
 				return request('drink', params, Encode.drink(data));
 			},
 			purchase: function(data) {
-				var params = {'action': 'new'};             
+				var params = {'action': 'new'};
 				//data.customer bought a data.drink at time()
 				return request('sell', params, Encode.sell(data.customer, data.drink, time()));
 			},
 			purchase_overdraft: function(data) {
-				var params = {'action': 'new-negative'};		
+				var params = {'action': 'new-negative'};
 				//data.customer bought a data.drink at time()
 				return request('sell', params, Encode.sell(data.customer, data.drink, time()));
 			},
@@ -234,7 +234,7 @@ angular
 			return promise;
 		};
 		this.guiAuthenticate = function() {
-			return $mdDialog.show({ 
+			return $mdDialog.show({
 				templateUrl: 'authenticate/authenticate.tpl.html',
 				clickOutsideToClose: false,
 				controller: 'AuthenticateCtrl',
