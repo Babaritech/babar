@@ -45,7 +45,7 @@ angular.module('babar.sell', [
 				document.getElementById('customerInput').focus();
 			}else if(newLocation === 'drink'){
 				document.getElementById('drinkInput').focus();
-			} 
+			}
 			return newLocation === 'confirmation'; //isWaitingForConfirm
 		};
 

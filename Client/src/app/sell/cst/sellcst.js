@@ -13,8 +13,8 @@ angular.module('babar.sell.cst', [
                 //this serves the chronological filter
                 this.chronological = 'time';
                 var orderBy = $filter('orderBy');
-                
-		
+
+
                 //load customers' list
 		this.list = [];
 		Server.list.customers()
@@ -108,7 +108,7 @@ angular.module('babar.sell.cst', [
                             searchFilter(
                                 $scope.sellcst.list,
                                 this.keyword),
-                            this.index).length;                 
+                            this.index).length;
 
 			//get the customer's basic info
 			if(this.getCurrentId()) {
@@ -149,5 +149,5 @@ angular.module('babar.sell.cst', [
 
 		//setting up watches so the highlighted item will always be zero during a search
                 $scope.$watch(this.current.keyword, this.current.blockIndex);
-		
+
 	    }};});
